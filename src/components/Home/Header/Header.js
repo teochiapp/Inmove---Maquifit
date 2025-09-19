@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Logo from './Logo';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -13,6 +14,28 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   };
 
+  // Hook para detectar la sección activa
+  useEffect(() => {
+    const sections = ['hero', 'sobre-mi', 'beneficios', 'planes', 'team'];
+    
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100; // Offset para el header fijo
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i]);
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Llamar una vez al montar
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <>
       <HeaderContainer>
@@ -21,11 +44,11 @@ const Header = () => {
         </LogoSection>
         
         <Navigation>
-          <NavLink href="#hero" className="active">Inicio</NavLink>
-          <NavLink href="#sobre-mi">Sobre Mi</NavLink>
-          <NavLink href="#beneficios">Cambios</NavLink>
-          <NavLink href="#planes">Planes</NavLink>
-          <NavLink href="#team">App Team Maquifit</NavLink>
+          <NavLink href="#hero" className={activeSection === 'hero' ? 'active' : ''}>Inicio</NavLink>
+          <NavLink href="#sobre-mi" className={activeSection === 'sobre-mi' ? 'active' : ''}>Sobre Mi</NavLink>
+          <NavLink href="#beneficios" className={activeSection === 'beneficios' ? 'active' : ''}>Cambios</NavLink>
+          <NavLink href="#planes" className={activeSection === 'planes' ? 'active' : ''}>Planes</NavLink>
+          <NavLink href="#team" className={activeSection === 'team' ? 'active' : ''}>App Team Maquifit</NavLink>
         </Navigation>
         
         <ContactSection>
@@ -44,19 +67,19 @@ const Header = () => {
       
       <MobileMenu $isOpen={isMobileMenuOpen} onClick={closeMobileMenu}>
         <MobileMenuContent onClick={(e) => e.stopPropagation()}>
-          <MobileNavLink href="#hero" className="active" onClick={closeMobileMenu}>
+          <MobileNavLink href="#hero" className={activeSection === 'hero' ? 'active' : ''} onClick={closeMobileMenu}>
             Inicio
           </MobileNavLink>
-          <MobileNavLink href="#sobre-mi" onClick={closeMobileMenu}>
+          <MobileNavLink href="#sobre-mi" className={activeSection === 'sobre-mi' ? 'active' : ''} onClick={closeMobileMenu}>
             Sobre Mi
           </MobileNavLink>
-          <MobileNavLink href="#beneficios" onClick={closeMobileMenu}>
+          <MobileNavLink href="#beneficios" className={activeSection === 'beneficios' ? 'active' : ''} onClick={closeMobileMenu}>
             Cambios
           </MobileNavLink>
-          <MobileNavLink href="#planes" onClick={closeMobileMenu}>
+          <MobileNavLink href="#planes" className={activeSection === 'planes' ? 'active' : ''} onClick={closeMobileMenu}>
             Planes
           </MobileNavLink>
-          <MobileNavLink href="#team" onClick={closeMobileMenu}>
+          <MobileNavLink href="#team" className={activeSection === 'team' ? 'active' : ''} onClick={closeMobileMenu}>
             App Team Maquifit
           </MobileNavLink>
           <ContactButton onClick={closeMobileMenu}>
