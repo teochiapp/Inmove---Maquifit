@@ -1,80 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Recetas = ({ orientation = 'left' }) => {
+const Recetas = () => {
   return (
     <SectionContainer>
-       <ContentWrapper $orientation={orientation}>
-         {orientation === 'right' ? (
-           <>
-             <ImageContent>
-               <RecipesContainer>
-                 <RecipeCard>
-                   <RecipeImage src="https://picsum.photos/120/80?random=4" alt="Receta 1" />
-                   <RecipeInfo>
-                     <RecipeTitle>Ensalada de Quinoa</RecipeTitle>
-                     <RecipeTime>15 min</RecipeTime>
-                   </RecipeInfo>
-                 </RecipeCard>
-                 <RecipeCard>
-                   <RecipeImage src="https://picsum.photos/120/80?random=5" alt="Receta 2" />
-                   <RecipeInfo>
-                     <RecipeTitle>Bowl de Avena</RecipeTitle>
-                     <RecipeTime>10 min</RecipeTime>
-                   </RecipeInfo>
-                 </RecipeCard>
-                 <RecipeCard>
-                   <RecipeImage src="https://picsum.photos/120/80?random=6" alt="Receta 3" />
-                   <RecipeInfo>
-                     <RecipeTitle>Batido Proteico</RecipeTitle>
-                     <RecipeTime>5 min</RecipeTime>
-                   </RecipeInfo>
-                 </RecipeCard>
-               </RecipesContainer>
-             </ImageContent>
-             <TextContent $orientation={orientation}>
-               <SectionTitle>Recetas saludables</SectionTitle>
-               <SectionDescription>
-                 Recetas deliciosas y nutritivas que se adaptan a tus objetivos de entrenamiento y estilo de vida.
-               </SectionDescription>
-             </TextContent>
-           </>
-         ) : (
-           <>
-             <TextContent $orientation={orientation}>
-               <SectionTitle>Recetas saludables</SectionTitle>
-               <SectionDescription>
-                 Recetas deliciosas y nutritivas que se adaptan a tus objetivos de entrenamiento y estilo de vida.
-               </SectionDescription>
-             </TextContent>
-             <ImageContent>
-               <RecipesContainer>
-                 <RecipeCard>
-                   <RecipeImage src="https://picsum.photos/120/80?random=4" alt="Receta 1" />
-                   <RecipeInfo>
-                     <RecipeTitle>Ensalada de Quinoa</RecipeTitle>
-                     <RecipeTime>15 min</RecipeTime>
-                   </RecipeInfo>
-                 </RecipeCard>
-                 <RecipeCard>
-                   <RecipeImage src="https://picsum.photos/120/80?random=5" alt="Receta 2" />
-                   <RecipeInfo>
-                     <RecipeTitle>Bowl de Avena</RecipeTitle>
-                     <RecipeTime>10 min</RecipeTime>
-                   </RecipeInfo>
-                 </RecipeCard>
-                 <RecipeCard>
-                   <RecipeImage src="https://picsum.photos/120/80?random=6" alt="Receta 3" />
-                   <RecipeInfo>
-                     <RecipeTitle>Batido Proteico</RecipeTitle>
-                     <RecipeTime>5 min</RecipeTime>
-                   </RecipeInfo>
-                 </RecipeCard>
-               </RecipesContainer>
-             </ImageContent>
-           </>
-         )}
-       </ContentWrapper>
+      <ContentWrapper>        
+        <ImageContent>
+          <RecetaImg src="/home/beneficios/meal.webp" alt="Phone" />
+        </ImageContent>
+        <TextContent>
+          <SectionTitle>Recetas fit</SectionTitle>
+          <SectionDescription>
+            Ideas prácticas de colaciones dulces y saladas para acompañar tu plan.
+          </SectionDescription>
+        </TextContent>
+      </ContentWrapper>
     </SectionContainer>
   );
 };
@@ -91,10 +31,9 @@ const SectionContainer = styled.div`
   overflow: visible;
   
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 1rem 2rem;
     margin-bottom: 1.5rem;
     height: auto;
-    min-height: 370px;
   }
 `;
 
@@ -108,7 +47,7 @@ const ContentWrapper = styled.div`
   
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 2rem;
+    gap: 1px;
     text-align: center;
   }
 `;
@@ -116,14 +55,14 @@ const ContentWrapper = styled.div`
 const TextContent = styled.div`
   flex: 1;
   width: 50%;
-  text-align: ${props => props.$orientation === 'right' ? 'right' : 'left'};
+  text-align: left;
   display: flex;
   flex-direction: column;
   justify-content: center;
   
   @media (max-width: 768px) {
     width: 100%;
-    text-align: center;
+    text-align: left;
   }
 `;
 
@@ -147,6 +86,11 @@ const SectionTitle = styled.h3`
   color: var(--text-black);
   margin-bottom: 1rem;
   line-height: 1.3;
+  
+  @media (max-width: 768px) {
+    font-size: 24px;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const SectionDescription = styled.p`
@@ -154,69 +98,23 @@ const SectionDescription = styled.p`
   color: #4B5563;
   line-height: 1.6;
   margin: 0;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
-const RecipesContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+const RecetaImg = styled.img`
   width: 100%;
-  max-width: 300px;
+  height: auto;
+  max-width: 440px;
   transform: translateY(-20px);
   z-index: 2;
   
   @media (max-width: 768px) {
-    transform: translateY(0);
-  }
-`;
-
-const RecipeCard = styled.div`
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  display: flex;
-  align-items: center;
-  
-  &:hover {
-    transform: translateX(5px);
-  }
-`;
-
-const RecipeImage = styled.img`
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  
-  @media (max-width: 768px) {
-    width: 60px;
-    height: 60px;
-  }
-`;
-
-const RecipeInfo = styled.div`
-  flex: 1;
-  padding: 1rem;
-`;
-
-const RecipeTitle = styled.div`
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #1F2937;
-  margin-bottom: 0.3rem;
-  
-  @media (max-width: 768px) {
-    font-size: 0.8rem;
-  }
-`;
-
-const RecipeTime = styled.div`
-  font-size: 0.8rem;
-  color: #8B42A6;
-  font-weight: 500;
-  
-  @media (max-width: 768px) {
-    font-size: 0.7rem;
+    transform: translateY(-30px);
+    max-width: 270px;
+    max-height: 300px;
+    object-fit: cover;
   }
 `;

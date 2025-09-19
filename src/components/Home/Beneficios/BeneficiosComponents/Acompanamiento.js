@@ -1,78 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Acompanamiento = ({ orientation = 'right' }) => {
+const Acompanamiento = () => {
   return (
     <SectionContainer>
-       <ContentWrapper $orientation={orientation}>
-         {orientation === 'right' ? (
-           <>
-             <ImageContent>
-               <SupportContainer>
-                 <SupportCard>
-                   <SupportIcon>💬</SupportIcon>
-                   <SupportTitle>Chat directo</SupportTitle>
-                   <SupportDescription>Resolvé tus dudas al instante</SupportDescription>
-                 </SupportCard>
-                 <SupportCard>
-                   <SupportIcon>📞</SupportIcon>
-                   <SupportTitle>Llamadas</SupportTitle>
-                   <SupportDescription>Contacto personalizado</SupportDescription>
-                 </SupportCard>
-                 <SupportCard>
-                   <SupportIcon>📈</SupportIcon>
-                   <SupportTitle>Seguimiento</SupportTitle>
-                   <SupportDescription>Monitoreo de progreso</SupportDescription>
-                 </SupportCard>
-                 <SupportCard>
-                   <SupportIcon>🎯</SupportIcon>
-                   <SupportTitle>Motivación</SupportTitle>
-                   <SupportDescription>Te acompaño en cada paso</SupportDescription>
-                 </SupportCard>
-               </SupportContainer>
-             </ImageContent>
-             <TextContent $orientation={orientation}>
-               <SectionTitle>Acompañamiento personalizado</SectionTitle>
-               <SectionDescription>
-                 Te brindo apoyo constante durante todo tu proceso de transformación, adaptándome a tus necesidades y objetivos.
-               </SectionDescription>
-             </TextContent>
-           </>
-         ) : (
-           <>
-             <TextContent $orientation={orientation}>
-               <SectionTitle>Acompañamiento personalizado</SectionTitle>
-               <SectionDescription>
-                 Te brindo apoyo constante durante todo tu proceso de transformación, adaptándome a tus necesidades y objetivos.
-               </SectionDescription>
-             </TextContent>
-             <ImageContent>
-               <SupportContainer>
-                 <SupportCard>
-                   <SupportIcon>💬</SupportIcon>
-                   <SupportTitle>Chat directo</SupportTitle>
-                   <SupportDescription>Resolvé tus dudas al instante</SupportDescription>
-                 </SupportCard>
-                 <SupportCard>
-                   <SupportIcon>📞</SupportIcon>
-                   <SupportTitle>Llamadas</SupportTitle>
-                   <SupportDescription>Contacto personalizado</SupportDescription>
-                 </SupportCard>
-                 <SupportCard>
-                   <SupportIcon>📈</SupportIcon>
-                   <SupportTitle>Seguimiento</SupportTitle>
-                   <SupportDescription>Monitoreo de progreso</SupportDescription>
-                 </SupportCard>
-                 <SupportCard>
-                   <SupportIcon>🎯</SupportIcon>
-                   <SupportTitle>Motivación</SupportTitle>
-                   <SupportDescription>Te acompaño en cada paso</SupportDescription>
-                 </SupportCard>
-               </SupportContainer>
-             </ImageContent>
-           </>
-         )}
-       </ContentWrapper>
+      <ContentWrapper>                
+        <TextContent>
+          <SectionTitle>Acompanamiento de entrenamiento personalizado</SectionTitle>
+          <SectionDescription>
+            Diseñado en mi App exclusiva, adaptado a tus tiempos, días de entrenamiento y objetivos.
+          </SectionDescription>
+        </TextContent>
+        <ImageContent>
+          <ChatImg src="/home/beneficios/chats.png" alt="Chats" />
+        </ImageContent>
+      </ContentWrapper>
     </SectionContainer>
   );
 };
@@ -89,10 +31,9 @@ const SectionContainer = styled.div`
   overflow: visible;
   
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 1rem 2rem;
     margin-bottom: 1.5rem;
     height: auto;
-    min-height: 370px;
   }
 `;
 
@@ -105,8 +46,8 @@ const ContentWrapper = styled.div`
   height: 100%;
   
   @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 2rem;
+    flex-direction: column-reverse;
+    gap: 1px;
     text-align: center;
   }
 `;
@@ -114,14 +55,14 @@ const ContentWrapper = styled.div`
 const TextContent = styled.div`
   flex: 1;
   width: 50%;
-  text-align: ${props => props.$orientation === 'right' ? 'right' : 'left'};
+  text-align: left;
   display: flex;
   flex-direction: column;
   justify-content: center;
   
   @media (max-width: 768px) {
     width: 100%;
-    text-align: center;
+    text-align: left;
   }
 `;
 
@@ -145,6 +86,11 @@ const SectionTitle = styled.h3`
   color: var(--text-black);
   margin-bottom: 1rem;
   line-height: 1.3;
+  
+  @media (max-width: 768px) {
+    font-size: 24px;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const SectionDescription = styled.p`
@@ -152,69 +98,21 @@ const SectionDescription = styled.p`
   color: #4B5563;
   line-height: 1.6;
   margin: 0;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
-const SupportContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+const ChatImg = styled.img`
   width: 100%;
-  max-width: 400px;
-  transform: translateY(-20px);
+  height: auto;
+  max-width: 440px;
+  transform: translateY(-10px);
   z-index: 2;
   
   @media (max-width: 768px) {
-    gap: 1rem;
+    transform: translateY(-30px);
     max-width: 300px;
-    transform: translateY(0);
-  }
-`;
-
-const SupportCard = styled.div`
-  background: white;
-  border-radius: 15px;
-  padding: 1.5rem;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  
-  &:hover {
-    transform: translateY(-5px);
-    border-color: #8B42A6;
-  }
-  
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
-`;
-
-const SupportIcon = styled.div`
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const SupportTitle = styled.div`
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #1F2937;
-  margin-bottom: 0.3rem;
-  
-  @media (max-width: 768px) {
-    font-size: 0.8rem;
-  }
-`;
-
-const SupportDescription = styled.div`
-  font-size: 0.8rem;
-  color: #4B5563;
-  line-height: 1.4;
-  
-  @media (max-width: 768px) {
-    font-size: 0.7rem;
   }
 `;

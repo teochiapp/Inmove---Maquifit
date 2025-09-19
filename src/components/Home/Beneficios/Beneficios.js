@@ -1,22 +1,34 @@
-import React from 'react';
 import styled from 'styled-components';
 import Plan from './BeneficiosComponents/Plan';
 import Videos from './BeneficiosComponents/Videos';
 import Orientacion from './BeneficiosComponents/Orientacion';
 import Habitos from './BeneficiosComponents/Habitos';
 import Recetas from './BeneficiosComponents/Recetas';
-import Acompanamiento from './BeneficiosComponents/Acompanamiento';
+import Acompañamiento from './BeneficiosComponents/Acompanamiento';
 
 function Beneficios() {
   return (
     <BeneficiosContainer>
       <Title>Sumate al team <Color>Maquifit</Color>, y obtené estos beneficios</Title>
-      <Plan orientation="left" />
-      <Videos orientation="right" />
-      <Orientacion orientation="left" />
-      <Habitos orientation="right" />
-      <Recetas orientation="left" />
-      <Acompanamiento orientation="right" />
+      <Plan/>
+      <Videos/>
+      <Orientacion/>
+      <Habitos/>
+      <Recetas/>
+      <Acompañamiento/>
+      
+        <DownloadSection>
+          <DownloadTitle>Descargá la App</DownloadTitle>
+          <DownloadButtons>
+            <AppStoreLink href="#" target="_blank" rel="noopener noreferrer">
+              <AppStore src="/home/beneficios/app-store.png" alt="App Store" />
+            </AppStoreLink>
+            <PlayStoreLink href="https://play.google.com/store/apps/details?id=com.arceus.teammaquifit&hl=es_AR" target="_blank" rel="noopener noreferrer">
+              <PlayStore src="/home/beneficios/play-store.png" alt="Play Store" />
+            </PlayStoreLink>
+          </DownloadButtons>
+        </DownloadSection>
+
     </BeneficiosContainer>
   )
 }
@@ -27,12 +39,20 @@ const BeneficiosContainer = styled.section`
     background-color: #EFEEE8;
     padding: 5rem 13rem;
     width: 100%;
-    gap: 100px;
+    gap: 80px;
     display: flex;
     flex-direction: column;
 
+  @media (max-width: 1300px) {
+    padding: 4rem 4rem;
+  }
+
+  @media (max-width: 900px) {
+    padding: 3rem 2rem;
+  }
   @media (max-width: 768px) {
     padding: 4rem 2rem;
+    gap: 20px;
   }
   
   @media (max-width: 480px) {
@@ -50,9 +70,80 @@ const Title = styled.h2`
   margin-left: auto;
   margin-right: auto;
 
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
 `;
 
 const Color = styled.span`
   color: var(--primary-color);
+`;
+
+const DownloadSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+`;
+
+const DownloadTitle = styled.h3`
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--text-black);
+  text-align: center;
+  margin: 0;
+
+  @media screen and (max-width: 768px) {
+    font-size: 27px;
+  }
+`;
+
+const DownloadButtons = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
   
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+`;
+
+const AppStoreLink = styled.a`
+  display: block;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
+
+const PlayStoreLink = styled.a`
+  display: block;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
+
+const AppStore = styled.img`
+  width: 100%;
+  height: auto;
+  max-width: 180px;
+  
+  @media (max-width: 768px) {
+    max-width: 200px;
+  }
+`;
+
+const PlayStore = styled.img`
+  width: 100%;
+  height: auto;
+  max-width: 180px;
+  
+  @media (max-width: 768px) {
+    max-width: 200px;
+  }
 `;

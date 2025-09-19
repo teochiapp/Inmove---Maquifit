@@ -12,7 +12,7 @@ const Habitos = () => {
           </SectionDescription>
         </TextContent>      
         <ImageContent>
-          <Habitos src="/home/beneficios/habitos.webp" alt="Habitos" />
+          <HabitosImg src="/home/beneficios/habitos.webp" alt="Habitos" />
         </ImageContent>       
       </ContentWrapper>
     </SectionContainer>
@@ -24,17 +24,16 @@ export default Habitos;
 const SectionContainer = styled.div`
   background: var(--overlay-color);
   border-radius: 40px;
-  margin: 20px 0 20px 0;
+  margin-bottom: 2rem;
   height: 370px;
   padding: 3rem;
   position: relative;
   overflow: visible;
   
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 1rem 2rem;
     margin: 0 0 1.5rem 0;
     height: auto;
-    min-height: 420px;
   }
 `;
 
@@ -48,8 +47,8 @@ const ContentWrapper = styled.div`
   position: relative;
   
   @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 2rem;
+    flex-direction: column-reverse;
+    gap: 1px;
     text-align: center;
   }
 `;
@@ -64,7 +63,7 @@ const TextContent = styled.div`
   
   @media (max-width: 768px) {
     width: 100%;
-    text-align: center;
+    text-align: left;
   }
 `;
 
@@ -89,6 +88,11 @@ const SectionTitle = styled.h3`
   color: var(--text-black);
   margin-bottom: 1rem;
   line-height: 1.3;
+  
+  @media (max-width: 768px) {
+    font-size: 24px;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const SectionDescription = styled.p`
@@ -96,21 +100,30 @@ const SectionDescription = styled.p`
   color: #4B5563;
   line-height: 1.6;
   margin: 0;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 const HabitosImg = styled.img`
   width: auto;
   height: auto;
-  min-width: 520px;
-  transform: translateY(-20px);
+  min-width: 470px;
+  transform: translateY(-40px);
   z-index: 2;
   margin-bottom: -20px;
   position: relative;
   
   @media (max-width: 768px) {
-    transform: translateY(0);
+    transform: translateY(-30px);
     margin-bottom: 0;
     max-width: 350px;
     min-width: 300px;
+  }
+
+    @media (max-width: 1100px) {
+    min-width: 300px;
+    max-width: 400px;
   }
 `;

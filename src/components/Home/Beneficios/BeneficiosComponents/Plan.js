@@ -31,7 +31,7 @@ const SectionContainer = styled.div`
   overflow: visible;
   
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 1rem;
     margin-bottom: 1.5rem;
     height: auto;
     min-height: 420px;
@@ -48,7 +48,7 @@ const ContentWrapper = styled.div`
   
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 2rem;
+    gap: 0px;
     text-align: center;
   }
 `;
@@ -63,7 +63,7 @@ const TextContent = styled.div`
   
   @media (max-width: 768px) {
     width: 100%;
-    text-align: center;
+    text-align: left;
   }
 `;
 
@@ -87,6 +87,12 @@ const SectionTitle = styled.h3`
   color: var(--text-black);
   margin-bottom: 1rem;
   line-height: 1.3;
+  
+  @media (max-width: 768px) {
+    font-size: 24px;
+  margin-bottom: 0.5rem;
+
+  }
 `;
 
 const SectionDescription = styled.p`
@@ -94,6 +100,10 @@ const SectionDescription = styled.p`
   color: #4B5563;
   line-height: 1.6;
   margin: 0;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 const PhoneImg = styled.img`
@@ -104,7 +114,7 @@ const PhoneImg = styled.img`
   z-index: 2;
   
   @media (max-width: 768px) {
-    transform: translateY(0);
+    transform: translateY(-45px);
     max-width: 300px;
   }
 `;
