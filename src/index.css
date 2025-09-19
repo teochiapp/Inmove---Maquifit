@@ -1,8 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Onest', sans-serif;
+  color: #262626;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Onest', -apple-system;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -10,4 +22,36 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+:root {
+  --primary-color: #C58ADA;
+  --secondary-color: #BFE839;
+  --terciary-color: #D8EAF3;
+  --background-color: #EFEEE8;
+  --overlay-color: #F9F8F3;
+  --text-black: #262626;
+  --text-white: #ffffff;
+  --header-height: 72px;
+  --header-top-offset: 2rem;
+  --header-side-offset: 3rem;
+}
+
+/* Smooth scroll offset for fixed header */
+section[id] {
+  scroll-margin-top: calc(var(--header-height) + var(--header-top-offset) + 1rem);
+}
+
+
+
+@media (max-width: 768px) {
+  :root {
+    --header-top-offset: 1rem;
+    --header-side-offset: 1rem;
+  }
+  
+  
+  section[id] {
+    scroll-margin-top: calc(var(--header-height) + var(--header-top-offset) + 1rem);
+  }
 }
