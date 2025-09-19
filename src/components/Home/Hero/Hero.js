@@ -35,7 +35,7 @@ const HeroContainer = styled.section`
   }
 
 @media (max-width: 992px) {
-   height: 900px;
+   height: 1000px;
   }
   
 `;

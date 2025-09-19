@@ -18,7 +18,7 @@ export default SobreMi;
 
 const SobreMiContainer = styled.section`
   padding: 5rem 2rem;
-  background: #F9F8F3;
+  background: var(--overlay-color);
 
   
   @media screen and (max-width: 768px) {

@@ -7,6 +7,7 @@ import Beneficios from "./Beneficios/Beneficios";
 import Transformacion from "./Transformacion/Transformacion";
 import Planes from "./Planes/Planes";
 import Objetivos from "./Objetivos/Objetivos";
+import PrimerPaso from "./PrimerPaso/PrimerPaso"
 
 const Home = () => {
   return (
@@ -14,6 +15,10 @@ const Home = () => {
       <div id="hero">
         <Hero />
       </div>
+      <div id="PrimerPaso">
+        <PrimerPaso />
+      </div>
+     
       <div id="tienda">
         <Tienda />
       </div>
@@ -26,7 +31,7 @@ const Home = () => {
       <div id="beneficios">
         <Beneficios />
       </div>
-      <div id="planes">
+      {/* <div id="planes">
         <Planes />
       </div>
       <div id="team">
@@ -34,7 +39,7 @@ const Home = () => {
       </div>
       <div id="objetivos">
         <Objetivos />
-      </div>
+      </div> */}
     </>
   );
 };

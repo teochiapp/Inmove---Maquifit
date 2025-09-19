@@ -40,9 +40,14 @@ z-index:999;
 
 @media (max-width:992px){ 
         left: 67%;
-        top: 59%;
+        top: 64%;
         transform: translate(-50%, -50%);
         z-index: 800;
+}
+
+@media (max-width:475px){ 
+        left: 70%;
+        
 }
 `
 

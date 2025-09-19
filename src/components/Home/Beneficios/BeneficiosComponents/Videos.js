@@ -1,0 +1,116 @@
+import React from 'react';
+import styled from 'styled-components';
+
+const Videos = () => {
+  return (
+    <SectionContainer>
+      <ContentWrapper>
+         <TextContent>
+          <SectionTitle>Videos explicativos</SectionTitle>
+          <SectionDescription>
+            Cada ejercicio viene acompañado de su video y aclaraciones para que lo realices de forma correcta y segura.
+          </SectionDescription>
+        </TextContent>      
+        <ImageContent>
+          <VideosImg src="/home/beneficios/triple-img.png" alt="Videos" />
+        </ImageContent>       
+      </ContentWrapper>
+    </SectionContainer>
+  );
+};
+
+export default Videos;
+
+const SectionContainer = styled.div`
+  background: var(--overlay-color);
+  border-radius: 40px;
+  margin: 20px 0 20px 0;
+  height: 370px;
+  padding: 3rem;
+  position: relative;
+  overflow: visible;
+  
+  @media (max-width: 768px) {
+    padding: 2rem;
+    margin: 0 0 1.5rem 0;
+    height: auto;
+    min-height: 420px;
+  }
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  position: relative;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+  }
+`;
+
+const TextContent = styled.div`
+  flex: 1;
+  width: 50%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
+  }
+`;
+
+const ImageContent = styled.div`
+  flex: 1;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: visible;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+  }
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--text-black);
+  margin-bottom: 1rem;
+  line-height: 1.3;
+`;
+
+const SectionDescription = styled.p`
+  font-size: 16px;
+  color: #4B5563;
+  line-height: 1.6;
+  margin: 0;
+`;
+
+const VideosImg = styled.img`
+  width: auto;
+  height: auto;
+  min-width: 520px;
+  transform: translateY(-20px);
+  z-index: 2;
+  margin-bottom: -20px;
+  position: relative;
+  
+  @media (max-width: 768px) {
+    transform: translateY(0);
+    margin-bottom: 0;
+    max-width: 350px;
+    min-width: 300px;
+  }
+`;

@@ -17,6 +17,9 @@ const HeroTexts = () => {
         <div>Tu cuerpo, tu</div>
         <div>mente, nuestro</div>
         <div>objetivo</div>
+        <Subtitle>
+          Entrenamiento y alimentación a tu medida.
+        </Subtitle>
         </TextMobile>
         <CTAButton>
           <ButtonText>Empezá hoy!</ButtonText>
@@ -63,16 +66,27 @@ const Texts = styled.div`
         top: -27px;
         }
 
-  @media (max-width: 1030px) {
+   @media (max-width: 1030px) {
         left:-10px; 
         }
 
   
    @media (max-width:992px) {
         left: 50%;
-        top: -3%;
+        top: 4%;
+
         transform: translate(-50%, -50%);
         }
+
+   @media (max-width:992px) {
+          left: 50%;
+                 
+         }
+
+         @media (max-width:425px) {
+          top: -4%;
+                 
+         }
 `;
 
 const Title = styled.div`
@@ -118,9 +132,18 @@ const CTAButton = styled.button`
     
     transform: translate(-50%, -15%);
     top: 315px;
-    left: 223px;
+    left: 50%;
     z-index:999;
   }
+
+   @media (max-width:425px) { 
+    
+
+   top:380px;
+   
+  }
+
+ 
 `;
 
 const ButtonText = styled.span`
@@ -149,7 +172,7 @@ const TextMobile = styled.div`
 
 @media (max-width:992px) {
   display:flex;
- transform: translate(5%, -15%);
+  transform: translate(2%, -15%);
   flex-direction:column;
   text-align:center;
   font-size:60px;
@@ -160,8 +183,9 @@ const TextMobile = styled.div`
   font-size:45px;
   }
 
-  @media (max-width:400px){
-  font-size:40px;
+  @media (max-width:425px){
+    font-size: 37px;
+    line-height:55px;
   }
 `
 
