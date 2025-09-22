@@ -1,19 +1,31 @@
 import React from "react";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 
 const HeroGirl = () => {
   return (
     <HeroMaquifit>
-      <Girl src="/home/maquifit.png" alt="Girl" />
-      <Strength src="/home/strength.png" alt="Strength" />
-      <Weight src="/home/weight.png" alt="Weight" />
-      <Health src="/home/health.png" alt="Health" />
-       <CTAButton>
-          <Icon src="/icons/user.png" alt="User" />
-          <ButtonMaquifit> Maquifit</ButtonMaquifit>
-       </CTAButton>
-      
+      <motion.div
+        initial={{ x: 100, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ 
+          duration: 0.8, 
+          ease: "easeOut",
+          delay: 0.3 
+        }}
+        style={{ position: 'relative', width: '100%', height: '100%' }}
+      >
+        <Girl src="/home/maquifit.png" alt="Girl" />
+        <Strength src="/home/strength.png" alt="Strength" />
+        <Weight src="/home/weight.png" alt="Weight" />
+        <Health src="/home/health.png" alt="Health" />
+         <CTAButton>
+            <Icon src="/icons/user.png" alt="User" />
+            <ButtonMaquifit> Maquifit</ButtonMaquifit>
+         </CTAButton>
+      </motion.div>
     </HeroMaquifit>
   );
 };
@@ -24,7 +36,7 @@ const HeroMaquifit = styled.div`
 position: absolute;
 right: calc(-400px + 9vw);
 bottom: -61px;
-z-index:999;
+z-index: 5;
 
 
 @media (min-width: 1600px) {
@@ -42,7 +54,7 @@ z-index:999;
         left: 67%;
         top: 64%;
         transform: translate(-50%, -50%);
-        z-index: 800;
+        z-index: 5;
 }
 
 @media (max-width:475px){ 
@@ -57,7 +69,7 @@ height: 750.366px;
 flex-shrink: 0;
 aspect-ratio: 523.24/750.37;
 position:relative;
-z-index:998;
+z-index: 6;
 
 @media (max-width:992px){
 width: 407.423px;
@@ -77,7 +89,7 @@ align-items: center;
 gap: 15.804px;
 bottom: 165px;
 left: -136px;
-z-index:997;
+z-index: 4;
 width:220px;
 
 @media (max-width:992px){
@@ -98,7 +110,7 @@ position: relative;
 bottom: 310px;
 right: 184px;
 width: 170px;
-z-index:999;
+z-index: 7;
 
 
 @media (max-width:992px){
@@ -132,7 +144,7 @@ border-radius: 50px;
  bottom: 559px;
  right: -178px;
  width: 90px;
- z-index:999;
+ z-index: 8;
 
 }
  @media (max-width:650px){
@@ -154,7 +166,7 @@ const CTAButton = styled.button`
   position:relative;
   top: -215px;
   left: 320px;
-  z-index:999;
+  z-index: 9;
   transition: transform 0.3s ease;
   
   &:hover {

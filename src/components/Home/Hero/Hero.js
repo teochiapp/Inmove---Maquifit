@@ -29,6 +29,8 @@ const HeroContainer = styled.section`
   padding-left: 56px;
   padding-right: 56px;
   padding-bottom: 56px;
+  width: 100%;
+  max-width: 100vw;
 
   @media (max-width: 1400px) {
    padding-left: 30px;

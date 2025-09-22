@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 import Plan from './BeneficiosComponents/Plan';
 import Videos from './BeneficiosComponents/Videos';
 import Orientacion from './BeneficiosComponents/Orientacion';
@@ -9,25 +10,87 @@ import Acompañamiento from './BeneficiosComponents/Acompanamiento';
 function Beneficios() {
   return (
     <BeneficiosContainer>
-      <Title>Sumate al team <Color>Maquifit</Color>, y obtené estos beneficios</Title>
-      <Plan/>
-      <Videos/>
-      <Orientacion/>
-      <Habitos/>
-      <Recetas/>
-      <Acompañamiento/>
+      <Title
+        as={motion.h2}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0 }}
+      >
+        Sumate al team <Color>Maquifit</Color>, y obtené estos beneficios
+      </Title>
       
-        <DownloadSection>
-          <DownloadTitle>Descargá la App</DownloadTitle>
-          <DownloadButtons>
-            <AppStoreLink href="#" target="_blank" rel="noopener noreferrer">
-              <AppStore src="/home/beneficios/app-store.png" alt="App Store" />
-            </AppStoreLink>
-            <PlayStoreLink href="https://play.google.com/store/apps/details?id=com.arceus.teammaquifit&hl=es_AR" target="_blank" rel="noopener noreferrer">
-              <PlayStore src="/home/beneficios/play-store.png" alt="Play Store" />
-            </PlayStoreLink>
-          </DownloadButtons>
-        </DownloadSection>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+      >
+        <Plan/>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+      >
+        <Videos/>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+      >
+        <Orientacion/>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+      >
+        <Habitos/>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
+      >
+        <Recetas/>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+      >
+        <Acompañamiento/>
+      </motion.div>
+      
+      <DownloadSection
+        as={motion.div}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.7 }}
+      >
+        <DownloadTitle>Descargá la App</DownloadTitle>
+        <DownloadButtons>
+          <AppStoreLink href="#" target="_blank" rel="noopener noreferrer">
+            <AppStore src="/home/beneficios/app-store.png" alt="App Store" />
+          </AppStoreLink>
+          <PlayStoreLink href="https://play.google.com/store/apps/details?id=com.arceus.teammaquifit&hl=es_AR" target="_blank" rel="noopener noreferrer">
+            <PlayStore src="/home/beneficios/play-store.png" alt="Play Store" />
+          </PlayStoreLink>
+        </DownloadButtons>
+      </DownloadSection>
 
     </BeneficiosContainer>
   )
@@ -72,6 +135,7 @@ const Title = styled.h2`
 
   @media (max-width: 768px) {
     margin-bottom: 2rem;
+    font-size: 28px;
   }
 `;
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 import TiendaLogo from './TiendaComponents/TiendaLogo';
 import TiendaContent from './TiendaComponents/TiendaContent';
 import TiendaCTA from './TiendaComponents/TiendaCTA';
@@ -9,7 +10,15 @@ const Tienda = () => {
   return (
     <TiendaContainer>
       <BackgroundImage />
-      <ContentContainer>
+      <ContentContainer 
+            as={motion.section}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ 
+        duration: 0.8, 
+        ease: "easeOut" 
+      }}>
         <TopSection>
           <TiendaLogo />
           <TiendaCTA />

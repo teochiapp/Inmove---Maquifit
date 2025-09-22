@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 import { FaInstagram } from 'react-icons/fa';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import TransformacionMobile from './TransformacionMobile';
@@ -7,6 +8,22 @@ import TransformacionMobile from './TransformacionMobile';
 const Transformacion = () => {
   const isMobile = useMediaQuery('(max-width: 1024px)');
   const [selectedImage, setSelectedImage] = useState(null);
+  
+  // Precargar imágenes
+  React.useEffect(() => {
+    const imageUrls = [
+      'https://picsum.photos/400/400?random=1',
+      'https://picsum.photos/400/400?random=2',
+      'https://picsum.photos/400/400?random=3',
+      'https://picsum.photos/400/400?random=4',
+      'https://picsum.photos/400/400?random=5'
+    ];
+    
+    imageUrls.forEach(url => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, []);
   
   if (isMobile) {
     return <TransformacionMobile />;
@@ -52,9 +69,22 @@ const Transformacion = () => {
   return (
     <TransformacionContainer>
       <Container>
-        <Grid>
+        <Grid
+          as={motion.div}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ 
+            duration: 0.8, 
+            ease: "easeOut" 
+          }}
+        >
           {images.map((step, index) => (
-            <Card key={index} $backgroundImage={step.backgroundImage} $isContentCard={step.isContentCard}>
+            <Card 
+              key={index} 
+              $backgroundImage={step.backgroundImage} 
+              $isContentCard={step.isContentCard}
+            >
               {step.isContentCard ? (
                 <ContentCard>
                   <ContentTitle>

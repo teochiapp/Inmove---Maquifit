@@ -23,7 +23,7 @@ export default PrimerPaso;
 
 const FirstStepContainer = styled.section`
  background: var(--overlay-color);
- height:50vh;
+ height:500px;
  width:100%;
  overflow: hidden;
  position:relative;
@@ -34,6 +34,26 @@ const FirstStepContainer = styled.section`
  display:flex;
  
  }
+
+ @media (max-width: 1300px){
+   
+  height:600px;
+ 
+ } 
+
+
+ @media (max-width: 992px){
+   
+  height:750px;
+ 
+ } 
+
+ @media (max-width: 782px){
+   
+  height:1100px;
+ 
+ }
+
 `;
 
 const Burble = styled.div`

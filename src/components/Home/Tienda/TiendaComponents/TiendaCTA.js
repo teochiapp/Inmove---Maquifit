@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const TiendaCTA = () => {
+  const navigate = useNavigate();
+
   return (
-    <CTAButton>
+    <CTAButton onClick={() => navigate('/catalogo')}>
       <ButtonText>Ir a la tienda</ButtonText>
       <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
     </CTAButton>
@@ -22,7 +25,7 @@ const CTAButton = styled.button`
   gap: 0.5rem;
   cursor: pointer;
   transition: transform 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-2px);
   }
@@ -37,10 +40,10 @@ const ButtonText = styled.span`
 `;
 
 const ArrowIcon = styled.img`
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    background: var(--secondary-color);
-    border-radius: 50%;
-    padding: 6px;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  background: var(--secondary-color);
+  border-radius: 50%;
+  padding: 6px;
 `;

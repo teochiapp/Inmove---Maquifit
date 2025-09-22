@@ -8,7 +8,7 @@ const Acompanamiento = () => {
         <TextContent>
           <SectionTitle>Acompanamiento de entrenamiento personalizado</SectionTitle>
           <SectionDescription>
-            Diseñado en mi App exclusiva, adaptado a tus tiempos, días de entrenamiento y objetivos.
+            Incluye asesoramiento y seguimiento por WhatsApp directamente conmigo para resolver todas tus dudas. Además, tendrás acceso a un grupo exclusivo donde compartimos recetas, tips y motivación diaria.
           </SectionDescription>
         </TextContent>
         <ImageContent>

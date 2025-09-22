@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const TiendaCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState('calzas');
@@ -12,7 +13,17 @@ const TiendaCategories = () => {
   ];
 
   return (
-    <CategoriesContainer>
+    <CategoriesContainer
+      as={motion.div}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ 
+        duration: 1, 
+        ease: "easeOut",
+        delay: 0.3 
+      }}
+    >
       {categories.map((category) => (
         <CategoryButton 
           key={category.id}

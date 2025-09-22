@@ -1,30 +1,43 @@
 import React from "react";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 
 const HeroTexts = () => {
   return (
     <Texts>
-      <Title>
-        <div>Tu cuerpo,</div>
-        <div>Tu mente,</div>
-        <div>nuestro objetivo</div>
-        <Subtitle>
-          Entrenamiento y alimentación a tu medida.
-        </Subtitle>
-      </Title>
-       <TextMobile> 
-        <div>Tu cuerpo, tu</div>
-        <div>mente, nuestro</div>
-        <div>objetivo</div>
-        <Subtitle>
-          Entrenamiento y alimentación a tu medida.
-        </Subtitle>
-        </TextMobile>
-        <CTAButton>
-          <ButtonText>Empezá hoy!</ButtonText>
-          <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
-        </CTAButton>
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ 
+          duration: 1, 
+          ease: "easeOut",
+          delay: 0.1 
+        }}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <Title>
+          <div>Tu cuerpo,</div>
+          <div>Tu mente,</div>
+          <div>nuestro objetivo</div>
+          <Subtitle>
+            Entrenamiento y alimentación a tu medida.
+          </Subtitle>
+        </Title>
+         <TextMobile> 
+          <div>Tu cuerpo, tu</div>
+          <div>mente, nuestro</div>
+          <div>objetivo</div>
+          <Subtitle>
+            Entrenamiento y alimentación a tu medida.
+          </Subtitle>
+          </TextMobile>
+          <CTAButton>
+            <ButtonText>Empezá hoy!</ButtonText>
+            <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
+          </CTAButton>
+      </motion.div>
     </Texts>
   );
 };
@@ -38,7 +51,7 @@ const Texts = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 110%;
-  z-index:999;
+  z-index: 10;
   position: relative;
   left:100px;
 
@@ -85,6 +98,7 @@ const Texts = styled.div`
 
          @media (max-width:425px) {
           top: -4%;
+         
                  
          }
 `;
@@ -121,7 +135,7 @@ const CTAButton = styled.button`
   gap: 0.5rem;
   cursor: pointer;
   position:relative;
-  top : 160px;
+  top : 240px;
   transition: transform 0.3s ease;
   
   &:hover {
@@ -133,7 +147,7 @@ const CTAButton = styled.button`
     transform: translate(-50%, -15%);
     top: 315px;
     left: 50%;
-    z-index:999;
+    z-index: 10;
   }
 
    @media (max-width:425px) { 
@@ -186,7 +200,6 @@ const TextMobile = styled.div`
   @media (max-width:425px){
     font-size: 37px;
     line-height:55px;
+    width:300px;
   }
 `
-
-
