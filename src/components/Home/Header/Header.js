@@ -178,6 +178,7 @@ const HeaderContainer = styled.header`
     top: 1rem;
     padding: 0 1rem;
     max-width: calc(100vw - 2rem);
+    height: 58px;
   }
 `;
 
