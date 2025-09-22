@@ -1,33 +1,41 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const CopyrightOnly = () => {
+const BottomSection = () => {
   return (
-    <CopyrightContainer>
+    <BottomContainer>
       <MutantoCopyright>
-        Diseñada por <MutantoLink href="https://mutanto.com.ar" target="_blank" rel="noopener noreferrer">Mutanto</MutantoLink>.
+        Diseñada por <MutantoLink href="https://mutanto.com.ar" target="_blank" rel="noopener noreferrer">Mutanto</MutantoLink>
       </MutantoCopyright>
-      <SurCodesCopyright>
-        Desarrollada por <SurCodesLink href="https://surcodes.com" target="_blank" rel="noopener noreferrer">SurCodes</SurCodesLink>.
-      </SurCodesCopyright>
+      
       <Copyright>
         © 2025 — Copyright, Todos los derechos reservados.
       </Copyright>
-    </CopyrightContainer>
+      
+      <SurCodesCopyright>
+        Desarrollada por <SurCodesLink href="https://surcodes.com" target="_blank" rel="noopener noreferrer">SurCodes</SurCodesLink>
+      </SurCodesCopyright>
+    </BottomContainer>
   );
 };
 
-export default CopyrightOnly;
+export default BottomSection;
 
-const CopyrightContainer = styled.div`
+const BottomContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center; /* centra horizontalmente */
-  text-align: center; /* asegura que el texto esté alineado al centro */
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding: 2rem 0 0;
+  gap: 2rem;
 
-  @media (max-width: 425px) {
-    gap: 1rem;
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  @media (max-width: 1024px) {
+    gap: 1.5rem;
   }
 `;
 
@@ -37,6 +45,8 @@ const MutantoCopyright = styled.p`
   font-size: 0.875rem;
   color: #262626;
   margin: 0;
+  flex: 1;
+  text-align: left;
 `;
 
 const SurCodesCopyright = styled.p`
@@ -45,6 +55,8 @@ const SurCodesCopyright = styled.p`
   font-size: 0.875rem;
   color: #262626;
   margin: 0;
+  flex: 1;
+  text-align: right;
 `;
 
 const Copyright = styled.p`
@@ -53,6 +65,8 @@ const Copyright = styled.p`
   font-size: 0.875rem;
   color: #262626;
   margin: 0;
+  flex: 1;
+  text-align: center;
 `;
 
 const MutantoLink = styled.a`

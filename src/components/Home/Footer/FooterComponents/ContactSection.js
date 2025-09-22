@@ -23,9 +23,6 @@ const ContactSection = () => {
         </ContactItem>
       </ContactInfo>
 
-      <SurCodesCopyright>
-          Desarrollada por SurCodes. © 2025 — Copyright
-      </SurCodesCopyright>
     </ContactContainer>
   );
 };
@@ -73,15 +70,3 @@ const ContactValue = styled.span`
   }
 `;
 
-const SurCodesCopyright = styled.p`
-  font-family: "Onest", sans-serif;
-  font-weight: 400;
-  font-size: 0.875rem;
-  color: #262626;
-  margin: 2.5rem 0 0;
-  text-align: left;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;

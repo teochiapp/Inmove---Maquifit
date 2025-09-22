@@ -8,6 +8,7 @@ import Planes from "./Planes/Planes";
 import Objetivos from "./Objetivos/Objetivos";
 import PrimerPaso from "./PrimerPaso/PrimerPaso";
 import Footer from "./Footer/Footer";
+import ScrollToTopButton from "./Footer/FooterComponents/ScrollToTopButton";
 
 const Home = () => {
   return (
@@ -45,6 +46,7 @@ const Home = () => {
       </div>
       
       <Footer />
+      <ScrollToTopButton />
     </>
   );
 };

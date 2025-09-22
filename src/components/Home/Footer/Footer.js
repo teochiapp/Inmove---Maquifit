@@ -3,8 +3,8 @@ import styled from "styled-components";
 import LogoSection from "./FooterComponents/LogoSection";
 import NavigationSection from "./FooterComponents/NavigationSection";
 import ContactSection from "./FooterComponents/ContactSection";
-import ScrollToTopButton from "./FooterComponents/ScrollToTopButton";
 import CopyrightOnly from "./FooterComponents/CopyrightOnly";
+import BottomSection from "./FooterComponents/BottomSection";
 
 const Footer = () => {
   return (
@@ -14,10 +14,10 @@ const Footer = () => {
         <NavigationSection />
         <ContactSection />
       </FooterContent>
+      <BottomSection />
       <MobileCopyright>
         <CopyrightOnly />
       </MobileCopyright>
-      <ScrollToTopButton />
     </FooterContainer>
   );
 };

@@ -30,10 +30,6 @@ const LogoSection = () => {
           </svg>
         </SocialIcon>
       </SocialIcons>
-      
-      <Copyright>
-        Diseñada por Mutanto.  © 2025 — Copyright
-      </Copyright>
     </LogoContainer>
   );
 };
@@ -75,7 +71,7 @@ const SocialIcon = styled.a`
   height: 40px;
   border: 2px solid #262626;
   border-radius: 50%;
-  background-color: white;
+  background-color: var(--overlay-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,21 +83,6 @@ const SocialIcon = styled.a`
     background-color: #B088E0;
     color: white;
     border-color: #B088E0;
-  }
-`;
-
-const Copyright = styled.p`
-  font-family: 'Onest', sans-serif;
-  font-weight: 400;
-  font-size: 0.875rem;
-  color: #262626;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  
-  @media (max-width: 768px) {
-    display: none;
   }
 `;
 

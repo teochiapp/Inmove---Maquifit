@@ -23,7 +23,7 @@ const ScrollToTopButton = () => {
 export default ScrollToTopButton;
 
 const ScrollButton = styled.button`
-  position: absolute;
+  position: fixed;
   bottom: 2rem;
   right: 2rem;
   width: 50px;
@@ -37,6 +37,7 @@ const ScrollButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(176, 224, 74, 0.3);
+  z-index: 1000;
   
   &:hover {
     background-color: #9BC93A;
