@@ -4,9 +4,15 @@ import styled from 'styled-components';
 const CopyrightOnly = () => {
   return (
     <CopyrightContainer>
-      <CopyrightText>
-        © 2024 Maquifit. Todos los derechos reservados.
-      </CopyrightText>
+      <MutantoCopyright>
+        Diseñada por <MutantoLink href="https://mutanto.com.ar" target="_blank" rel="noopener noreferrer">Mutanto</MutantoLink>.
+      </MutantoCopyright>
+      <SurCodesCopyright>
+        Desarrollada por <SurCodesLink href="https://surcodes.com" target="_blank" rel="noopener noreferrer">SurCodes</SurCodesLink>.
+      </SurCodesCopyright>
+      <Copyright>
+        © 2025 — Copyright, Todos los derechos reservados.
+      </Copyright>
     </CopyrightContainer>
   );
 };
@@ -14,15 +20,59 @@ const CopyrightOnly = () => {
 export default CopyrightOnly;
 
 const CopyrightContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 2rem;
-  border-top: 1px solid #374151;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra horizontalmente */
+  text-align: center; /* asegura que el texto esté alineado al centro */
+  gap: 0.5rem;
+
+  @media (max-width: 425px) {
+    gap: 1rem;
+  }
 `;
 
-const CopyrightText = styled.p`
-  color: #9ca3af;
-  font-size: 14px;
+const MutantoCopyright = styled.p`
+  font-family: var(--copyright-font);
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--text-white);
   margin: 0;
+`;
+
+const SurCodesCopyright = styled.p`
+  font-family: var(--copyright-font);
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--text-white);
+  margin: 0;
+`;
+
+const Copyright = styled.p`
+  font-family: var(--copyright-font);
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--text-white);
+  margin: 0;
+`;
+
+const MutantoLink = styled.a`
+  color: var(--text-white);
+  text-decoration: underline;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: var(--inmove-rosa-color);
+  }
+`;
+
+const SurCodesLink = styled.a`
+  color: var(--text-white);
+  text-decoration: underline;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: var(--inmove-rosa-color);
+  }
 `;

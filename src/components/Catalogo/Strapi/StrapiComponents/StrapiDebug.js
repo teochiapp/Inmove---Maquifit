@@ -54,7 +54,8 @@ const StrapiDebug = () => {
             <strong>#{index + 1}</strong> - ID: {producto.id} | 
             Nombre: {producto.attributes?.Nombre} | 
             Talle: {producto.attributes?.Talle} | 
-            Color: {producto.attributes?.Color}
+            Color: {producto.attributes?.Color} | 
+             Categoría: {producto.attributes?.CategoriaProducto?.data?.attributes?.Nombre || 'No asignada'}
             <br />
             <strong>Imagen:</strong> {producto.attributes?.Portada ? '✅ Disponible' : '❌ No disponible'}
             {producto.attributes?.Portada && (
@@ -70,6 +71,20 @@ const StrapiDebug = () => {
               </>
             )}
           </ProductoItem>
+        ))}
+      </Section>
+
+      <Section>
+        <h4>🔗 Debug de Relaciones CategoriaProducto:</h4>
+        {productos.slice(0, 3).map((producto, index) => (
+          <div key={producto.id} style={{ marginBottom: '1rem', padding: '1rem', background: 'white', borderRadius: '4px' }}>
+            <h5>Producto {index + 1}: {producto.attributes?.Nombre}</h5>
+            <p><strong>CategoriaProducto (raw):</strong></p>
+            <JsonData style={{ maxHeight: '200px' }}>
+              {JSON.stringify(producto.attributes?.CategoriaProducto, null, 2)}
+            </JsonData>
+            <p><strong>Categoría procesada:</strong> {producto.attributes?.CategoriaProducto?.data?.attributes?.Nombre || 'No asignada'}</p>
+          </div>
         ))}
       </Section>
 

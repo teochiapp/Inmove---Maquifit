@@ -36,7 +36,7 @@ const ChatsBubble = () => {
       >
         <h5>Juancho</h5>
         <p>
-          Sin darme cuenta voy descubrieno algunos cambios. Me ayudó el
+          Sin darme cuenta voy descubriendo algunos cambios. Me ayudó el
           entrenamiento para regular el estrés del mes pasado 🙌🏽 💃🏽{" "}
         </p>
         <span className="timestamp">14:06</span>

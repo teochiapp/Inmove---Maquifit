@@ -20,6 +20,17 @@ const StrapiDataExample = () => {
           "Descripcion": "Descripción del producto",
           "Talle": "M",
           "Color": "Azul",
+          "CategoriaProducto": {
+            "data": {
+              "id": 1,
+              "attributes": {
+                "Nombre": "Remeras",
+                "createdAt": "2023-...",
+                "updatedAt": "2023-...",
+                "publishedAt": "2023-..."
+              }
+            }
+          },
           "createdAt": "2023-...",
           "updatedAt": "2023-...",
           "publishedAt": "2023-..."
@@ -45,6 +56,17 @@ const StrapiDataExample = () => {
         "Descripcion": "Descripción del producto",
         "Talle": "M",
         "Color": "Azul",
+        "CategoriaProducto": {
+          "data": {
+            "id": 1,
+            "attributes": {
+              "Nombre": "Remeras",
+              "createdAt": "2023-...",
+              "updatedAt": "2023-...",
+              "publishedAt": "2023-..."
+            }
+          }
+        },
         "createdAt": "2023-...",
         "updatedAt": "2023-...",
         "publishedAt": "2023-..."
@@ -76,7 +98,8 @@ const StrapiDataExample = () => {
                   <strong>ID:</strong> {item.id} | 
                   <strong> Nombre:</strong> {item.attributes.Nombre} | 
                   <strong> Talle:</strong> {item.attributes.Talle} | 
-                  <strong> Color:</strong> {item.attributes.Color}
+                  <strong> Color:</strong> {item.attributes.Color} | 
+                  <strong> Categoría:</strong> {item.attributes.CategoriaProducto?.data?.attributes?.Nombre || 'No asignada'}
                 </li>
               ))}
             </ul>
@@ -96,6 +119,7 @@ const StrapiDataExample = () => {
             <p><strong>Descripción:</strong> {producto.attributes.Descripcion}</p>
             <p><strong>Talle:</strong> {producto.attributes.Talle}</p>
             <p><strong>Color:</strong> {producto.attributes.Color}</p>
+            <p><strong>Categoría:</strong> {producto.attributes.CategoriaProducto?.data?.attributes?.Nombre || 'No asignada'}</p>
             <p><strong>Creado:</strong> {new Date(producto.attributes.createdAt).toLocaleDateString()}</p>
           </div>
         )}

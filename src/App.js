@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import HomePage from './pages/HomePage';
 import CatalogoPage from './pages/CatalogoPage';
 import SingleProductPage from './pages/SingleProductPage';
+import CheckoutSuccess from './components/Home/Planes/CheckoutSuccess';
+import CheckoutFailure from './components/Home/Planes/CheckoutFailure';
+import CheckoutPending from './components/Home/Planes/CheckoutPending';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -28,6 +31,9 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/catalogo" element={<CatalogoPage />} />
             <Route path="/catalogo/:nombre" element={<SingleProductPage />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/checkout/failure" element={<CheckoutFailure />} />
+            <Route path="/checkout/pending" element={<CheckoutPending />} />
           </Routes>
         </MainContent>
       </AppContainer>

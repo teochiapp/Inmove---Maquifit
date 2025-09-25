@@ -1,7 +1,17 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { usePlanes } from "../../../hooks/usePlanes";
+import ModalCheckout from "./ModalCheckout";
 
 const Planes = () => {
+  // Obtener planes desde Strapi
+  const { planes, loading, error } = usePlanes();
+  
+  // Estado para el modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
   // Mapeo de features con sus iconos correspondientes
   const featureIcons = {
     "Plan de entrenamiento 100% personalizado (3 a 6 días, en gimnasio o en casa con pocos elementos).":
@@ -26,14 +36,21 @@ const Planes = () => {
       "biceps-verde.png",
   };
 
-  const plans = [
-    {
-      id: 1,
-      title: "Plan 4 Semanas",
-      price: 50000,
-      description:
-        "Ideal para dar el primer paso, comenzar a entrenar con constancia y aprender las bases de tu alimentación.",
-      features: [
+  // Colores predefinidos para los planes
+  const planColors = ["#C58ADA", "#9DC6DA", "#9FC329"];
+
+  // Transformar datos de Strapi al formato esperado por el componente
+  const plansFormatted = planes
+    .map((plan, index) => ({
+      id: plan.id,
+      title: plan.attributes.Titulo,
+      price: plan.attributes.Precio,
+      description: plan.attributes.Descripcion,
+      highlight: plan.attributes.Subtitulo,
+      color: planColors[index % planColors.length],
+      featured: index === 1, // El segundo plan será destacado
+      // Features hardcodeadas por ahora (puedes agregar un campo features en Strapi después)
+      features: index === 0 ? [
         "Plan de entrenamiento 100% personalizado (3 a 6 días, en gimnasio o en casa con pocos elementos).",
         "Orientación nutricional adaptada a tus objetivos y estilo de vida.",
         "Videos explicativos de cada ejercicio.",
@@ -41,44 +58,68 @@ const Planes = () => {
         "Control de progreso con fotos y medidas al finalizar las 4 semanas.",
         "Acceso al grupo exclusivo Team Naquifit (recetas, tips y motivación diaria).",
         "Asesoramiento por WhatsApp (lunes a viernes de 8 a 18 h).",
-      ],
-      highlight: "Entrenamiento Personalizado",
-      color: "#C58ADA",
-    },
-    {
-      id: 2,
-      title: "Plan 3 Meses",
-      price: 120000,
-      description:
-        "El tiempo recomendado para generar hábitos sólidos, notar mejoras físicas y optimizar tu alimentación.",
-      features: [
+      ] : index === 1 ? [
         "Todo lo del plan de 4 semanas.",
         "Readaptación del plan según tu progreso (cada 4 semanas).",
         "Cambios evolutivos en fuerza, técnica y hábitos.",
-      ],
-      highlight: "Orientación Nutricional",
-      color: "#9DC6DA",
-      featured: true,
-    },
-    {
-      id: 3,
-      title: "Plan 6 Meses",
-      price: 220000,
-      description:
-        "La mejor opción para transformar tu entrenamiento en un estilo de vida.",
-      features: [
+      ] : [
         "Todo lo del plan de 3 meses.",
         "Readaptación mensual personalizada.",
         "Seguimiento continuo para lograr resultados duraderos.",
-      ],
-      highlight: "Seguimiento Continuo",
-      color: "#9FC329",
-    },
-  ];
+      ]
+    }))
+    .sort((a, b) => Number(a.price) - Number(b.price));
 
-  const handleCheckout = (planId) => {
-    console.log("Comprar plan:", planId);
+  const handleCheckout = (plan) => {
+    setSelectedPlan(plan);
+    setIsModalOpen(true);
   };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPlan(null);
+  };
+
+  // Mostrar loading
+  if (loading) {
+    return (
+      <PlanesSection>
+        <Container>
+          <LoadingContainer>
+            <LoadingText>Cargando planes...</LoadingText>
+          </LoadingContainer>
+        </Container>
+      </PlanesSection>
+    );
+  }
+
+  // Mostrar error
+  if (error) {
+    return (
+      <PlanesSection>
+        <Container>
+          <ErrorContainer>
+            <ErrorTitle>Error al cargar los planes</ErrorTitle>
+            <ErrorMessage>{error}</ErrorMessage>
+          </ErrorContainer>
+        </Container>
+      </PlanesSection>
+    );
+  }
+
+  // Si no hay planes
+  if (plansFormatted.length === 0) {
+    return (
+      <PlanesSection>
+        <Container>
+          <ErrorContainer>
+            <ErrorTitle>No hay planes disponibles</ErrorTitle>
+            <ErrorMessage>Por favor, contacta con el administrador.</ErrorMessage>
+          </ErrorContainer>
+        </Container>
+      </PlanesSection>
+    );
+  }
 
   // Componente SVG personalizado
   const CustomArrowIcon = ({ $color }) => (
@@ -142,14 +183,17 @@ const Planes = () => {
             delay: window.innerWidth <= 768 ? 0.1 : 0.3 
           }}
         >
-          {plans.map((plan) => (
+          {plansFormatted.map((plan) => (
             <PlanCard key={plan.id} $color={plan.color}>
               <Highlight $color={plan.color}>
                 {plan.highlight.toUpperCase()}
               </Highlight>
               <PlanTitle $color={plan.color}>{plan.title}</PlanTitle>
               <PlanPrice $color={plan.color}>
-                ${plan.price.toLocaleString("es-AR")}
+                ${plan.price.toLocaleString("es-AR", { 
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0 
+                })}
               </PlanPrice>
               <PlanDescription>{plan.description}</PlanDescription>
               <SectionTitle>¿Qué incluye?</SectionTitle>
@@ -166,7 +210,7 @@ const Planes = () => {
               </PlanFeatures>
               <PlanButton
                 $color={plan.color}
-                onClick={() => handleCheckout(plan.id)}
+                onClick={() => handleCheckout(plan)}
               >
                 <ButtonText>Empezá hoy</ButtonText>
                 <ArrowIcon $color={plan.color}>
@@ -177,6 +221,12 @@ const Planes = () => {
           ))}
         </PlansGrid>
       </Container>
+      
+      <ModalCheckout 
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        plan={selectedPlan}
+      />
     </PlanesSection>
   );
 };
@@ -306,7 +356,7 @@ const PlanTitle = styled.h3`
 
 const PlanPrice = styled.div`
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 700;
   text-align: center;
   color: var(--text-black);
 `;
@@ -387,7 +437,7 @@ const PlanButton = styled.button`
   background: ${(props) => props.$color};
   border: none;
   border-radius: 100px;
-  padding: 10px;
+  padding: 10px 10px 10px 16px;
   padding-left: 14px;
   cursor: pointer;
   width: fit-content;
@@ -444,4 +494,43 @@ const FeatureIcon = styled.img`
   height: 20px;
   object-fit: contain;
   flex-shrink: 0;
+`;
+
+// Componentes de loading y error
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  min-height: 300px;
+`;
+
+const LoadingText = styled.p`
+  font-size: 1.2rem;
+  color: var(--text-black);
+  font-family: 'Onest', sans-serif;
+`;
+
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  min-height: 300px;
+  text-align: center;
+`;
+
+const ErrorTitle = styled.h3`
+  font-size: 1.5rem;
+  color: var(--text-black);
+  font-family: 'Onest', sans-serif;
+  margin-bottom: 1rem;
+`;
+
+const ErrorMessage = styled.p`
+  font-size: 1rem;
+  color: #666;
+  font-family: 'Onest', sans-serif;
 `;

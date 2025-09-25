@@ -16,8 +16,10 @@ const SobreMi = () => {
         ease: "easeOut" 
       }}
     >
-      <SobreMiContent />
-      <SobreMiImage />
+      <Container>
+        <SobreMiImage />
+        <SobreMiContent />
+      </Container>
     </SobreMiContainer>
   );
 };
@@ -25,22 +27,29 @@ const SobreMi = () => {
 export default SobreMi;
 
 const SobreMiContainer = styled.section`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4rem 2rem;
-  background: #F9F8F3;
-  gap: 4rem;
+  padding: 5rem 2rem;
+  background: var(--inmove-color);
+
+  
+  @media screen and (max-width: 768px) {
+    padding: 4rem 2rem;
+
+  }
+`;
+
+const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  align-items: start;
 
-  @media (max-width: 1024px) {
+  @media screen and (max-width: 768px) {
+    display: flex;
     flex-direction: column;
-    gap: 2rem;
-    padding: 3rem 2rem;
-  }
+    align-items: center;
 
-  @media (max-width: 768px) {
-    padding: 2rem 1rem;
   }
 `;

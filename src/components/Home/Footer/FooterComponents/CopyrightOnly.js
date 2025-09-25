@@ -32,7 +32,7 @@ const CopyrightContainer = styled.div`
 `;
 
 const MutantoCopyright = styled.p`
-  font-family: 'Onest', sans-serif;
+  font-family: var(--copyright-font);
   font-weight: 400;
   font-size: 0.875rem;
   color: #262626;
@@ -40,7 +40,7 @@ const MutantoCopyright = styled.p`
 `;
 
 const SurCodesCopyright = styled.p`
-  font-family: 'Onest', sans-serif;
+  font-family: var(--copyright-font);
   font-weight: 400;
   font-size: 0.875rem;
   color: #262626;
@@ -48,7 +48,7 @@ const SurCodesCopyright = styled.p`
 `;
 
 const Copyright = styled.p`
-  font-family: 'Onest', sans-serif;
+  font-family: var(--copyright-font);
   font-weight: 400;
   font-size: 0.875rem;
   color: #262626;

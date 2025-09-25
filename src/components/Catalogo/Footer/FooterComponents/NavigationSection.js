@@ -4,16 +4,20 @@ import styled from 'styled-components';
 const NavigationSection = () => {
   return (
     <NavigationContainer>
-      <SectionTitle>Enlaces Rápidos</SectionTitle>
-      <NavLinks>
+      <NavRow>
         <NavLink href="#hero">Inicio</NavLink>
-        <NavLink href="#productos">Productos</NavLink>
-        <NavLink href="#categorias">Categorías</NavLink>
-        <NavLink href="#sobre-mi">Sobre Mi</NavLink>
-        <NavLink href="#strapi">Strapi</NavLink>
+        <Separator>/</Separator>
+        <NavLink href="#sobre-mi ">Sobre Mi</NavLink>
+        <Separator>/</Separator>
+        <NavLink href="#beneficios">Cambios</NavLink>
+      </NavRow>
+      <NavRow>
         <NavLink href="#planes">Planes</NavLink>
-        <NavLink href="#faq">FAQ</NavLink>
-      </NavLinks>
+        <Separator>/</Separator>
+        <NavLink href="#team">App Maquifit</NavLink>
+        <Separator>/</Separator>
+        <NavLink href="#contacto">Contacto</NavLink>
+      </NavRow>
     </NavigationContainer>
   );
 };
@@ -23,29 +27,37 @@ export default NavigationSection;
 const NavigationContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 `;
 
-const SectionTitle = styled.h4`
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-  margin: 0 0 1rem 0;
-`;
-
-const NavLinks = styled.div`
+const NavRow = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 `;
 
 const NavLink = styled.a`
-  color: #d1d5db;
+  font-family: 'Onest', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--text-white);
   text-decoration: none;
-  font-size: 14px;
   transition: color 0.3s ease;
   
   &:hover {
-    color: var(--primary-color);
+    color: var(--inmove-rosa-color);
   }
+`;
+
+const Separator = styled.span`
+  font-family: 'Onest', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--inmove-rosa-color);
+  user-select: none;
 `;

@@ -19,7 +19,7 @@ const CTAButton = styled.button`
   background: white;
   border: none;
   border-radius: 100px;
-  padding: 10px;
+  padding: 10px 10px 10px 16px;
   display: flex;
   align-items: center;
   gap: 0.5rem;

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import StrapiDebug from './StrapiComponents/StrapiDebug';
+import ProductosTest from './StrapiComponents/ProductosTest';
 
 const Strapi = () => {
   return (
@@ -27,6 +28,8 @@ const Strapi = () => {
           </p>
         </Header>
 
+        <ProductosTest />
+        
         <StrapiDebug />
       </Container>
     </StrapiSection>

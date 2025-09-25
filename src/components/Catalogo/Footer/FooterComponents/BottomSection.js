@@ -43,7 +43,7 @@ const MutantoCopyright = styled.p`
   font-family: var(--copyright-font);
   font-weight: 400;
   font-size: 0.875rem;
-  color: #262626;
+  color: var(--text-white);
   margin: 0;
   flex: 1;
   text-align: left;
@@ -53,7 +53,7 @@ const SurCodesCopyright = styled.p`
   font-family: var(--copyright-font);
   font-weight: 400;
   font-size: 0.875rem;
-  color: #262626;
+  color: var(--text-white);
   margin: 0;
   flex: 1;
   text-align: right;
@@ -63,30 +63,30 @@ const Copyright = styled.p`
   font-family: var(--copyright-font);
   font-weight: 400;
   font-size: 0.875rem;
-  color: #262626;
+  color: var(--text-white);
   margin: 0;
   flex: 1;
   text-align: center;
 `;
 
 const MutantoLink = styled.a`
-  color: #262626;
+  color: var(--text-white);
   text-decoration: underline;
   font-weight: 400;
-  transition: opacity 0.3s ease;
+  transition: color 0.3s ease;
   
   &:hover {
-    opacity: 0.7;
+    color: var(--inmove-rosa-color);
   }
 `;
 
 const SurCodesLink = styled.a`
-  color: #262626;
+  color: var(--text-white);
   text-decoration: underline;
   font-weight: 400;
-  transition: opacity 0.3s ease;
+  transition: color 0.3s ease;
   
   &:hover {
-    opacity: 0.7;
+    color: var(--inmove-rosa-color);
   }
 `;

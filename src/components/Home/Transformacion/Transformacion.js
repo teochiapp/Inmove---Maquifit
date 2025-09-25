@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaInstagram } from 'react-icons/fa';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import TransformacionMobile from './TransformacionMobile';
+import { transformacionImages, imageUrls } from './transformacionImages';
 
 const Transformacion = () => {
   const isMobile = useMediaQuery('(max-width: 1024px)');
@@ -11,14 +12,6 @@ const Transformacion = () => {
   
   // Precargar imágenes
   React.useEffect(() => {
-    const imageUrls = [
-      'https://picsum.photos/400/400?random=1',
-      'https://picsum.photos/400/400?random=2',
-      'https://picsum.photos/400/400?random=3',
-      'https://picsum.photos/400/400?random=4',
-      'https://picsum.photos/400/400?random=5'
-    ];
-    
     imageUrls.forEach(url => {
       const img = new Image();
       img.src = url;
@@ -28,43 +21,6 @@ const Transformacion = () => {
   if (isMobile) {
     return <TransformacionMobile />;
   }
-  const images = [
-    {
-      number: '01',
-      backgroundImage: 'https://picsum.photos/400/400?random=1',
-      isContentCard: false
-    },
-    {
-      number: '02',
-      backgroundImage: 'https://picsum.photos/400/400?random=2',
-      isContentCard: false
-    },
-    {
-      number: '03',
-      backgroundImage: 'https://picsum.photos/400/400?random=3',
-      isContentCard: false
-    },
-    {
-      number: '04',
-      backgroundImage: 'https://picsum.photos/400/400?random=4',
-      isContentCard: false
-    },
-    {
-      number: '05',
-      isContentCard: true,
-      title: 'La transformación empieza adentro.',
-      titleBold: 'Vos también podés.',
-      button1: 'Sumate al team Maquifit',
-      button1Url: '#',
-      button2: 'Ver más',
-      button2Url: '#'
-    },
-    {
-      number: '06',
-      backgroundImage: 'https://picsum.photos/400/400?random=5',
-      isContentCard: false
-    }
-  ];
 
   return (
     <TransformacionContainer>
@@ -79,7 +35,7 @@ const Transformacion = () => {
             ease: "easeOut" 
           }}
         >
-          {images.map((step, index) => (
+          {transformacionImages.map((step, index) => (
             <Card 
               key={index} 
               $backgroundImage={step.backgroundImage} 

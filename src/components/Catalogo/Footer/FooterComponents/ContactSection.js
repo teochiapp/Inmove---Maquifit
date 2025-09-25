@@ -1,35 +1,28 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const ContactSection = () => {
   return (
     <ContactContainer>
-      <SectionTitle>Contacto</SectionTitle>
       <ContactInfo>
         <ContactItem>
-          <ContactIcon>📧</ContactIcon>
-          <ContactText>info@maquifit.com</ContactText>
+          <ContactLabel>Escribime</ContactLabel>
+          <ContactValue>
+            <span>(</span> 351 - 123456 <span>)</span>
+          </ContactValue>
         </ContactItem>
+
         <ContactItem>
-          <ContactIcon>📱</ContactIcon>
-          <ContactText>+54 9 11 1234-5678</ContactText>
+          <ContactLabel>Email</ContactLabel>
+          <ContactValue>soymaquifit@gmail.com</ContactValue>
         </ContactItem>
+
         <ContactItem>
-          <ContactIcon>📍</ContactIcon>
-          <ContactText>Buenos Aires, Argentina</ContactText>
+          <ContactLabel>Lun-Vie</ContactLabel>
+          <ContactValue>9am-6pm</ContactValue>
         </ContactItem>
       </ContactInfo>
-      <SocialLinks>
-        <SocialLink href="#" target="_blank" rel="noopener noreferrer">
-          <SocialIcon>📘</SocialIcon>
-        </SocialLink>
-        <SocialLink href="#" target="_blank" rel="noopener noreferrer">
-          <SocialIcon>📷</SocialIcon>
-        </SocialLink>
-        <SocialLink href="#" target="_blank" rel="noopener noreferrer">
-          <SocialIcon>🐦</SocialIcon>
-        </SocialLink>
-      </SocialLinks>
+
     </ContactContainer>
   );
 };
@@ -40,52 +33,39 @@ const ContactContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-`;
 
-const SectionTitle = styled.h4`
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-  margin: 0 0 1rem 0;
+  @media (max-width: 768px) {
+    align-items: center;
+  }
 `;
 
 const ContactInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 2rem;
+  margin-bottom: 1.1rem;
 `;
 
 const ContactItem = styled.div`
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.25rem;
 `;
 
-const ContactIcon = styled.span`
-  font-size: 16px;
+const ContactLabel = styled.span`
+  font-family: "Onest", sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--inmove-rosa-color);
 `;
 
-const ContactText = styled.span`
-  color: #d1d5db;
-  font-size: 14px;
-`;
+const ContactValue = styled.span`
+  font-family: "Onest", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--text-white);
 
-const SocialLinks = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const SocialLink = styled.a`
-  color: #d1d5db;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  
-  &:hover {
-    color: var(--primary-color);
+  span {
+    color: var(--inmove-rosa-color);
   }
-`;
-
-const SocialIcon = styled.span`
-  font-size: 20px;
 `;

@@ -1,35 +1,31 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiMessageCircle } from "react-icons/fi"; // ícono del botón
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const faqs = [
     {
-      question: "¿Qué tallas tienen disponibles?",
-      answer: "Tenemos tallas desde XS hasta XXL. Cada producto incluye una guía de tallas detallada para ayudarte a elegir la talla correcta."
+      question: "¿Cómo hago mi pedido?",
+      answer:
+        "Elegís tus productos, armás el pedido en la web y con un clic se envía todo listo a WhatsApp.",
     },
     {
-      question: "¿Cuáles son los materiales de los productos?",
-      answer: "Utilizamos materiales de alta calidad como poliéster, elastano y algodón técnico que ofrecen transpirabilidad, elasticidad y durabilidad."
+      question: "¿Cómo pago?",
+      answer:
+        "Aceptamos transferencias bancarias, tarjetas de crédito y débito.",
     },
     {
-      question: "¿Hacen envíos a todo el país?",
-      answer: "Sí, realizamos envíos a todo el país. Los tiempos de entrega varían según la ubicación, generalmente entre 3 a 7 días hábiles."
+      question: "¿Hacen envíos?",
+      answer: "Sí, realizamos envíos a todo el país en 3 a 7 días hábiles.",
     },
     {
-      question: "¿Cuál es la política de devoluciones?",
-      answer: "Ofrecemos 30 días para cambios y devoluciones. Los productos deben estar en perfecto estado y con etiquetas originales."
+      question: "¿Qué pasa si algo no me queda bien?",
+      answer:
+        "Podés cambiarlo sin costo dentro de los 30 días, siempre con etiquetas originales.",
     },
-    {
-      question: "¿Cómo puedo contactar para consultas?",
-      answer: "Puedes contactarnos por WhatsApp, email o a través de nuestras redes sociales. Estamos disponibles de lunes a viernes de 8 a 18h."
-    },
-    {
-      question: "¿Los productos tienen garantía?",
-      answer: "Todos nuestros productos tienen garantía de calidad. Si encuentras algún defecto de fabricación, te lo reemplazamos sin costo."
-    }
   ];
 
   const toggleFAQ = (index) => {
@@ -39,62 +35,44 @@ const FAQ = () => {
   return (
     <FAQSection>
       <Container>
-        <Header
-          as={motion.div}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ 
-            duration: window.innerWidth <= 768 ? 0.4 : 0.8, 
-            ease: "easeOut" 
-          }}
-        >
+        {/* Columna izquierda */}
+        <LeftColumn>
           <h2>Preguntas Frecuentes</h2>
-          <p>
-            <Bold>
-              Resolvemos las dudas más comunes sobre nuestros productos.
-            </Bold>{" "}
-            Si no encuentras la respuesta que buscas, no dudes en contactarnos.
-          </p>
-        </Header>
+          <CTAButton>
+            <ButtonText>Escribime!</ButtonText>
+            <DialogIcon src="/icons/dialog.png" alt="Dialog" />
+          </CTAButton>
+        </LeftColumn>
 
-        <FAQContainer
-          as={motion.div}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ 
-            duration: window.innerWidth <= 768 ? 0.4 : 0.8, 
-            ease: "easeOut",
-            delay: window.innerWidth <= 768 ? 0.1 : 0.3 
-          }}
-        >
+        {/* Columna derecha */}
+        <RightColumn>
           {faqs.map((faq, index) => (
-            <FAQItem 
-              key={index}
-              as={motion.div}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ 
-                duration: 0.6, 
-                ease: "easeOut",
-                delay: index * 0.1
-              }}
-            >
-              <FAQQuestion 
-                onClick={() => toggleFAQ(index)}
-                $isOpen={openIndex === index}
-              >
+            <FAQItem key={index}>
+              <FAQQuestion onClick={() => toggleFAQ(index)}>
                 <QuestionText>{faq.question}</QuestionText>
-                <ToggleIcon $isOpen={openIndex === index}>+</ToggleIcon>
+                <ToggleIcon>
+                  {openIndex === index ? "−" : "+"}
+                </ToggleIcon>
               </FAQQuestion>
-              <FAQAnswer $isOpen={openIndex === index}>
-                <AnswerText>{faq.answer}</AnswerText>
-              </FAQAnswer>
+              <AnimatePresence>
+                {openIndex === index && (
+                  <FAQAnswer
+                    as={motion.div}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{
+                      duration: 0.25,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                    }}
+                  >
+                    <AnswerText>{faq.answer}</AnswerText>
+                  </FAQAnswer>
+                )}
+              </AnimatePresence>
             </FAQItem>
           ))}
-        </FAQContainer>
+        </RightColumn>
       </Container>
     </FAQSection>
   );
@@ -103,129 +81,183 @@ const FAQ = () => {
 export default FAQ;
 
 const FAQSection = styled.section`
+  background-color: #efeee8;
   padding: 4rem 2rem;
-  background: #F9F8F3;
+  margin: 3rem 2rem;
+  border-radius: 42px;
+  width: calc(100% - 4rem);
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
   
-  @media (max-width: 370px) {
-    padding: 4rem 1rem;
+  @media (max-width: 768px) {
+    margin: 2rem 1rem;
+    padding: 3rem 1.5rem;
+    width: calc(100% - 2rem);
+  }
+  
+  @media (max-width: 480px) {
+    margin: 1rem 0.5rem;
+    padding: 2rem 1rem;
+    width: calc(100% - 1rem);
   }
 `;
 
 const Container = styled.div`
-  max-width: 800px;
+  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-`;
-
-const Header = styled.div`
-  margin-bottom: 3rem;
-  text-align: center;
-
-  h2 {
-    font-size: 54px;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    color: var(--text-black);
-    font-size: 19px;
-    font-weight: 300;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 1024px) {
-    p {
-      font-size: 17px;
-    }
-  }
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 3rem;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
-    h2 {
-      font-size: 38px;
-    }
-
-    p {
-      font-size: 16px;
-    }
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 1.5rem;
   }
 `;
 
-const Bold = styled.span`
-  font-weight: 500;
+const LeftColumn = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  
+  h2 {
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #1f2937;
+    word-wrap: break-word;
+    line-height: 1.2;
+  }
 `;
 
-const FAQContainer = styled.div`
+const CTAButton = styled.button`
+  background: white;
+  border: none;
+  border-radius: 100px;
+  padding: 10px 10px 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 0.6rem 1.2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 1rem;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
+
+const ButtonText = styled.span`
+  color: var(--text-black);
+  font-family: "Onest", sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  padding-right: 3px;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
+`;
+
+const DialogIcon = styled.img`
+  width: clamp(28px, 4vw, 32px);
+  height: clamp(28px, 4vw, 32px);
+  object-fit: contain;
+  background: var(--inmove-rosa-color);
+  border-radius: 43%;
+  padding: clamp(6px, 1.5vw, 8px);
+
+  @media (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+    padding: 6px;
+  }
+
+  @media (max-width: 480px) {
+    width: 24px;
+    height: 24px;
+    padding: 5px;
+  }
+`;
+
+const RightColumn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0; /* Permite que el contenido se contraiga */
 `;
 
 const FAQItem = styled.div`
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  }
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const FAQQuestion = styled.button`
   width: 100%;
-  padding: 1.5rem;
+  padding: 1.2rem 0;
   background: none;
   border: none;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  text-align: left;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba(197, 138, 218, 0.05);
-  }
+  font-size: 20px;
+  font-weight: 600;
+  color: #010205;
 `;
 
 const QuestionText = styled.span`
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-black);
-  flex: 1;
-  margin-right: 1rem;
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-  }
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 `;
 
 const ToggleIcon = styled.span`
   font-size: 24px;
   font-weight: bold;
-  color: var(--primary-color);
-  transition: transform 0.3s ease;
-  transform: ${props => props.$isOpen ? 'rotate(45deg)' : 'rotate(0deg)'};
+  color: var(--inmove-rosa-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  line-height: 1;
 `;
 
 const FAQAnswer = styled.div`
-  max-height: ${props => props.$isOpen ? '200px' : '0'};
+  padding: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  
+  /* Padding interno para el contenido */
+  > p {
+    padding: 0.8rem 0 1.2rem 0;
+    margin: 0;
+  }
 `;
 
 const AnswerText = styled.p`
-  padding: 0 1.5rem 1.5rem;
   font-size: 16px;
-  font-weight: 400;
-  color: var(--text-black);
+  color: #333;
   line-height: 1.6;
-  margin: 0;
-
-  @media (max-width: 768px) {
-    font-size: 14px;
-  }
+  /* El padding y margin se manejan en FAQAnswer */
 `;
