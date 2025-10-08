@@ -2,7 +2,7 @@
 export const transformacionImages = [
   {
     number: '01',
-    backgroundImage: '/transformaciones/primera.png',
+    backgroundImage: '/transformaciones/primera.webp',
     isContentCard: false
   },
   {
@@ -28,7 +28,7 @@ export const transformacionImages = [
     button1: 'Sumate al team Maquifit',
     button1Url: '#',
     button2: 'Ver más',
-    button2Url: '#'
+    button2Url: 'https://www.instagram.com/stories/highlights/18145249066388436/'
   },
   {
     number: '06',

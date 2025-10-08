@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Logo from './HeaderComponents/Logo';
+import { useCategoriasWithFallback } from '../../../hooks/useCategorias';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
+  const { categorias, loading } = useCategoriasWithFallback();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Detectar si estamos en la página del catálogo
+  const isCatalogPage = location.pathname === '/catalogo';
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -13,6 +21,39 @@ const Header = () => {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
+
+  const handleCartClick = () => {
+    navigate('/carrito');
+  };
+
+  const handleCategoryClick = (categoriaSlug) => {
+    if (isCatalogPage) {
+      // En la página del catálogo, hacer scroll a la sección
+      const element = document.getElementById(`categoria-${categoriaSlug}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // En otras páginas, navegar al catálogo con la sección
+      navigate(`/catalogo#categoria-${categoriaSlug}`);
+    }
+  };
+
+  // Manejar scroll automático cuando hay hash en la URL
+  useEffect(() => {
+    if (isCatalogPage && location.hash) {
+      // Esperar un poco para que la página se renderice completamente
+      const timer = setTimeout(() => {
+        const elementId = location.hash.substring(1); // Remover el #
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isCatalogPage, location.hash]);
 
   // Bloquear scroll cuando el menú está abierto
   useEffect(() => {
@@ -43,7 +84,11 @@ const Header = () => {
 
   // Hook para detectar la sección activa
   useEffect(() => {
-    const sections = ['hero', 'productos', 'categorias', 'sobre-mi', 'strapi', 'planes', 'faq'];
+    if (loading || categorias.length === 0) return;
+    
+    // Crear array dinámico de secciones basado en las categorías
+    const categorySections = categorias.map(cat => `categoria-${cat.slug}`);
+    const sections = ['hero', 'productos', ...categorySections, 'sobre-mi', 'strapi', 'planes', 'faq'];
     
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100; // Offset para el header fijo
@@ -61,7 +106,7 @@ const Header = () => {
     handleScroll(); // Llamar una vez al montar
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [loading, categorias]);
 
   return (
     <>
@@ -71,20 +116,48 @@ const Header = () => {
         </LogoSection>
         
         <Navigation>
-          <NavLink href="#hero" className={activeSection === 'hero' ? 'active' : ''}>Inicio</NavLink>
-          <NavLink href="#productos" className={activeSection === 'productos' ? 'active' : ''}>Productos</NavLink>
-          <NavLink href="#categorias" className={activeSection === 'categorias' ? 'active' : ''}>Categorías</NavLink>
-          <NavLink href="#sobre-mi" className={activeSection === 'sobre-mi' ? 'active' : ''}>Sobre Mi</NavLink>
-          <NavLink href="#strapi" className={activeSection === 'strapi' ? 'active' : ''}>Strapi</NavLink>
-          <NavLink href="#planes" className={activeSection === 'planes' ? 'active' : ''}>Planes</NavLink>
-          <NavLink href="#faq" className={activeSection === 'faq' ? 'active' : ''}>FAQ</NavLink>
+          {loading ? (
+            <LoadingCategories>Cargando categorías...</LoadingCategories>
+          ) : categorias.length > 0 ? (
+            categorias.map((categoria) => (
+              <CategoryNavLink 
+                key={categoria.id}
+                onClick={() => handleCategoryClick(categoria.slug)}
+                className={activeSection === `categoria-${categoria.slug}` ? 'active' : ''}
+              >
+                {categoria.icono ? (
+                  <CategoryIcon 
+                    src={categoria.icono} 
+                    alt={categoria.nombre}
+                    onError={(e) => {
+                      console.warn(`❌ Error cargando icono para ${categoria.nombre}:`, categoria.icono);
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <CategoryIconPlaceholder>📦</CategoryIconPlaceholder>
+                )}
+                <CategoryName>{categoria.nombre}</CategoryName>
+              </CategoryNavLink>
+            ))
+          ) : (
+            <NoCategoriesMessage>
+              No hay categorías disponibles. Configura categorías en Strapi.
+            </NoCategoriesMessage>
+          )}
         </Navigation>
         
         <ContactSection>
-          <ContactButton>
-            <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
-            Contacto
-          </ContactButton>
+          <CartButton onClick={handleCartClick}>
+            <CartIcon>
+              <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.33366 15.1666C5.70185 15.1666 6.00033 14.8682 6.00033 14.5C6.00033 14.1318 5.70185 13.8333 5.33366 13.8333C4.96547 13.8333 4.66699 14.1318 4.66699 14.5C4.66699 14.8682 4.96547 15.1666 5.33366 15.1666Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12.6667 15.1666C13.0349 15.1666 13.3333 14.8682 13.3333 14.5C13.3333 14.1318 13.0349 13.8333 12.6667 13.8333C12.2985 13.8333 12 14.1318 12 14.5C12 14.8682 12.2985 15.1666 12.6667 15.1666Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M1.36621 1.86664L2.69954 1.86664L4.47288 10.1466C4.53793 10.4499 4.70666 10.721 4.95002 10.9132C5.19338 11.1055 5.49615 11.2069 5.80621 11.2L12.3262 11.2C12.6297 11.1995 12.9239 11.0955 13.1602 10.9052C13.3966 10.7149 13.561 10.4497 13.6262 10.1533L14.7262 5.19997L3.41288 5.19997" stroke="white" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </CartIcon>
+            Carrito
+          </CartButton>
         </ContactSection>
         
         <MobileMenuButton onClick={toggleMobileMenu} $isOpen={isMobileMenuOpen}>
@@ -99,31 +172,52 @@ const Header = () => {
           <CloseIcon>×</CloseIcon>
         </CloseButton>
         <MobileMenuContent $isOpen={isMobileMenuOpen} onClick={(e) => e.stopPropagation()}>
-          <MobileNavLink href="#hero" className={activeSection === 'hero' ? 'active' : ''} onClick={closeMobileMenu}>
-            Inicio
-          </MobileNavLink>
-          <MobileNavLink href="#productos" className={activeSection === 'productos' ? 'active' : ''} onClick={closeMobileMenu}>
-            Productos
-          </MobileNavLink>
-          <MobileNavLink href="#categorias" className={activeSection === 'categorias' ? 'active' : ''} onClick={closeMobileMenu}>
-            Categorías
-          </MobileNavLink>
-          <MobileNavLink href="#sobre-mi" className={activeSection === 'sobre-mi' ? 'active' : ''} onClick={closeMobileMenu}>
-            Sobre Mi
-          </MobileNavLink>
-          <MobileNavLink href="#strapi" className={activeSection === 'strapi' ? 'active' : ''} onClick={closeMobileMenu}>
-            Strapi
-          </MobileNavLink>
-          <MobileNavLink href="#planes" className={activeSection === 'planes' ? 'active' : ''} onClick={closeMobileMenu}>
-            Planes
-          </MobileNavLink>
-          <MobileNavLink href="#faq" className={activeSection === 'faq' ? 'active' : ''} onClick={closeMobileMenu}>
-            FAQ
-          </MobileNavLink>
-          <MobileContactButton onClick={closeMobileMenu}>
-            <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
-            Contacto
-          </MobileContactButton>
+          {loading ? (
+            <LoadingCategories>Cargando categorías...</LoadingCategories>
+          ) : categorias.length > 0 ? (
+            categorias.map((categoria) => (
+              <MobileCategoryNavLink 
+                key={categoria.id}
+                onClick={() => {
+                  handleCategoryClick(categoria.slug);
+                  closeMobileMenu();
+                }}
+                className={activeSection === `categoria-${categoria.slug}` ? 'active' : ''}
+              >
+                {categoria.icono ? (
+                  <CategoryIcon 
+                    src={categoria.icono} 
+                    alt={categoria.nombre}
+                    onError={(e) => {
+                      console.warn(`❌ Error cargando icono para ${categoria.nombre}:`, categoria.icono);
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <CategoryIconPlaceholder>📦</CategoryIconPlaceholder>
+                )}
+                <CategoryName>{categoria.nombre}</CategoryName>
+              </MobileCategoryNavLink>
+            ))
+          ) : (
+            <NoCategoriesMessage>
+              No hay categorías disponibles.<br />
+              Configura categorías en Strapi.
+            </NoCategoriesMessage>
+          )}
+           <MobileCartButton onClick={() => {
+             handleCartClick();
+             closeMobileMenu();
+           }}>
+             <CartIcon>
+               <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M5.33366 15.1666C5.70185 15.1666 6.00033 14.8682 6.00033 14.5C6.00033 14.1318 5.70185 13.8333 5.33366 13.8333C4.96547 13.8333 4.66699 14.1318 4.66699 14.5C4.66699 14.8682 4.96547 15.1666 5.33366 15.1666Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                 <path d="M12.6667 15.1666C13.0349 15.1666 13.3333 14.8682 13.3333 14.5C13.3333 14.1318 13.0349 13.8333 12.6667 13.8333C12.2985 13.8333 12 14.1318 12 14.5C12 14.8682 12.2985 15.1666 12.6667 15.1666Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                 <path d="M1.36621 1.86664L2.69954 1.86664L4.47288 10.1466C4.53793 10.4499 4.70666 10.721 4.95002 10.9132C5.19338 11.1055 5.49615 11.2069 5.80621 11.2L12.3262 11.2C12.6297 11.1995 12.9239 11.0955 13.1602 10.9052C13.3966 10.7149 13.561 10.4497 13.6262 10.1533L14.7262 5.19997L3.41288 5.19997" stroke="white" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+               </svg>
+             </CartIcon>
+             Carrito
+           </MobileCartButton>
         </MobileMenuContent>
       </MobileMenu>
     </>
@@ -135,57 +229,63 @@ export default Header;
 // Estilos (copiados del Header original)
 const HeaderContainer = styled.header`
   position: fixed;
-  top: 2rem;
-  left: 6rem;
-  right: 6rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1000;
-  background-color: white;
-  height: 72px;
+  background-color: rgba(249, 248, 243, 0.9);
+  height: 90px;
   display: flex;
+  backdrop-filter: blur(20px);
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border-radius: 100px;
-  padding: 0 2rem;
-  max-width: calc(100vw - 12rem);
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  padding: 0 6rem;
   box-sizing: border-box;
   
   @media (max-width: 1400px) {
-    left: 3rem;
-    right: 3rem;
-    max-width: calc(100vw - 6rem);
+    padding: 0 3rem;
   }
   
   @media (max-width: 1200px) {
-    left: 2.5rem;
-    right: 2.5rem;
-    padding: 0 1.5rem;
-    max-width: calc(100vw - 5rem);
+    padding: 0 2.5rem;
   }
   
   @media (max-width: 1024px) {
-    left: 2rem;
-    right: 2rem;
-    padding: 0 1.25rem;
-    max-width: calc(100vw - 4rem);
+    padding: 0 2rem;
   }
   
-  @media (min-width: 768px) {
+  @media (min-width: 1101px) {
     display: grid;
-    grid-template-columns: 1fr 2fr 0.5fr;
-    padding: 0;
+    grid-template-columns: 1fr 3fr 1fr;
   }
 
-  @media (min-width: 768px) and (max-width: 900px) {
-    grid-template-columns: 0.5fr 2fr 0.5fr;
+  @media (min-width: 1101px) and (max-width: 1500px) {
+    padding: 0 1.5rem;
+  }
+
+  @media (min-width: 1101px) and (max-width: 1300px) {
+    padding: 0 1rem;
+  }
+  
+  @media (max-width: 1100px) {
+    display: flex;
+    padding: 0 2rem;
+    height: 80px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
   }
   
   @media (max-width: 768px) {
-    left: 1rem;
-    right: 1rem;
-    top: 1rem;
     padding: 0 1rem;
-    max-width: calc(100vw - 2rem);
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 0.5rem;
+    height: 70px;
   }
 `;
 
@@ -198,34 +298,42 @@ const LogoSection = styled.div`
 
 const Navigation = styled.nav`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 3rem;
   margin-right: 30px;
   flex-shrink: 1;
   min-width: 0;
   
-  @media (max-width: 1400px) {
-    gap: 2.5rem;
+  @media (max-width: 1752px) {
+    gap: 2rem;
+    margin-right: 20px;
   }
   
-  @media (max-width: 1200px) {
+  @media (max-width: 1650px) {
     gap: 1.5rem;
   }
   
-  @media (max-width: 1024px) {
+  @media (max-width: 1500px) {
     gap: 1rem;
-  }
-  
-  @media (max-width: 900px) {
-    gap: 0.7rem;
-  }
 
-  @media (max-width: 870px) {
-    gap: 0.6rem;
-    font-size: 0.9rem;
+    a {
+      font-size: 0.8rem !important;
+    }
   }
   
-  @media (max-width: 767px) {
+  @media (max-width: 1280px) {
+    gap: 0.5rem;
+  }
+  
+  @media (max-width: 1160px) {
+    gap: 0.1rem;
+
+    a {
+      font-size: 0.7rem !important;
+    }
+  }
+  
+  @media (max-width: 1100px) {
     display: none;
   }
 `;
@@ -237,7 +345,7 @@ const ContactSection = styled.div`
   flex-shrink: 0;
   min-width: 0;
   
-  @media (max-width: 767px) {
+  @media (max-width: 1100px) {
     display: none;
   }
 `;
@@ -253,10 +361,15 @@ const MobileMenuButton = styled.button`
   z-index: 1001;
   
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    transform: scale(1.05);
   }
   
-  @media (max-width: 767px) {
+  &:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+  
+  @media (max-width: 1100px) {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -457,7 +570,7 @@ const MobileNavLink = styled.a`
   }
   
   &.active {
-    color: var(--primary-color);
+    color: var(--inmove-rosa-color);
     background: linear-gradient(135deg, 
       rgba(197, 138, 218, 0.2), 
       rgba(255, 255, 255, 0.9), 
@@ -495,73 +608,12 @@ const NavLink = styled.a`
   cursor: pointer;
   
   &:hover {
-    color: var(--primary-color);
+    color: var(--inmove-rosa-color);
   }
   
   &.active {
-    color: var(--primary-color);
+    color: var(--inmove-rosa-color);
   }
-`;
-
-const ContactButton = styled.button`
-  background: var(--terciary-color);
-  border: none;
-  border-radius: 100px;
-  padding: 8px 12px;
-  color: var(--text-black);
-  font-family: 'Onest', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
-  
-  &:active {
-    background: var(--secondary-color);
-    transform: translateY(0px);
-    transition: all 0.1s ease;
-  }
-`;
-
-const MobileContactButton = styled.button`
-  background: var(--terciary-color);
-  border: none;
-  border-radius: 100px;
-  padding: 8px 12px;
-  color: var(--text-black);
-  font-family: 'Onest', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
-  width: auto;
-  align-self: center;
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
-  
-  &:active {
-    background: var(--secondary-color);
-    transform: translateY(0px);
-    transition: all 0.1s ease;
-  }
-`;
-
-const ArrowIcon = styled.img`
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
 `;
 
 const CloseButton = styled.button`
@@ -582,13 +634,12 @@ const CloseButton = styled.button`
   justify-content: center;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
     transform: scale(1.1);
   }
   
   &:active {
     transform: scale(0.95);
-    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.1s ease;
   }
   
   @media (max-width: 480px) {
@@ -609,5 +660,285 @@ const CloseIcon = styled.span`
   
   @media (max-width: 480px) {
     font-size: 1.75rem;
+  }
+`;
+
+// ===== Nuevos componentes para categorías =====
+
+const LoadingCategories = styled.div`
+  color: var(--text-black);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+`;
+
+const NoCategoriesMessage = styled.div`
+  color: #6b7280;
+  font-family: 'Onest', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-style: italic;
+  
+  @media (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
+`;
+
+const CategoryNavLink = styled.div`
+  text-decoration: none;
+  color: var(--text-black);
+  font-family: 'Onest', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  position: relative;
+  
+  &:hover {
+    color: var(--inmove-color);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    color: var(--inmove-color);
+    transform: translateY(0px);
+  }
+  
+  &.active {
+    color: var(--inmove-color);
+    font-weight: 600;
+  }
+  
+  @media (max-width: 1200px) {
+    font-size: 0.85rem;
+    gap: 0.4rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  @media (max-width: 1024px) {
+    font-size: 0.8rem;
+    gap: 0.3rem;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  @media (max-width: 900px) {
+    font-size: 0.75rem;
+  }
+`;
+
+const CategoryIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+  
+  @media (max-width: 1200px) {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Tablet: mantener tamaño decente con labels */
+  @media (max-width: 1024px) and (min-width: 768px) {
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Móvil: iconos más pequeños sin labels */
+  @media (max-width: 767px) {
+    width: 14px;
+    height: 14px;
+  }
+`;
+
+const CategoryIconPlaceholder = styled.div`
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  opacity: 0.6;
+  
+  @media (max-width: 1200px) {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+  }
+  
+  /* Tablet: mantener tamaño decente con labels */
+  @media (max-width: 1024px) and (min-width: 768px) {
+    width: 16px;
+    height: 16px;
+    font-size: 11px;
+  }
+  
+  /* Móvil: placeholders más pequeños sin labels */
+  @media (max-width: 767px) {
+    width: 14px;
+    height: 14px;
+    font-size: 10px;
+  }
+`;
+
+const CategoryName = styled.span`
+  white-space: nowrap;
+  font-size: 0.9rem;
+  
+  /* Ocultar en móviles pequeños */
+  @media (max-width: 767px) {
+    display: none;
+  }
+  
+  /* Mostrar en tablets con fuente un poco más pequeña */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    display: inline;
+    font-size: 0.85rem;
+  }
+  
+  /* Desktop: tamaño normal */
+  @media (min-width: 1025px) {
+    display: inline;
+    font-size: 0.9rem;
+  }
+`;
+
+const MobileCategoryNavLink = styled.div`
+  text-decoration: none;
+  color: var(--text-black);
+  font-family: 'Onest', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  padding: 0.8rem 1rem;
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(218, 95, 139, 0.2), 
+      transparent);
+    transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  &:hover {
+    color: var(--inmove-color);
+    transform: translateY(-2px) scale(1.02);
+  }
+  
+  &:active {
+    color: var(--inmove-color);
+    transform: translateY(0px) scale(1.0);
+    transition: all 0.1s ease;
+  }
+  
+  &.active {
+    color: var(--inmove-color);
+    font-weight: 600;
+    transform: translateY(-1px) scale(1.01);
+  }
+  
+  ${CategoryIcon} {
+    width: 24px;
+    height: 24px;
+  }
+  
+  ${CategoryName} {
+    display: inline;
+  }
+`;
+
+// ===== Componentes del carrito =====
+
+const CartButton = styled.button`
+  background: var(--inmove-rosa-color);
+  border: none;
+  border-radius: 100px;
+  padding: 8px 12px;
+  color: var(--text-white);
+  font-family: 'Onest', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(0px);
+    transition: all 0.1s ease;
+  }
+`;
+
+const MobileCartButton = styled.button`
+  background: var(--inmove-rosa-color);
+  border: none;
+  border-radius: 100px;
+  padding: 8px 12px;
+  color: var(--text-white);
+  font-family: 'Onest', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  width: auto;
+  align-self: center;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(0px);
+    transition: all 0.1s ease;
+  }
+`;
+
+const CartIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  background: var(--inmove-color);
+  border-radius: 50%;
+  padding: 6px;
+  
+  svg {
+    width: 16px;
+    height: 16px;
   }
 `;

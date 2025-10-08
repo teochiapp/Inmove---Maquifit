@@ -109,8 +109,9 @@ const SectionDescription = styled.p`
 const HabitosImg = styled.img`
   width: auto;
   height: auto;
-  min-width: 470px;
-  transform: translateY(-40px);
+  min-width: 420px;
+  max-width: 520px;
+  transform: translateY(-20px);
   z-index: 2;
   margin-bottom: -20px;
   position: relative;

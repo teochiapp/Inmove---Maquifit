@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { storePaymentData } from '../../../api/emailService';
 
 const MercadoPagoCheckout = ({ plan, userData, onSuccess, onError, onCancel }) => {
   const [preferenceId, setPreferenceId] = useState(null);
@@ -94,6 +95,9 @@ const MercadoPagoCheckout = ({ plan, userData, onSuccess, onError, onCancel }) =
        const data = await response.json();
        console.log('✅ Preferencia creada exitosamente:', data);
        console.log('🔗 Init point (Checkout Pro URL):', data.init_point);
+       
+       // Almacenar datos del cliente y plan para el email
+       storePaymentData(userData, plan);
        
        // Guardar tanto el ID como la URL del checkout
        setPreferenceId(data.id);

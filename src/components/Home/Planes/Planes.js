@@ -24,7 +24,7 @@ const Planes = () => {
       "camara.png",
     "Acceso al grupo exclusivo Team Naquifit (recetas, tips y motivación diaria).":
       "like.png",
-    "Asesoramiento por WhatsApp (lunes a viernes de 8 a 18 h).":
+    "Asesoramiento por whats app (lunes a viernes 8 a 18 hs - sábados 9 a 15 hs).":
       "dialog-colored.png",
     "Todo lo del plan de 4 semanas.": "suma-blue.png",
     "Readaptación del plan según tu progreso (cada 4 semanas).":
@@ -41,15 +41,19 @@ const Planes = () => {
 
   // Transformar datos de Strapi al formato esperado por el componente
   const plansFormatted = planes
-    .map((plan, index) => ({
+    .map((plan) => ({
       id: plan.id,
       title: plan.attributes.Titulo,
       price: plan.attributes.Precio,
       description: plan.attributes.Descripcion,
       highlight: plan.attributes.Subtitulo,
+    }))
+    .sort((a, b) => Number(a.price) - Number(b.price))
+    .map((plan, index) => ({
+      ...plan,
       color: planColors[index % planColors.length],
       featured: index === 1, // El segundo plan será destacado
-      // Features hardcodeadas por ahora (puedes agregar un campo features en Strapi después)
+      // Features asignadas según el índice DESPUÉS de ordenar por precio
       features: index === 0 ? [
         "Plan de entrenamiento 100% personalizado (3 a 6 días, en gimnasio o en casa con pocos elementos).",
         "Orientación nutricional adaptada a tus objetivos y estilo de vida.",
@@ -57,7 +61,7 @@ const Planes = () => {
         "Ideas de recetas y colaciones fit (dulces y saladas).",
         "Control de progreso con fotos y medidas al finalizar las 4 semanas.",
         "Acceso al grupo exclusivo Team Naquifit (recetas, tips y motivación diaria).",
-        "Asesoramiento por WhatsApp (lunes a viernes de 8 a 18 h).",
+        "Asesoramiento por whats app (lunes a viernes 8 a 18 hs - sábados 9 a 15 hs).",
       ] : index === 1 ? [
         "Todo lo del plan de 4 semanas.",
         "Readaptación del plan según tu progreso (cada 4 semanas).",
@@ -67,8 +71,7 @@ const Planes = () => {
         "Readaptación mensual personalizada.",
         "Seguimiento continuo para lograr resultados duraderos.",
       ]
-    }))
-    .sort((a, b) => Number(a.price) - Number(b.price));
+    }));
 
   const handleCheckout = (plan) => {
     setSelectedPlan(plan);
@@ -366,17 +369,21 @@ const PlanDescription = styled.p`
   color: var(--text-black);
   font-weight: 500;
   font-size: 16px;
-  margin-bottom: 40px;
+  height: 100px;
 
   @media screen and (max-width: 1200px) {
     font-size: 14px;
+    height: 80px;
   }
 
-  
-    @media screen and (max-width: 768px) {
-      margin-bottom: 15px;
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+    height: 60px;
   }
 
+  @media screen and (max-width: 480px) {
+    height: 70px;
+  }
 `;
 
 const SectionTitle = styled.h4`

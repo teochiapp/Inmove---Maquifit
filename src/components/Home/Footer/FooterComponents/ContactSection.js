@@ -18,8 +18,10 @@ const ContactSection = () => {
         </ContactItem>
 
         <ContactItem>
-          <ContactLabel>Lun-Vie</ContactLabel>
-          <ContactValue>9am-6pm</ContactValue>
+          <ContactLabel>Horarios</ContactLabel>
+          <ContactValue>
+            Lun—Vie: 8:00 - 18:00 | Sáb: 9:00 - 15:00
+          </ContactValue>
         </ContactItem>
       </ContactInfo>
 

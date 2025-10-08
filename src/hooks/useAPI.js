@@ -34,12 +34,14 @@ export const useAPI = (endpoint, options = {}) => {
         
         const API_BASE_URL = getAPIBaseURL();
         
-        // Agregar populate automáticamente para endpoints de productos
+        // Agregar populate automáticamente para endpoints que lo necesiten
         let fullURL = `${API_BASE_URL}${endpoint}`;
-        if (endpoint.includes('/productos') && !endpoint.includes('populate')) {
+        
+        // Popular relaciones para productos y categorías
+        if ((endpoint.includes('/productos') || endpoint.includes('/categorias')) && !endpoint.includes('populate')) {
           const separator = endpoint.includes('?') ? '&' : '?';
-          // Incluir específicamente la relación CategoriaProducto usando la sintaxis correcta de Strapi
-          fullURL = `${fullURL}${separator}populate=Portada,CategoriaProducto`;
+          // Strapi v5 syntax: populate all relations + sin límite de paginación
+          fullURL = `${fullURL}${separator}populate=*&pagination[pageSize]=100`;
         }
         
         console.log('Fetching from:', fullURL); // Para debugging

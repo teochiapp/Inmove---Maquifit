@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@mercadopago/sdk-js": "^0.0.3",
     "@mercadopago/sdk-react": "^1.0.6",
     "@testing-library/dom": "^10.4.1",
@@ -13,6 +14,7 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "framer-motion": "^12.23.15",
+    "lucide-react": "^0.545.0",
     "mercadopago": "^2.9.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

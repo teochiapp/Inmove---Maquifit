@@ -2,27 +2,69 @@ import { useState, useEffect, useMemo } from 'react';
 import useAPI from './useAPI';
 
 /**
+ * Función auxiliar para extraer texto de rich text de Strapi v5
+ */
+const extractTextFromRichText = (richText) => {
+  if (!richText) return '';
+  if (typeof richText === 'string') return richText;
+  if (Array.isArray(richText)) {
+    return richText
+      .map(block => {
+        if (block.children) {
+          return block.children
+            .map(child => child.text || '')
+            .join('');
+        }
+        return '';
+      })
+      .join(' ');
+  }
+  return '';
+};
+
+/**
  * Hook específico para productos de Strapi
  * Optimiza las consultas y maneja la estructura de datos
  */
 export const useProductos = () => {
   const { data, loading, error } = useAPI('/productos');
   
-  // Procesar datos de Strapi
+  // Procesar datos de Strapi v5 (sin attributes wrapper)
   const productos = data?.data || [];
   const meta = data?.meta || {};
   
-  // Normalizar productos para que tengan la estructura esperada (memoizado)
+  // Normalizar productos para mantener compatibilidad con el código existente (memoizado)
   const productosNormalizados = useMemo(() => {
     return productos.map(producto => ({
-      id: producto.id,
+      id: producto.id || producto.documentId,
+      documentId: producto.documentId,
       attributes: {
         Nombre: producto.Nombre,
-        Descripcion: producto.Descripcion,
-        Portada: producto.Portada, // Ya viene con populate=*
+        Descripcion: extractTextFromRichText(producto.Descripcion),
+        Precio: producto.Precio,
+        Portada: producto.Portada ? {
+          data: {
+            attributes: {
+              url: producto.Portada.url,
+              formats: producto.Portada.formats,
+              alternativeText: producto.Portada.alternativeText,
+              name: producto.Portada.name
+            }
+          }
+        } : null,
         Talle: producto.Talle,
         Color: producto.Color,
-        Categoria: producto.Categoria,
+        Categoria: producto.CategoriaProducto ? {
+          data: {
+            id: producto.CategoriaProducto.id || producto.CategoriaProducto.documentId,
+            documentId: producto.CategoriaProducto.documentId,
+            attributes: {
+              Nombre: producto.CategoriaProducto.Nombre,
+              slug: producto.CategoriaProducto.Slug,
+              Slug: producto.CategoriaProducto.Slug
+            }
+          }
+        } : null,
         createdAt: producto.createdAt,
         updatedAt: producto.updatedAt,
         publishedAt: producto.publishedAt
@@ -94,6 +136,59 @@ export const useProductoPorId = (id) => {
     loading,
     error,
     encontrado: !!producto
+  };
+};
+
+/**
+ * Hook para obtener productos agrupados por categoría
+ * Retorna un objeto donde las claves son los slugs de categoría
+ */
+export const useProductosByCategoria = () => {
+  const { productos, loading, error } = useProductos();
+  
+  // Agrupar productos por categoría (memoizado)
+  const productosByCategoria = useMemo(() => {
+    const grouped = {};
+    
+    productos.forEach(producto => {
+      const categoriaData = producto.attributes?.Categoria?.data;
+      
+      if (categoriaData) {
+        const categoriaSlug = categoriaData.attributes?.slug || categoriaData.attributes?.Slug;
+        
+        if (categoriaSlug) {
+          if (!grouped[categoriaSlug]) {
+            grouped[categoriaSlug] = {
+              categoria: categoriaData,
+              productos: []
+            };
+          }
+          
+          // Añadir producto con datos normalizados
+          grouped[categoriaSlug].productos.push({
+            id: producto.id,
+            nombre: producto.attributes?.Nombre || '',
+            descripcion: producto.attributes?.Descripcion || '',
+            talle: producto.attributes?.Talle || '',
+            color: producto.attributes?.Color || '',
+            precio: producto.attributes?.Precio || '',
+            imagen: producto.attributes?.Portada?.data?.attributes?.url 
+              ? `${process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337'}${producto.attributes.Portada.data.attributes.url}`
+              : null,
+            createdAt: producto.attributes?.createdAt,
+            updatedAt: producto.attributes?.updatedAt
+          });
+        }
+      }
+    });
+    
+    return grouped;
+  }, [productos]);
+  
+  return {
+    productosByCategoria,
+    loading,
+    error
   };
 };
 

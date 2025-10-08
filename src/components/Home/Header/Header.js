@@ -43,7 +43,7 @@ const Header = () => {
 
   // Hook para detectar la sección activa
   useEffect(() => {
-    const sections = ['hero', 'sobre-mi', 'beneficios', 'planes', 'team'];
+    const sections = ['hero', 'tienda', 'sobre-mi', 'beneficios', 'planes', 'descargar-app'];
     
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100; // Offset para el header fijo
@@ -72,10 +72,11 @@ const Header = () => {
         
         <Navigation>
           <NavLink href="#hero" className={activeSection === 'hero' ? 'active' : ''}>Inicio</NavLink>
+          <NavLink href="#tienda" className={activeSection === 'tienda' ? 'active' : ''}>InMove</NavLink>
           <NavLink href="#sobre-mi" className={activeSection === 'sobre-mi' ? 'active' : ''}>Sobre Mi</NavLink>
           <NavLink href="#beneficios" className={activeSection === 'beneficios' ? 'active' : ''}>Cambios</NavLink>
           <NavLink href="#planes" className={activeSection === 'planes' ? 'active' : ''}>Planes</NavLink>
-          <NavLink href="#team" className={activeSection === 'team' ? 'active' : ''}>App Team Maquifit</NavLink>
+          <NavLink href="#descargar-app" className={activeSection === 'descargar-app' ? 'active' : ''}>App Team Maquifit</NavLink>
         </Navigation>
         
         <ContactSection>
@@ -100,6 +101,9 @@ const Header = () => {
           <MobileNavLink href="#hero" className={activeSection === 'hero' ? 'active' : ''} onClick={closeMobileMenu}>
             Inicio
           </MobileNavLink>
+          <MobileNavLink href="#tienda" className={activeSection === 'tienda' ? 'active' : ''} onClick={closeMobileMenu}>
+            InMove
+          </MobileNavLink>
           <MobileNavLink href="#sobre-mi" className={activeSection === 'sobre-mi' ? 'active' : ''} onClick={closeMobileMenu}>
             Sobre Mi
           </MobileNavLink>
@@ -109,7 +113,7 @@ const Header = () => {
           <MobileNavLink href="#planes" className={activeSection === 'planes' ? 'active' : ''} onClick={closeMobileMenu}>
             Planes
           </MobileNavLink>
-          <MobileNavLink href="#team" className={activeSection === 'team' ? 'active' : ''} onClick={closeMobileMenu}>
+          <MobileNavLink href="#descargar-app" className={activeSection === 'descargar-app' ? 'active' : ''} onClick={closeMobileMenu}>
             App Team Maquifit
           </MobileNavLink>
           <MobileContactButton onClick={closeMobileMenu}>
@@ -202,11 +206,16 @@ const Navigation = styled.nav`
   }
   
   @media (max-width: 1200px) {
-    gap: 1.5rem;
+    gap: 1rem;
+    padding-right: 20px;
   }
   
   @media (max-width: 1024px) {
-    gap: 1rem;
+    gap: 0.8rem;
+
+    a {
+      font-size: 0.9rem;
+    }
   }
   
   @media (max-width: 900px) {
@@ -500,7 +509,7 @@ const ContactButton = styled.button`
   background: var(--terciary-color);
   border: none;
   border-radius: 100px;
-  padding: 8px 12px;
+  padding: 10px 16px 10px 10px;
   color: var(--text-black);
   font-family: 'Onest', sans-serif;
   font-weight: 400;
@@ -508,17 +517,11 @@ const ContactButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
+  gap: 0.5rem;
+  transition: transform 0.3s ease;
   
   &:hover {
     transform: translateY(-2px);
-  }
-  
-  &:active {
-    background: var(--secondary-color);
-    transform: translateY(0px);
-    transition: all 0.1s ease;
   }
 `;
 
@@ -526,7 +529,7 @@ const MobileContactButton = styled.button`
   background: var(--terciary-color);
   border: none;
   border-radius: 100px;
-  padding: 8px 12px;
+  padding: 10px 16px 10px 10px;
   color: var(--text-black);
   font-family: 'Onest', sans-serif;
   font-weight: 400;
@@ -534,8 +537,8 @@ const MobileContactButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
+  gap: 0.5rem;
+  transition: transform 0.3s ease;
   margin-top: 1rem;
   width: auto;
   align-self: center;
@@ -543,18 +546,15 @@ const MobileContactButton = styled.button`
   &:hover {
     transform: translateY(-2px);
   }
-  
-  &:active {
-    background: var(--secondary-color);
-    transform: translateY(0px);
-    transition: all 0.1s ease;
-  }
 `;
 
 const ArrowIcon = styled.img`
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
+  background: var(--secondary-color);
+  border-radius: 50%;
+  padding: 6px;
 `;
 
 const CloseButton = styled.button`

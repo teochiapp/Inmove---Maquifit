@@ -1,9 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
+import { CarritoProvider } from './context/CarritoContext';
 import HomePage from './pages/HomePage';
 import CatalogoPage from './pages/CatalogoPage';
 import SingleProductPage from './pages/SingleProductPage';
+import CarritoPage from './pages/CarritoPage';
+import CheckoutPage from './pages/CheckoutPage';
 import CheckoutSuccess from './components/Home/Planes/CheckoutSuccess';
 import CheckoutFailure from './components/Home/Planes/CheckoutFailure';
 import CheckoutPending from './components/Home/Planes/CheckoutPending';
@@ -24,20 +27,24 @@ const MainContent = styled.main`
 
 function App() {
   return (
-    <Router>
-      <AppContainer>
-        <MainContent>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/catalogo" element={<CatalogoPage />} />
-            <Route path="/catalogo/:nombre" element={<SingleProductPage />} />
-            <Route path="/checkout/success" element={<CheckoutSuccess />} />
-            <Route path="/checkout/failure" element={<CheckoutFailure />} />
-            <Route path="/checkout/pending" element={<CheckoutPending />} />
-          </Routes>
-        </MainContent>
-      </AppContainer>
-    </Router>
+    <CarritoProvider>
+      <Router>
+        <AppContainer>
+          <MainContent>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/catalogo" element={<CatalogoPage />} />
+              <Route path="/catalogo/:nombre" element={<SingleProductPage />} />
+              <Route path="/carrito" element={<CarritoPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/checkout/success" element={<CheckoutSuccess />} />
+              <Route path="/checkout/failure" element={<CheckoutFailure />} />
+              <Route path="/checkout/pending" element={<CheckoutPending />} />
+            </Routes>
+          </MainContent>
+        </AppContainer>
+      </Router>
+    </CarritoProvider>
   );
 }
 

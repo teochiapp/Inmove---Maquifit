@@ -8,18 +8,20 @@ const ContactSection = () => {
         <ContactItem>
           <ContactLabel>Escribime</ContactLabel>
           <ContactValue>
-            <span>(</span> 351 - 123456 <span>)</span>
+            <span>(</span> 351 - 3797137 <span>)</span>
           </ContactValue>
         </ContactItem>
 
         <ContactItem>
           <ContactLabel>Email</ContactLabel>
-          <ContactValue>soymaquifit@gmail.com</ContactValue>
+          <ContactValue>inmove.mf@gmail.com</ContactValue>
         </ContactItem>
 
         <ContactItem>
-          <ContactLabel>Lun-Vie</ContactLabel>
-          <ContactValue>9am-6pm</ContactValue>
+          <ContactLabel>Horarios</ContactLabel>
+          <ContactValue>
+            Lun—Vie: 8:00 - 18:00 | Sáb: 9:00 - 15:00
+          </ContactValue>
         </ContactItem>
       </ContactInfo>
 
@@ -68,4 +70,20 @@ const ContactValue = styled.span`
   span {
     color: var(--inmove-rosa-color);
   }
+`;
+
+const HoursRow = styled.div`
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+
+  @media (max-width: 768px) {
+    gap: 1.25rem;
+  }
+`;
+
+const HourBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 `;

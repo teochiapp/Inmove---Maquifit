@@ -1,16 +1,72 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useProductoPorSlug } from '../../hooks/useProductos';
 import { slugToNombre } from '../../utils/slugUtils';
 import { getProductoPortada, getProductoAltText } from '../../utils/imageUtils';
+import CatalogHeader from '../Catalogo/Header/Header';
+import InfoProducto from './SingleComponents/InfoProducto';
+import InfoSection from '../Catalogo/Info/Info';
+import TePuedeInteresar from './SingleComponents/TePuedeInteresar';
+import CategoriasNav from './SingleComponents/CategoriasNav';
+import CatalogFooter from '../Catalogo/Footer/Footer';
 
 const SingleProduct = () => {
   const { nombre } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { producto, loading, error, encontrado } = useProductoPorSlug(nombre);
   const [productoNombre, setProductoNombre] = useState('Producto');
   
+  // Datos pasados por navigate state como fallback inmediato
+  const productoState = useMemo(() => {
+    return location?.state?.producto || null;
+  }, [location]);
+  
+  // Construir una vista unificada del producto desde Strapi o desde state
+  const productoView = useMemo(() => {
+    if (producto) {
+      return {
+        id: producto.id,
+        nombre: producto.attributes?.Nombre,
+        descripcion: typeof producto.attributes?.Descripcion === 'string' ? producto.attributes.Descripcion : '',
+        talle: producto.attributes?.Talle,
+        color: producto.attributes?.Color,
+        precio: producto.attributes?.Precio,
+        imagen: null // imagen manejada por util getProductoPortada
+      };
+    }
+    if (productoState) {
+      return productoState;
+    }
+    return null;
+  }, [producto, productoState]);
+
+  const imageUrl = useMemo(() => {
+    let url = null;
+    if (producto) {
+      url = getProductoPortada(producto, 'large');
+    }
+    if (!url) {
+      url = productoView?.imagen || null;
+    }
+    return url || '/catalogo/elementos.webp';
+  }, [producto, productoView]);
+
+  const imageAlt = useMemo(() => {
+    if (producto) {
+      return getProductoAltText(producto);
+    }
+    return productoView?.nombre || 'Producto';
+  }, [producto, productoView]);
+  
+  // Al montar, llevar al inicio de la página
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+
   // Actualizar el nombre del producto cuando cambien los datos
   useEffect(() => {
     if (producto?.attributes?.Nombre) {
@@ -33,7 +89,7 @@ const SingleProduct = () => {
   };
   
   // Si está cargando, mostrar loading
-  if (loading) {
+  if (loading && !productoState) {
     return (
       <ProductContainer>
         <LoadingContainer>
@@ -58,7 +114,7 @@ const SingleProduct = () => {
   }
 
   // Si no se encontró el producto
-  if (!loading && !encontrado) {
+  if (!loading && !encontrado && !productoState) {
     return (
       <ProductContainer>
         <NotFoundContainer>
@@ -70,11 +126,13 @@ const SingleProduct = () => {
     );
   }
 
-  const attributes = producto.attributes || {};
-  const productoId = producto.id;
+  const attributes = producto?.attributes || {};
+  const productoId = productoView?.id || producto?.id;
 
   return (
     <ProductContainer>
+      <CatalogHeader />
+      <HeaderSpacer />
       <Breadcrumb>
         <BreadcrumbButton onClick={handleNavigateHome}>Inicio</BreadcrumbButton>
         <BreadcrumbSeparator>/</BreadcrumbSeparator>
@@ -83,62 +141,20 @@ const SingleProduct = () => {
         <BreadcrumbCurrent>{productoNombre}</BreadcrumbCurrent>
       </Breadcrumb>
       
-      <ProductDetails>
-        <ProductImageContainer>
-          <ProductImage 
-            src={getProductoPortada(producto, 'large')} 
-            alt={getProductoAltText(producto)} 
-            onError={(e) => {
-              e.target.src = '/placeholder.jpg';
-            }}
-          />
-        </ProductImageContainer>
-        
-        <ProductInfo>
-          <ProductTitle>{productoNombre}</ProductTitle>
-          <ProductCategory>Producto</ProductCategory>
-          <ProductPrice>$0</ProductPrice>
-          <ProductDescription>
-            {attributes.Descripcion ? 
-              (typeof attributes.Descripcion === 'string' ? attributes.Descripcion : 'Descripción disponible') : 
-              'Sin descripción disponible'
-            }
-          </ProductDescription>
-          
-          <ProductDetailsList>
-            <ProductDetail>
-              <DetailLabel>ID:</DetailLabel>
-              <DetailValue>{productoId}</DetailValue>
-            </ProductDetail>
-            
-            {attributes.Talle && (
-              <ProductDetail>
-                <DetailLabel>Talle:</DetailLabel>
-                <DetailValue>{attributes.Talle}</DetailValue>
-              </ProductDetail>
-            )}
-            
-            {attributes.Color && (
-              <ProductDetail>
-                <DetailLabel>Color:</DetailLabel>
-                <DetailValue>{attributes.Color}</DetailValue>
-              </ProductDetail>
-            )}
-          </ProductDetailsList>
-          
-          <ProductActions>
-            <AddToCartButton>Agregar al Carrito</AddToCartButton>
-            <WishlistButton>♡ Agregar a Favoritos</WishlistButton>
-          </ProductActions>
-        </ProductInfo>
-      </ProductDetails>
-      
-      <RelatedProductsSection>
-        <RelatedProductsTitle>Productos Relacionados</RelatedProductsTitle>
-        <RelatedProductsPlaceholder>
-          Próximamente: productos relacionados
-        </RelatedProductsPlaceholder>
-      </RelatedProductsSection>
+      <InfoProducto 
+        imageUrl={imageUrl}
+        imageAlt={imageAlt}
+        productoView={productoView}
+        productoNombre={productoNombre}
+        attributes={attributes}
+        productoId={productoId}
+      />
+
+      <InfoSection />
+
+      <TePuedeInteresar />
+      <CategoriasNav />
+      <CatalogFooter />
     </ProductContainer>
   );
 };
@@ -150,6 +166,10 @@ const ProductContainer = styled.div`
   min-height: 100vh;
   background-color: #f8f7f2;
   padding: 2rem 0;
+`;
+
+const HeaderSpacer = styled.div`
+  height: 100px;
 `;
 
 const Breadcrumb = styled.div`
@@ -181,12 +201,12 @@ const BreadcrumbButton = styled.button`
   padding: 0;
   
   &:hover {
-    color: #8B5CF6;
+    color: var(--inmove-color);
   }
   
   &:focus {
     outline: none;
-    color: #8B5CF6;
+    color: var(--inmove-color);
   }
 `;
 
@@ -284,7 +304,7 @@ const ProductPrice = styled.p`
   font-family: 'Onest', sans-serif;
   font-size: 2rem;
   font-weight: 700;
-  color: #8B5CF6;
+  color: var(--inmove-color);
   margin-bottom: 1.5rem;
 
   @media (max-width: 768px) {

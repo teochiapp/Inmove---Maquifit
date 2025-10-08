@@ -202,18 +202,20 @@ const RightColumn = styled.div`
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  min-width: 0; /* Permite que el contenido se contraiga */
+  min-width: 0;
+  border-top: 1px solid var(--text-black);
+
 `;
 
 const FAQItem = styled.div`
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--text-black);
   width: 100%;
   box-sizing: border-box;
 `;
 
 const FAQQuestion = styled.button`
   width: 100%;
-  padding: 1.2rem 0;
+  padding: 1.2rem 1rem;
   background: none;
   border: none;
   cursor: pointer;

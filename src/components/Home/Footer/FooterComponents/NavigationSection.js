@@ -7,15 +7,18 @@ const NavigationSection = () => {
       <NavRow>
         <NavLink href="#hero">Inicio</NavLink>
         <Separator>/</Separator>
-        <NavLink href="#sobre-mi ">Sobre Mi</NavLink>
+        <NavLink href="#tienda">InMove</NavLink>
         <Separator>/</Separator>
-        <NavLink href="#beneficios">Cambios</NavLink>
+        <NavLink href="#beneficios">Sobre Mi</NavLink>
       </NavRow>
       <NavRow>
-        <NavLink href="#planes">Planes</NavLink>
+        <NavLink href="#cambios">Cambios</NavLink>
         <Separator>/</Separator>
         <NavLink href="#team">App Maquifit</NavLink>
         <Separator>/</Separator>
+        <NavLink href="#planes">Planes</NavLink>
+      </NavRow>
+      <NavRow>
         <NavLink href="#contacto">Contacto</NavLink>
       </NavRow>
     </NavigationContainer>

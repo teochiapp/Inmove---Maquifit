@@ -2,157 +2,266 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { sendPaymentSuccessEmail, getStoredPaymentData, clearStoredPaymentData } from '../../../api/emailService';
+import ThankYouModal from './ThankYouModal';
 
 const CheckoutSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [paymentData, setPaymentData] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [clientData, setClientData] = useState({});
+  const [planData, setPlanData] = useState({});
+  const [isProcessing, setIsProcessing] = useState(true);
 
   useEffect(() => {
-    // Obtener parámetros de la URL
-    const paymentId = searchParams.get('payment_id');
-    const status = searchParams.get('status');
-    const externalReference = searchParams.get('external_reference');
-    const merchantOrderId = searchParams.get('merchant_order_id');
+    const processPaymentSuccess = async () => {
+      try {
+        setIsProcessing(true);
+        
+        // Obtener parámetros de la URL
+        const paymentId = searchParams.get('payment_id');
+        const status = searchParams.get('status');
+        const externalReference = searchParams.get('external_reference');
+        const merchantOrderId = searchParams.get('merchant_order_id');
 
-    setPaymentData({
-      paymentId,
-      status,
-      externalReference,
-      merchantOrderId
-    });
+        const paymentInfo = {
+          paymentId,
+          status,
+          externalReference,
+          merchantOrderId
+        };
 
-    console.log('Pago exitoso - Datos:', {
-      paymentId,
-      status,
-      externalReference,
-      merchantOrderId
-    });
+        setPaymentData(paymentInfo);
 
-    // Aquí podrías hacer una llamada a tu backend para confirmar el pago
-    // y actualizar el estado del usuario/plan
+        console.log('Pago exitoso - Datos:', paymentInfo);
 
+        // Obtener datos almacenados del cliente y plan
+        const { clientData: storedClient, planData: storedPlan, hasData } = getStoredPaymentData();
+        
+        if (hasData) {
+          setClientData(storedClient);
+          setPlanData(storedPlan);
+          
+          console.log('📋 Datos del cliente y plan obtenidos:', { storedClient, storedPlan });
+          
+          // Enviar email con los datos del cliente
+          const emailResult = await sendPaymentSuccessEmail(paymentInfo, storedClient, storedPlan);
+          
+          if (emailResult.success) {
+            console.log('✅ Email enviado exitosamente');
+            setEmailSent(true);
+          } else {
+            console.warn('⚠️ No se pudo enviar el email:', emailResult.message);
+          }
+          
+          // Limpiar datos almacenados
+          clearStoredPaymentData();
+          
+        } else {
+          console.warn('⚠️ No se encontraron datos del cliente almacenados');
+        }
+        
+        // Esperar un momento y mostrar el modal
+        setTimeout(() => {
+          setIsProcessing(false);
+          setShowModal(true);
+        }, 2000);
+        
+      } catch (error) {
+        console.error('❌ Error procesando el pago exitoso:', error);
+        setIsProcessing(false);
+        // Aún así mostrar el modal después de un error
+        setTimeout(() => setShowModal(true), 1000);
+      }
+    };
+
+    processPaymentSuccess();
   }, [searchParams]);
 
   const handleGoHome = () => {
     navigate('/');
   };
 
-  const handleContactSupport = () => {
-    // Abrir WhatsApp o email de soporte
-    window.open('https://wa.me/1234567890?text=Hola! Acabo de completar mi pago y necesito más información sobre mi plan.', '_blank');
+  const handleModalClose = () => {
+    setShowModal(false);
+    // Redirigir al home después de cerrar el modal
+    setTimeout(() => {
+      navigate('/');
+    }, 300);
   };
 
-  return (
-    <SuccessContainer>
-      <SuccessContent
-        as={motion.div}
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        <SuccessIcon
+  // const handleContactSupport = () => {
+  //   // Abrir WhatsApp o email de soporte
+  //   window.open('https://wa.me/1234567890?text=Hola! Acabo de completar mi pago y necesito más información sobre mi plan.', '_blank');
+  // };
+
+  // Si estamos procesando, mostrar pantalla de carga
+  if (isProcessing) {
+    return (
+      <ProcessingContainer>
+        <ProcessingContent
           as={motion.div}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          ✅
-        </SuccessIcon>
+          <ProcessingSpinner
+            as={motion.div}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+          <ProcessingTitle>Procesando tu pago...</ProcessingTitle>
+          <ProcessingSubtitle>
+            {emailSent ? 'Email enviado ✅' : 'Enviando confirmación por email...'}
+          </ProcessingSubtitle>
+        </ProcessingContent>
+      </ProcessingContainer>
+    );
+  }
 
-        <SuccessTitle
-          as={motion.h1}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+  return (
+    <>
+      <SuccessContainer>
+        <SuccessContent
+          as={motion.div}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          ¡Pago exitoso!
-        </SuccessTitle>
+          <SuccessIcon
+            as={motion.div}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+          >
+            ✅
+          </SuccessIcon>
 
-        <SuccessSubtitle
-          as={motion.p}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-        >
-          Tu compra ha sido procesada correctamente
-        </SuccessSubtitle>
+          <SuccessTitle
+            as={motion.h1}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            ¡Pago exitoso!
+          </SuccessTitle>
 
-        {paymentData.paymentId && (
-          <PaymentInfo
+          <SuccessSubtitle
+            as={motion.p}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            Tu compra ha sido procesada correctamente
+            {emailSent && (
+              <EmailSentIndicator>
+                <br />📧 Email de confirmación enviado
+              </EmailSentIndicator>
+            )}
+          </SuccessSubtitle>
+
+          {paymentData.paymentId && (
+            <PaymentInfo
+              as={motion.div}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <InfoTitle>Detalles del pago</InfoTitle>
+              <InfoItem>
+                <InfoLabel>ID de pago:</InfoLabel>
+                <InfoValue>{paymentData.paymentId}</InfoValue>
+              </InfoItem>
+              <InfoItem>
+                <InfoLabel>Estado:</InfoLabel>
+                <InfoValue>{paymentData.status}</InfoValue>
+              </InfoItem>
+              {paymentData.externalReference && (
+                <InfoItem>
+                  <InfoLabel>Referencia:</InfoLabel>
+                  <InfoValue>{paymentData.externalReference}</InfoValue>
+                </InfoItem>
+              )}
+              {clientData.nombre && (
+                <InfoItem>
+                  <InfoLabel>Cliente:</InfoLabel>
+                  <InfoValue>{clientData.nombre}</InfoValue>
+                </InfoItem>
+              )}
+              {planData.title && (
+                <InfoItem>
+                  <InfoLabel>Plan:</InfoLabel>
+                  <InfoValue>{planData.title}</InfoValue>
+                </InfoItem>
+              )}
+            </PaymentInfo>
+          )}
+
+          <NextSteps
             as={motion.div}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
           >
-            <InfoTitle>Detalles del pago</InfoTitle>
-            <InfoItem>
-              <InfoLabel>ID de pago:</InfoLabel>
-              <InfoValue>{paymentData.paymentId}</InfoValue>
-            </InfoItem>
-            <InfoItem>
-              <InfoLabel>Estado:</InfoLabel>
-              <InfoValue>{paymentData.status}</InfoValue>
-            </InfoItem>
-            {paymentData.externalReference && (
-              <InfoItem>
-                <InfoLabel>Referencia:</InfoLabel>
-                <InfoValue>{paymentData.externalReference}</InfoValue>
-              </InfoItem>
-            )}
-          </PaymentInfo>
-        )}
+            <StepsTitle>¿Qué sigue ahora?</StepsTitle>
+            <StepsList>
+              <StepItem>
+                <StepIcon>📧</StepIcon>
+                <StepText>
+                  {emailSent 
+                    ? 'Email de confirmación enviado exitosamente ✅' 
+                    : 'Recibirás un email de confirmación con los detalles de tu compra'
+                  }
+                </StepText>
+              </StepItem>
+              <StepItem>
+                <StepIcon>📱</StepIcon>
+                <StepText>Maqui se contactará contigo por WhatsApp en las próximas 24 horas</StepText>
+              </StepItem>
+              <StepItem>
+                <StepIcon>💪</StepIcon>
+                <StepText>Comenzarás tu transformación con un plan 100% personalizado</StepText>
+              </StepItem>
+            </StepsList>
+          </NextSteps>
 
-        <NextSteps
-          as={motion.div}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
-        >
-          <StepsTitle>¿Qué sigue ahora?</StepsTitle>
-          <StepsList>
-            <StepItem>
-              <StepIcon>📧</StepIcon>
-              <StepText>Recibirás un email de confirmación con los detalles de tu compra</StepText>
-            </StepItem>
-            <StepItem>
-              <StepIcon>📱</StepIcon>
-              <StepText>Maqui se contactará contigo por WhatsApp en las próximas 24 horas</StepText>
-            </StepItem>
-            <StepItem>
-              <StepIcon>💪</StepIcon>
-              <StepText>Comenzarás tu transformación con un plan 100% personalizado</StepText>
-            </StepItem>
-          </StepsList>
-        </NextSteps>
+          <ActionButtons
+            as={motion.div}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+          >
+            <PrimaryButton onClick={() => setShowModal(true)}>
+              Ver mensaje de Maqui
+            </PrimaryButton>
+            <SecondaryButton onClick={handleGoHome}>
+              Volver al inicio
+            </SecondaryButton>
+          </ActionButtons>
 
-        <ActionButtons
-          as={motion.div}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
-        >
-          <PrimaryButton onClick={handleGoHome}>
-            Volver al inicio
-          </PrimaryButton>
-          <SecondaryButton onClick={handleContactSupport}>
-            Contactar soporte
-          </SecondaryButton>
-        </ActionButtons>
+          <ThankYouMessage
+            as={motion.div}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+          >
+            <ThankYouIcon>💜</ThankYouIcon>
+            <ThankYouText>
+              ¡Gracias por confiar en Maquifit para tu transformación!
+            </ThankYouText>
+          </ThankYouMessage>
+        </SuccessContent>
+      </SuccessContainer>
 
-        <ThankYouMessage
-          as={motion.div}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-        >
-          <ThankYouIcon>💜</ThankYouIcon>
-          <ThankYouText>
-            ¡Gracias por confiar en Maquifit para tu transformación!
-          </ThankYouText>
-        </ThankYouMessage>
-      </SuccessContent>
-    </SuccessContainer>
+      {/* Modal de agradecimiento */}
+      <ThankYouModal 
+        isOpen={showModal}
+        onClose={handleModalClose}
+        clientName={clientData.nombre}
+      />
+    </>
   );
 };
 
@@ -363,4 +472,64 @@ const ThankYouText = styled.p`
   color: #7c3aed;
   margin: 0;
   font-family: 'Onest', sans-serif;
+`;
+
+// ===== Processing Components =====
+
+const ProcessingContainer = styled.div`
+  min-height: 100vh;
+  background: linear-gradient(135deg, #C58ADA 0%, #9DC6DA 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+`;
+
+const ProcessingContent = styled.div`
+  background: white;
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+`;
+
+const ProcessingSpinner = styled.div`
+  width: 60px;
+  height: 60px;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #C58ADA;
+  border-radius: 50%;
+  margin: 0 auto 2rem auto;
+`;
+
+const ProcessingTitle = styled.h2`
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  font-family: 'Onest', sans-serif;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+`;
+
+const ProcessingSubtitle = styled.p`
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 0;
+  font-family: 'Onest', sans-serif;
+`;
+
+const EmailSentIndicator = styled.span`
+  color: #059669;
+  font-weight: 500;
+  font-size: 0.9rem;
 `;

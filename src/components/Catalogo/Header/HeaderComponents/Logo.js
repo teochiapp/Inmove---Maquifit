@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 
 const Logo = () => {
+  const navigate = useNavigate();
+
   const handleLogoClick = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    navigate('/catalogo');
   };
 
   return (
     <LogoContainer onClick={handleLogoClick}>
-      <LogoIcon src="/logo.png" alt="Maquifit Logo" />
+      <LogoIcon src="/inmove-logo-black.png" alt="Maquifit Logo" />
     </LogoContainer>
   );
 };
@@ -35,8 +35,8 @@ const LogoContainer = styled.div`
 `;
 
 const LogoIcon = styled.img`
-  width: 48px;
-  height: 48px;
+  width: 107px;
+  height: auto;
   object-fit: contain;
   margin-left: 30px;
 `;
