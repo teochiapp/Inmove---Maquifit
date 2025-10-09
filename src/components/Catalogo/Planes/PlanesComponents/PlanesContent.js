@@ -53,29 +53,53 @@ export default PlanesContent;
 // -------- Styled Components -------- //
 
 const TextContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 665px;
+  
   h2 {
-    font-size: 56px;
+    font-family: 'Onest', sans-serif;
+    font-size: clamp(32px, 5vw, 64px);
     font-weight: 600;
     line-height: 1.1;
     color: var(--text-black);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   p {
-    font-size: 18px;
+    font-family: 'Onest', sans-serif;
+    font-size: clamp(16px, 2vw, 18px);
+    font-weight: 400;
     color: var(--text-black);
     margin-bottom: 2rem;
-    max-width: 450px;
+    max-width: 500px;
+    line-height: 1.5;
   }
 
-  @media (max-width: 768px) {
-    h1 {
-      font-size: 28px;
+  @media (max-width: 900px) {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    h2 {
+      margin-bottom: 1rem;
     }
 
     p {
-      font-size: 16px;
       margin: 0 auto 1.5rem;
+      max-width: 600px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    h2 {
+      font-size: 28px;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      font-size: 15px;
+      margin-bottom: 1.5rem;
     }
   }
 `;
@@ -84,23 +108,33 @@ const CTAButton = styled.button`
   background: white;
   border: none;
   border-radius: 100px;
-  padding: 10px 10px 10px 16px;
-  display: flex;
+  padding: 12px 12px 12px 20px;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  @media (max-width: 900px) {
+    align-self: center;
+  }
   
   @media (max-width: 768px) {
-    padding: 0.6rem 1.2rem;
+    padding: 10px 10px 10px 18px;
   }
   
   @media (max-width: 480px) {
-    padding: 0.5rem 1rem;
+    padding: 10px 10px 10px 16px;
   }
   
   &:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 

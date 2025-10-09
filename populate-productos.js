@@ -6,6 +6,49 @@
  * Las imágenes deben subirse manualmente en el admin de Strapi
  */
 
+const http = require('http');
+
+// Función helper para hacer peticiones HTTP
+function makeRequest(url, options = {}) {
+  return new Promise((resolve, reject) => {
+    const parsedUrl = new URL(url);
+    const reqOptions = {
+      hostname: parsedUrl.hostname,
+      port: parsedUrl.port,
+      path: parsedUrl.pathname + parsedUrl.search,
+      method: options.method || 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+      }
+    };
+
+    const req = http.request(reqOptions, (res) => {
+      let data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        try {
+          resolve({
+            ok: res.statusCode >= 200 && res.statusCode < 300,
+            statusCode: res.statusCode,
+            json: () => Promise.resolve(JSON.parse(data))
+          });
+        } catch (e) {
+          reject(new Error('Error parsing response: ' + e.message));
+        }
+      });
+    });
+
+    req.on('error', reject);
+    
+    if (options.body) {
+      req.write(options.body);
+    }
+    
+    req.end();
+  });
+}
+
 const productos = [
   // Bikinis (ID: 38) - 4 productos
   {
@@ -226,7 +269,7 @@ async function actualizarOCrearProductos() {
   
   try {
     // Obtener todos los productos existentes
-    const response = await fetch('http://localhost:1337/api/productos?populate=*');
+    const response = await makeRequest('http://127.0.0.1:1337/api/productos?populate=*');
     const data = await response.json();
     const productosExistentes = data.data || [];
     
@@ -239,25 +282,26 @@ async function actualizarOCrearProductos() {
     
     for (const producto of productos) {
       try {
-        // Buscar si el producto ya existe por Nombre y Categoría
-        const productoExistente = productosExistentes.find(p => 
-          p.Nombre === producto.Nombre && 
-          p.CategoriaProducto?.id === producto.CategoriaProducto
-        );
+        // Buscar si el producto ya existe por Nombre
+        const productoExistente = productosExistentes.find(p => p.Nombre === producto.Nombre);
+        
+        // Preparar datos sin la relación (la asignaremos después)
+        const { CategoriaProducto, ...productoData } = producto;
+        const categoriaId = CategoriaProducto;
         
         if (productoExistente) {
           // ACTUALIZAR producto existente
-          const updateResponse = await fetch(`http://localhost:1337/api/productos/${productoExistente.documentId}`, {
+          const updateResponse = await makeRequest(`http://127.0.0.1:1337/api/productos/${productoExistente.documentId}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ data: producto })
+            body: JSON.stringify({ data: productoData })
           });
           
           if (updateResponse.ok) {
             actualizados++;
-            console.log(`🔄 [${actualizados + creados}/${productos.length}] Actualizado: ${producto.Nombre}`);
+            console.log(`🔄 [${actualizados + creados}/${productos.length}] Actualizado: ${producto.Nombre} (Categoría ID: ${categoriaId} - asignar manualmente)`);
           } else {
             fallidos++;
             const error = await updateResponse.json();
@@ -265,17 +309,17 @@ async function actualizarOCrearProductos() {
           }
         } else {
           // CREAR nuevo producto
-          const createResponse = await fetch('http://localhost:1337/api/productos', {
+          const createResponse = await makeRequest('http://127.0.0.1:1337/api/productos', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ data: producto })
+            body: JSON.stringify({ data: productoData })
           });
           
           if (createResponse.ok) {
             creados++;
-            console.log(`✅ [${actualizados + creados}/${productos.length}] Creado: ${producto.Nombre}`);
+            console.log(`✅ [${actualizados + creados}/${productos.length}] Creado: ${producto.Nombre} (Categoría ID: ${categoriaId} - asignar manualmente)`);
           } else {
             fallidos++;
             const error = await createResponse.json();
@@ -306,13 +350,18 @@ async function actualizarOCrearProductos() {
     console.log('  • Tops (ID: 5)');
     console.log('\n🔗 Verifica los productos en:');
     console.log('   http://localhost:1337/api/productos?populate=*');
+    console.log('\n⚠️  IMPORTANTE - Asignar categorías manualmente:');
+    console.log('   Los productos se crearon SIN categoría asociada.');
+    console.log('   Debes asignar la categoría manualmente en el admin de Strapi:');
+    console.log('   1. Ve a http://localhost:1337/admin');
+    console.log('   2. Ve a Content Manager → Productos');
+    console.log('   3. Para cada producto, asigna su categoría según el ID mencionado arriba');
     console.log('\n📸 URLs de imágenes de referencia (Unsplash):');
     console.log('   Las URLs están guardadas en el objeto imagenesReferencia del script');
     console.log('   Para subir las imágenes al campo "Portada":');
-    console.log('   1. Ve a http://localhost:1337/admin');
-    console.log('   2. Entra en cada producto');
-    console.log('   3. Descarga la imagen desde la URL correspondiente');
-    console.log('   4. Súbela en el campo "Portada"\n');
+    console.log('   1. Entra en cada producto en el admin');
+    console.log('   2. Descarga la imagen desde la URL correspondiente');
+    console.log('   3. Súbela en el campo "Portada"\n');
     
   } catch (error) {
     console.error('\n❌ Error fatal al obtener productos existentes:', error.message);

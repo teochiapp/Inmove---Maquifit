@@ -33,6 +33,7 @@ const SingleProduct = () => {
         talle: producto.attributes?.Talle,
         color: producto.attributes?.Color,
         precio: producto.attributes?.Precio,
+        categoriaId: producto.attributes?.Categoria?.data?.id,
         imagen: null // imagen manejada por util getProductoPortada
       };
     }
@@ -160,7 +161,10 @@ const SingleProduct = () => {
 
       <InfoSection />
 
-      <TePuedeInteresar />
+      <TePuedeInteresar 
+        categoriaId={producto?.attributes?.CategoriaProducto?.data?.id || productoView?.categoriaId}
+        productoActualId={productoId}
+      />
       <CategoriasNav />
       <CatalogFooter />
     </ProductContainer>
@@ -172,18 +176,22 @@ export default SingleProduct;
 // Styled Components
 const ProductContainer = styled.div`
   min-height: 100vh;
-  background-color: #f8f7f2;
-  padding: 2rem 0;
+  background-color: #F9F5F0;
+  padding: 0;
 `;
 
 const HeaderSpacer = styled.div`
-  height: 100px;
+  height: 120px;
+  
+  @media (max-width: 768px) {
+    height: 100px;
+  }
 `;
 
 const Breadcrumb = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem 2rem;
+  padding: 1.5rem 2rem 2.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -192,7 +200,12 @@ const Breadcrumb = styled.div`
   color: #666;
 
   @media (max-width: 768px) {
-    padding: 0 1rem 1.5rem;
+    padding: 1rem 1.5rem 2rem;
+    font-size: 0.85rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 1rem 1rem 1.5rem;
     font-size: 0.8rem;
   }
 `;
