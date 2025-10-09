@@ -42,31 +42,60 @@ const InfoProducto = ({
   const decrementQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
 
 
+  const scrollThumbnails = (direction) => {
+    if (direction === 'up' && activeThumb > 0) {
+      setActiveThumb(activeThumb - 1);
+    } else if (direction === 'down' && activeThumb < 2) {
+      setActiveThumb(activeThumb + 1);
+    }
+  };
+
   return (
     <>
 <ProductDetails>
         {/* Columna izquierda - Galería */}
   <GalleryContainer>
-    <Thumbnails>
-            <Thumbnail 
-              src={imageUrl} 
-              alt="Thumbnail 1"
-              active={activeThumb === 0}
-              onClick={() => setActiveThumb(0)}
-            />
-            <Thumbnail 
-              src={imageUrl} 
-              alt="Thumbnail 2"
-              active={activeThumb === 1}
-              onClick={() => setActiveThumb(1)}
-            />
-            <Thumbnail 
-              src={imageUrl} 
-              alt="Thumbnail 3"
-              active={activeThumb === 2}
-              onClick={() => setActiveThumb(2)}
-            />
-    </Thumbnails>
+    <ThumbnailsWrapper>
+      <Thumbnails>
+              <Thumbnail 
+                src={imageUrl} 
+                alt="Thumbnail 1"
+                active={activeThumb === 0}
+                onClick={() => setActiveThumb(0)}
+              />
+              <Thumbnail 
+                src={imageUrl} 
+                alt="Thumbnail 2"
+                active={activeThumb === 1}
+                onClick={() => setActiveThumb(1)}
+              />
+              <Thumbnail 
+                src={imageUrl} 
+                alt="Thumbnail 3"
+                active={activeThumb === 2}
+                onClick={() => setActiveThumb(2)}
+              />
+      </Thumbnails>
+      
+      <ArrowsContainer>
+        <ArrowButton onClick={() => scrollThumbnails('up')} disabled={activeThumb === 0}>
+          <ArrowIcon>
+            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 7L6 2L1 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </ArrowIcon>
+        </ArrowButton>
+        
+        <ArrowButton onClick={() => scrollThumbnails('down')} disabled={activeThumb === 2}>
+          <ArrowIcon>
+            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </ArrowIcon>
+        </ArrowButton>
+      </ArrowsContainer>
+    </ThumbnailsWrapper>
+    
           <MainImageContainer>
       <ProductImage src={imageUrl} alt={imageAlt} />
           </MainImageContainer>
@@ -248,6 +277,61 @@ const GalleryContainer = styled.div`
   gap: 1rem;
   align-items: center;
   height: 100%;
+`;
+
+const ThumbnailsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const ArrowsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+`;
+
+const ArrowButton = styled.button`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #E5E7EB;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  
+  &:hover:not(:disabled) {
+    border-color: var(--inmove-color);
+    background: #FFF5F9;
+    transform: scale(1.05);
+  }
+  
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+  }
+`;
+
+const ArrowIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #262626;
+  
+  svg {
+    display: block;
+  }
 `;
 
 const Thumbnails = styled.div`
