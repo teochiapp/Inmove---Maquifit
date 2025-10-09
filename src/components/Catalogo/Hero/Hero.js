@@ -26,7 +26,12 @@ const Hero = () => {
             <Subtitle>
               Descubrí la colección de In Move y llevá tu energía a otro nivel.
             </Subtitle>
-            <CTAButton>
+            <CTAButton onClick={() => {
+              const productosSection = document.getElementById('productos-section');
+              if (productosSection) {
+                productosSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }}>
               <ButtonText>Ver colección</ButtonText>
               <SearchIconContainer>
                 <svg viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">

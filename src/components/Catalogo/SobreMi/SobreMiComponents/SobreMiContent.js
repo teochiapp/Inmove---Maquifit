@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const SobreMiContent = () => {
+  const navigate = useNavigate();
+
   return (
     <ContentSection>
       <TextContainer>
@@ -17,7 +20,12 @@ const SobreMiContent = () => {
       </Description>
       </TextContainer>
       <ButtonContainer>
-        <CTAButton>
+        <CTAButton onClick={() => {
+          navigate('/');
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
+        }}>
           <ButtonText>Saber más</ButtonText>
           <ArrowSVG width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4.66699 5.53809L11.3337 12.2048" stroke="#262626" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>

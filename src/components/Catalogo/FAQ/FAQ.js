@@ -38,7 +38,7 @@ const FAQ = () => {
         {/* Columna izquierda */}
         <LeftColumn>
           <h2>Preguntas Frecuentes</h2>
-          <CTAButton>
+          <CTAButton onClick={() => window.open('https://wa.me/5493513797137', '_blank')}>
             <ButtonText>Escribime!</ButtonText>
             <DialogIcon src="/icons/dialog.png" alt="Dialog" />
           </CTAButton>

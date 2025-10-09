@@ -26,15 +26,29 @@ const Header = () => {
     navigate('/carrito');
   };
 
-  const handleCategoryClick = (categoriaSlug) => {
+  const handleCategoryClick = (categoriaSlug, fromMobile = false) => {
     if (isCatalogPage) {
-      // En la página del catálogo, hacer scroll a la sección
-      const element = document.getElementById(`categoria-${categoriaSlug}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      // Si viene del menú mobile, cerrar primero y luego hacer scroll
+      if (fromMobile) {
+        closeMobileMenu();
+        setTimeout(() => {
+          const element = document.getElementById(`categoria-${categoriaSlug}`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 300); // Esperar a que el menú se cierre
+      } else {
+        // En la página del catálogo desde desktop, hacer scroll a la sección
+        const element = document.getElementById(`categoria-${categoriaSlug}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     } else {
       // En otras páginas, navegar al catálogo con la sección
+      if (fromMobile) {
+        closeMobileMenu();
+      }
       navigate(`/catalogo#categoria-${categoriaSlug}`);
     }
   };
@@ -42,18 +56,31 @@ const Header = () => {
   // Manejar scroll automático cuando hay hash en la URL
   useEffect(() => {
     if (isCatalogPage && location.hash) {
-      // Esperar un poco para que la página se renderice completamente
-      const timer = setTimeout(() => {
+      // Esperar a que los productos se carguen y se rendericen
+      const scrollToHash = () => {
         const elementId = location.hash.substring(1); // Remover el #
         const element = document.getElementById(elementId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return true;
         }
-      }, 100);
-      
-      return () => clearTimeout(timer);
+        return false;
+      };
+
+      // Intentar hacer scroll inmediatamente
+      if (!scrollToHash()) {
+        // Si no funciona, esperar un poco más (para productos que se cargan desde Strapi)
+        const timer = setTimeout(() => {
+          if (!scrollToHash()) {
+            // Segundo intento después de más tiempo
+            setTimeout(() => scrollToHash(), 500);
+          }
+        }, 300);
+        
+        return () => clearTimeout(timer);
+      }
     }
-  }, [isCatalogPage, location.hash]);
+  }, [isCatalogPage, location.hash, loading]);
 
   // Bloquear scroll cuando el menú está abierto
   useEffect(() => {
@@ -178,10 +205,7 @@ const Header = () => {
             categorias.map((categoria) => (
               <MobileCategoryNavLink 
                 key={categoria.id}
-                onClick={() => {
-                  handleCategoryClick(categoria.slug);
-                  closeMobileMenu();
-                }}
+                onClick={() => handleCategoryClick(categoria.slug, true)}
                 className={activeSection === `categoria-${categoria.slug}` ? 'active' : ''}
               >
                 {categoria.icono ? (

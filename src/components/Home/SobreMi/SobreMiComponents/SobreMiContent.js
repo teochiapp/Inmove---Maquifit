@@ -17,7 +17,7 @@ const SobreMiContent = () => {
       </Description>
       </TextContainer>
       <ButtonContainer>
-      <CTAButton>
+      <CTAButton onClick={() => window.open('https://wa.me/5493513797137', '_blank')}>
         <ButtonText>Escribime!</ButtonText>
         <DialogIcon src="/icons/dialog.png" alt="Dialog" />
       </CTAButton>

@@ -53,19 +53,21 @@ const CheckoutPage = () => {
     let mensaje = `Hola, buen día! soy ${nombreCompleto}. Quisiera confirmar el siguiente pedido para proceder al pago:\n\n`;
     
     mensaje += `Resumen del pedido\n`;
-    items.forEach(item => {
+    items.forEach((item, index) => {
+      if (items.length > 1) mensaje += `${index + 1}) `;
       mensaje += `${item.nombre}`;
       if (item.color) mensaje += ` — Color: ${item.color}`;
       if (item.talle) mensaje += ` — Talla: ${item.talle}`;
       mensaje += ` — Cantidad: ${item.quantity} — $${item.precio}\n`;
     });
     
-    mensaje += `\nSubtotal: $${Math.round(totalPrice)} Envío: FREE Total a pagar: $${Math.round(totalPrice)}\n\n`;
+    mensaje += `\nEnvío: A coordinar\n`;
+    mensaje += `Total a pagar: $${Math.round(totalPrice)}\n\n`;
     
     mensaje += `Datos de contacto\n`;
-    mensaje += `Nombre: ${nombreCompleto}\n`;
-    mensaje += `Teléfono: ${formData.telefono}\n`;
-    mensaje += `Email: ${formData.email}\n\n`;
+    mensaje += `• Nombre: ${nombreCompleto}\n`;
+    mensaje += `• Teléfono: ${formData.telefono}\n`;
+    mensaje += `• Email: ${formData.email}\n\n`;
     
     mensaje += `Siguiente paso: por favor, envíenme el link de pago o el método disponible (MercadoPago / transferencia / pago en efectivo). Respondo "CONFIRMO" si todo está correcto y quiero que me envíen el link.\n\n`;
     
@@ -101,11 +103,23 @@ const CheckoutPage = () => {
       
       <Breadcrumb>
         <BreadcrumbButton onClick={() => navigate('/')}>Inicio</BreadcrumbButton>
-        <BreadcrumbSeparator>/</BreadcrumbSeparator>
+        <BreadcrumbSeparator>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 12L10 8L6 4" stroke="#BEBCBD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </BreadcrumbSeparator>
         <BreadcrumbButton onClick={() => navigate('/catalogo')}>Catálogo</BreadcrumbButton>
-        <BreadcrumbSeparator>/</BreadcrumbSeparator>
+        <BreadcrumbSeparator>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 12L10 8L6 4" stroke="#BEBCBD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </BreadcrumbSeparator>
         <BreadcrumbButton onClick={() => navigate('/carrito')}>Carrito</BreadcrumbButton>
-        <BreadcrumbSeparator>/</BreadcrumbSeparator>
+        <BreadcrumbSeparator>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 12L10 8L6 4" stroke="#BEBCBD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </BreadcrumbSeparator>
         <BreadcrumbCurrent>Pagar</BreadcrumbCurrent>
       </Breadcrumb>
 
@@ -115,7 +129,6 @@ const CheckoutPage = () => {
             <FormTitle>Completá tu información</FormTitle>
             
             <FormGroup>
-              <Label htmlFor="nombre">Nombre*</Label>
               <Input
                 type="text"
                 id="nombre"
@@ -125,10 +138,10 @@ const CheckoutPage = () => {
                 placeholder="Nombre/s"
                 required
               />
+              <Label htmlFor="nombre">Nombre*</Label>
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor="apellido">Apellido*</Label>
               <Input
                 type="text"
                 id="apellido"
@@ -138,10 +151,10 @@ const CheckoutPage = () => {
                 placeholder="Apellido/s"
                 required
               />
+              <Label htmlFor="apellido">Apellido*</Label>
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor="email">Email*</Label>
               <Input
                 type="email"
                 id="email"
@@ -151,10 +164,10 @@ const CheckoutPage = () => {
                 placeholder="ejemplo@email.com"
                 required
               />
+              <Label htmlFor="email">Email*</Label>
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor="telefono">Número de teléfono*</Label>
               <Input
                 type="tel"
                 id="telefono"
@@ -164,6 +177,7 @@ const CheckoutPage = () => {
                 placeholder="+54 9 351 12345"
                 required
               />
+              <Label htmlFor="telefono">Número de teléfono*</Label>
             </FormGroup>
           </FormSection>
 
@@ -171,60 +185,58 @@ const CheckoutPage = () => {
             <OrderCard>
               <OrderTitle>Tu pedido</OrderTitle>
               
-              <OrderSummary>
-                <OrderItems>
-                  {items.map((item) => (
-                    <OrderItem key={item.id}>
-                      <ItemName>{item.nombre}</ItemName>
-                      {item.color && <ItemDetail>Color: {item.color}</ItemDetail>}
-                      {item.talle && <ItemDetail>Talla: {item.talle}</ItemDetail>}
-                      <ItemDetail>Cantidad: {item.quantity}</ItemDetail>
-                      <ItemPrice>${item.precio}</ItemPrice>
-                    </OrderItem>
+              <MessagePreview>
+                <MessageText>
+                  Hola, buen día! soy {formData.nombre && formData.apellido ? `${formData.nombre} ${formData.apellido}` : ''}. Quisiera confirmar el siguiente pedido para proceder al pago:
+                </MessageText>
+                
+                <MessageText>
+                  <strong>Resumen del pedido</strong>
+                  <br />
+                  {items.map((item, index) => (
+                    <span key={item.id}>
+                      {items.length > 1 && `${index + 1}) `}{item.nombre}
+                      {item.color && ` — Color: ${item.color}`}
+                      {item.talle && ` — Talla: ${item.talle}`}
+                      {` — Cantidad: ${item.quantity} — $${item.precio}`}
+                      <br />
+                    </span>
                   ))}
-                </OrderItems>
+                </MessageText>
 
-                <OrderTotals>
-                  <TotalRow>
-                    <TotalLabel>Subtotal:</TotalLabel>
-                    <TotalValue>${Math.round(totalPrice)}</TotalValue>
-                  </TotalRow>
-                  <TotalRow>
-                    <TotalLabel>Envío:</TotalLabel>
-                    <TotalValue>FREE</TotalValue>
-                  </TotalRow>
-                  <TotalRow className="final">
-                    <TotalLabel>Total a pagar:</TotalLabel>
-                    <TotalValue>${Math.round(totalPrice)}</TotalValue>
-                  </TotalRow>
-                </OrderTotals>
+                <MessageText>
+                  Envío: A coordinar
+                  <br />
+                  Total a pagar: <strong>${Math.round(totalPrice)}</strong>
+                </MessageText>
 
-                <ContactInfo>
-                  <ContactTitle>Datos de contacto</ContactTitle>
-                  <ContactItem>Nombre: {formData.nombre} {formData.apellido}</ContactItem>
-                  <ContactItem>Teléfono: {formData.telefono}</ContactItem>
-                  <ContactItem>Email: {formData.email}</ContactItem>
-                </ContactInfo>
+                <MessageText>
+                  <strong>Datos de contacto</strong>
+                  <br />
+                  • Nombre: {formData.nombre} {formData.apellido}
+                  <br />
+                  • Teléfono: {formData.telefono}
+                  <br />
+                  • Email: {formData.email}
+                </MessageText>
 
-                <NextStepInfo>
-                  <NextStepTitle>Siguiente paso:</NextStepTitle>
-                  <NextStepText>
-                    por favor, envíenme el link de pago o el método disponible (MercadoPago / transferencia / pago en efectivo). Respondo "CONFIRMO" si todo está correcto y quiero que me envíen el link.
-                  </NextStepText>
-                </NextStepInfo>
+                <MessageText>
+                  <strong>Siguiente paso:</strong> por favor, envíenme el link de pago o el método disponible (MercadoPago / transferencia / pago en efectivo). Respondo "CONFIRMO" si todo está correcto y quiero que me envíen el link.
+                </MessageText>
 
-                <ThankYouMessage>
+                <MessageText>
                   Muchas gracias — quedo atenta ✨
-                </ThankYouMessage>
-
-                <SendButton type="submit">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M1 8h14M8 1l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  Enviar
-                </SendButton>
-              </OrderSummary>
+                </MessageText>
+                
+              </MessagePreview>
             </OrderCard>
+
+            <SendButton type="submit">
+              Enviar
+               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M1 8h14M8 1l7 7-7 7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </SendButton>
           </OrderSection>
         </CheckoutForm>
       </CheckoutContainer>
@@ -267,7 +279,7 @@ const Breadcrumb = styled.div`
 const BreadcrumbButton = styled.button`
   background: none;
   border: none;
-  color: #B088E0;
+  color: #BEBCBD;
   text-decoration: none;
   transition: color 0.3s ease;
   cursor: pointer;
@@ -281,11 +293,13 @@ const BreadcrumbButton = styled.button`
 `;
 
 const BreadcrumbSeparator = styled.span`
-  color: #B088E0;
+  color: #BEBCBD;
+  display: flex;
+  align-items: center;
 `;
 
 const BreadcrumbCurrent = styled.span`
-  color: #262626;
+  color: #000000;
   font-weight: 500;
 `;
 
@@ -313,7 +327,7 @@ const CheckoutForm = styled.form`
 const FormSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 `;
 
 const FormTitle = styled.h1`
@@ -329,30 +343,36 @@ const FormTitle = styled.h1`
 `;
 
 const FormGroup = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 `;
 
 const Label = styled.label`
+  position: absolute;
+  top: -8px;
+  left: 12px;
   font-family: 'Onest', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #262626;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #666;
+  background: #f8f7f2;
+  padding: 0 6px;
+  pointer-events: none;
 `;
 
 const Input = styled.input`
   padding: 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgba(0,0,0, 0.5);
   border-radius: 8px;
   font-family: 'Onest', sans-serif;
   font-size: 1rem;
-  background: white;
   transition: border-color 0.3s ease;
+  background: #f8f7f2;
 
   &:focus {
     outline: none;
-    border-color: #B088E0;
+    border-color: var(--inmove-color);
   }
 
   &::placeholder {
@@ -362,16 +382,21 @@ const Input = styled.input`
 
 const OrderSection = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
 `;
 
 const OrderCard = styled.div`
-  background: white;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: #F3F2EC;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 500px;
+  padding: 24px;
+  border-radius: 24px;
+  max-width: 650px;
 
   @media (max-width: 768px) {
     padding: 1.5rem;
@@ -386,137 +411,27 @@ const OrderTitle = styled.h2`
   margin: 0 0 1.5rem 0;
 `;
 
-const OrderSummary = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-`;
-
-const OrderItems = styled.div`
+const MessagePreview = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
 `;
 
-const OrderItem = styled.div`
-  padding: 1rem 0;
-  border-bottom: 1px solid #f0f0f0;
-  
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const ItemName = styled.div`
+const MessageText = styled.p`
   font-family: 'Onest', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.95rem;
   color: #262626;
-  margin-bottom: 0.5rem;
-`;
-
-const ItemDetail = styled.span`
-  font-family: 'Onest', sans-serif;
-  font-size: 0.9rem;
-  color: #666;
-  margin-right: 1rem;
-`;
-
-const ItemPrice = styled.span`
-  font-family: 'Onest', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #8B5CF6;
-  float: right;
-`;
-
-const OrderTotals = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem 0;
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-`;
-
-const TotalRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  &.final {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: #262626;
-    padding-top: 0.5rem;
-    border-top: 1px solid #e5e7eb;
-    margin-top: 0.5rem;
-  }
-`;
-
-const TotalLabel = styled.span`
-  font-family: 'Onest', sans-serif;
-  color: #666;
-`;
-
-const TotalValue = styled.span`
-  font-family: 'Onest', sans-serif;
-  font-weight: 600;
-  color: #262626;
-`;
-
-const ContactInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const ContactTitle = styled.h3`
-  font-family: 'Onest', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #262626;
-  margin: 0 0 0.5rem 0;
-`;
-
-const ContactItem = styled.div`
-  font-family: 'Onest', sans-serif;
-  font-size: 0.9rem;
-  color: #666;
-`;
-
-const NextStepInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const NextStepTitle = styled.h3`
-  font-family: 'Onest', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #262626;
-  margin: 0 0 0.5rem 0;
-`;
-
-const NextStepText = styled.p`
-  font-family: 'Onest', sans-serif;
-  font-size: 0.9rem;
-  color: #666;
-  line-height: 1.4;
+  line-height: 1.6;
   margin: 0;
-`;
+  white-space: pre-line;
 
-const ThankYouMessage = styled.p`
-  font-family: 'Onest', sans-serif;
-  font-size: 1rem;
-  color: #262626;
-  text-align: center;
-  margin: 1rem 0;
+  strong {
+    font-weight: 600;
+    color: #000;
+  }
 `;
 
 const SendButton = styled.button`
-  width: 100%;
   padding: 12px 40px;
   background: var(--inmove-color);
   color: white;
@@ -539,6 +454,10 @@ const SendButton = styled.button`
   
   &:active {
     transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 

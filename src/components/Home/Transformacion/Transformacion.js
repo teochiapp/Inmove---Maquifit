@@ -47,7 +47,12 @@ const Transformacion = () => {
                     {step.title} <BoldText>{step.titleBold}</BoldText>
                   </ContentTitle>
                   <ButtonContainer>
-                    <CTAButton as="a" href={step.button1Url} target="_blank" rel="noopener noreferrer">
+                    <CTAButton onClick={() => {
+                      const planesSection = document.getElementById('planes-section');
+                      if (planesSection) {
+                        planesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }}>
                       <ButtonText>{step.button1}</ButtonText>
                       <DialogIcon src="/icons/arrow-top.png" alt="Arrow" />
                     </CTAButton>

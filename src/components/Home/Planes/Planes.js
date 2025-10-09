@@ -151,7 +151,7 @@ const Planes = () => {
   );
 
   return (
-    <PlanesSection>
+    <PlanesSection id="planes-section">
       <Container>
         <Header
           as={motion.div}

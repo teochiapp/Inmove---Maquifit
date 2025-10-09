@@ -8,7 +8,7 @@ const ContactSection = () => {
         <ContactItem>
           <ContactLabel>Escribime</ContactLabel>
           <ContactValue>
-            <span>(</span> 351 - 123456 <span>)</span>
+            <span>(</span> 351 - 3797137 <span>)</span>
           </ContactValue>
         </ContactItem>
 

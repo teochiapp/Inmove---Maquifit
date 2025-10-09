@@ -135,9 +135,17 @@ const SingleProduct = () => {
       <HeaderSpacer />
       <Breadcrumb>
         <BreadcrumbButton onClick={handleNavigateHome}>Inicio</BreadcrumbButton>
-        <BreadcrumbSeparator>/</BreadcrumbSeparator>
+        <BreadcrumbSeparator>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 12L10 8L6 4" stroke="#BEBCBD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </BreadcrumbSeparator>
         <BreadcrumbButton onClick={handleNavigateCatalog}>Catálogo</BreadcrumbButton>
-        <BreadcrumbSeparator>/</BreadcrumbSeparator>
+        <BreadcrumbSeparator>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 12L10 8L6 4" stroke="#BEBCBD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </BreadcrumbSeparator>
         <BreadcrumbCurrent>{productoNombre}</BreadcrumbCurrent>
       </Breadcrumb>
       
@@ -192,7 +200,7 @@ const Breadcrumb = styled.div`
 const BreadcrumbButton = styled.button`
   background: none;
   border: none;
-  color: #B088E0;
+  color: #BEBCBD;
   text-decoration: none;
   transition: color 0.3s ease;
   cursor: pointer;
@@ -211,11 +219,13 @@ const BreadcrumbButton = styled.button`
 `;
 
 const BreadcrumbSeparator = styled.span`
-  color: #B088E0;
+  color: #BEBCBD;
+  display: flex;
+  align-items: center;
 `;
 
 const BreadcrumbCurrent = styled.span`
-  color: #262626;
+  color: #000000;
   font-weight: 500;
 `;
 

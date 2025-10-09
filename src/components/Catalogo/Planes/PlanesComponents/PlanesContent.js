@@ -7,7 +7,14 @@ const PlanesContent = () => {
   const navigate = useNavigate();
 
   const handleGoToPlanes = () => {
-    navigate("/planes");
+    navigate("/");
+    // Esperar a que la navegación se complete y luego hacer scroll
+    setTimeout(() => {
+      const planesSection = document.getElementById('planes-section');
+      if (planesSection) {
+        planesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   return (

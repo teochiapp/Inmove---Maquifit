@@ -41,7 +41,12 @@ const TransformacionMobile = () => {
 
         {/* Primer botón */}
         <FirstButtonSection>
-          <CTAButton as="a" href={contentCard.button1Url} target="_blank" rel="noopener noreferrer">
+          <CTAButton onClick={() => {
+            const planesSection = document.getElementById('planes-section');
+            if (planesSection) {
+              planesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }}>
             <ButtonText>Empezá hoy!</ButtonText>
             <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
           </CTAButton>
