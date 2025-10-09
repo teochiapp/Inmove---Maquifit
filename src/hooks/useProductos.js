@@ -35,6 +35,10 @@ export const useProductos = () => {
   
   // Normalizar productos para mantener compatibilidad con el código existente (memoizado)
   const productosNormalizados = useMemo(() => {
+    console.log('🔄 Normalizando productos...', productos.length);
+    if (productos.length > 0) {
+      console.log('📦 Producto raw (antes de normalizar):', productos[0]);
+    }
     return productos.map(producto => ({
       id: producto.id || producto.documentId,
       documentId: producto.documentId,
@@ -65,12 +69,39 @@ export const useProductos = () => {
             }
           }
         } : null,
+        // Agregar variantes normalizadas (en minúscula como en Strapi)
+        Variantes: producto.variantes ? {
+          data: producto.variantes.map(variante => ({
+            id: variante.id || variante.documentId,
+            documentId: variante.documentId,
+            attributes: {
+              Color: variante.Color,
+              Talla: variante.Talla,
+              Stock: variante.Stock,
+              Imagen: variante.Imagen ? {
+                data: {
+                  attributes: {
+                    url: variante.Imagen.url,
+                    formats: variante.Imagen.formats,
+                    alternativeText: variante.Imagen.alternativeText,
+                    name: variante.Imagen.name
+                  }
+                }
+              } : null
+            }
+          }))
+        } : null,
         createdAt: producto.createdAt,
         updatedAt: producto.updatedAt,
         publishedAt: producto.publishedAt
       }
     }));
   }, [productos]);
+  
+  console.log('✅ Productos normalizados:', productosNormalizados.length);
+  if (productosNormalizados.length > 0) {
+    console.log('🎯 Producto normalizado (después):', productosNormalizados[0]);
+  }
   
   return {
     productos: productosNormalizados,

@@ -131,6 +131,8 @@ El endpoint usado es:
 GET /api/variantes?filters[Producto][id][$eq]={productoId}&populate=Imagen
 ```
 
+**Nota:** Aunque el Content Type se llame "variante" (singular) en Strapi, el endpoint de la API es plural "variantes".
+
 Esto devuelve todas las variantes de un producto específico con sus imágenes.
 
 ---

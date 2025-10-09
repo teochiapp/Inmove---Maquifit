@@ -38,7 +38,11 @@ export const useAPI = (endpoint, options = {}) => {
         let fullURL = `${API_BASE_URL}${endpoint}`;
         
         // Popular relaciones para productos y categorías
-        if ((endpoint.includes('/productos') || endpoint.includes('/categorias')) && !endpoint.includes('populate')) {
+        if (endpoint.includes('/productos') && !endpoint.includes('populate')) {
+          const separator = endpoint.includes('?') ? '&' : '?';
+          // Strapi v5 syntax: populate específico con notación de objeto
+          fullURL = `${fullURL}${separator}populate[0]=Portada&populate[1]=CategoriaProducto&populate[2]=variantes&populate[3]=variantes.Imagen&pagination[pageSize]=100`;
+        } else if (endpoint.includes('/categorias') && !endpoint.includes('populate')) {
           const separator = endpoint.includes('?') ? '&' : '?';
           // Strapi v5 syntax: populate all relations + sin límite de paginación
           fullURL = `${fullURL}${separator}populate=*&pagination[pageSize]=100`;
@@ -84,6 +88,13 @@ export const useAPI = (endpoint, options = {}) => {
         }
         
         const result = await response.json();
+        
+        // Debug: ver la respuesta completa
+        console.log('📦 Respuesta de Strapi:', result);
+        if (endpoint.includes('/productos') && result.data) {
+          console.log('📋 Productos recibidos:', result.data.length);
+          console.log('🔍 Primer producto (sample):', result.data[0]);
+        }
         
         // Validar estructura de respuesta de Strapi
         if (result && typeof result === 'object') {

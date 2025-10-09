@@ -24,6 +24,7 @@ export const useVariantesPorProducto = (productoId) => {
         setError(null);
         
         // Consultar variantes filtrando por producto
+        // Nota: El endpoint en Strapi puede ser plural "variantes" aunque el Content Type sea singular
         const response = await fetch(
           `${STRAPI_URL}/api/variantes?filters[Producto][id][$eq]=${productoId}&populate=Imagen`,
           {

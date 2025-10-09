@@ -106,19 +106,19 @@ const InfoProducto = ({
               <Thumbnail 
                 src={imageUrl} 
                 alt="Thumbnail 1"
-                active={activeThumb === 0}
+                $active={activeThumb === 0}
                 onClick={() => setActiveThumb(0)}
               />
               <Thumbnail 
                 src={imageUrl} 
                 alt="Thumbnail 2"
-                active={activeThumb === 1}
+                $active={activeThumb === 1}
                 onClick={() => setActiveThumb(1)}
               />
               <Thumbnail 
                 src={imageUrl} 
                 alt="Thumbnail 3"
-                active={activeThumb === 2}
+                $active={activeThumb === 2}
                 onClick={() => setActiveThumb(2)}
               />
       </Thumbnails>
@@ -401,7 +401,7 @@ const Thumbnail = styled.img`
   object-fit: cover;
   border-radius: 12px;
   cursor: pointer;
-  border: 3px solid ${props => props.active ? 'var(--inmove-color)' : 'transparent'};
+  border: 3px solid ${props => props.$active ? 'var(--inmove-color)' : 'transparent'};
   transition: all 0.3s ease;
   background: white;
 
