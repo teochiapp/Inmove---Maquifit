@@ -29,6 +29,18 @@ const ImageWrapper = styled.div`
   height: 100%;
   min-height: 500px;
 
+  &::after {
+    content: '';
+    position: absolute;
+       right: -55px;
+    bottom: -46px;
+    width: 1000px;
+    height: 40px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 40%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
+
   img {
     position: absolute;
     right: -100px;
@@ -42,6 +54,13 @@ const ImageWrapper = styled.div`
   
   @media (max-width: 1200px) {
     min-height: 450px;
+    
+    &::after {
+      right: -30px;
+      bottom: -30px;
+      width: 701px;
+      height: 38px;
+    }
     
     img {
       right: -50px;
@@ -57,6 +76,14 @@ const ImageWrapper = styled.div`
     display: flex;
     justify-content: center;
     
+    &::after {
+      right: 51%;
+      transform: translateX(50%);
+      bottom: 33px;
+      width: 675px;
+      height: 35px;
+    }
+    
     img {
       position: relative;
       right: 0;
@@ -70,15 +97,55 @@ const ImageWrapper = styled.div`
   @media (max-width: 768px) {
     min-height: 350px;
     
+    &::after {
+        right: 51%;
+        transform: translateX(50%);
+        bottom: 33px;
+        width: 675px;
+    }
+    
     img {
       max-width: 120%;
-
     }
   }
   
   @media (max-width: 480px) {
     min-height: 300px;
     
-   
+    &::after {
+      right: 51%;
+      transform: translateX(50%);
+      bottom: 33px;
+      width: 392px;;
+      height: 28px;
+    }
+  }
+     @media (max-width: 375px) {
+    
+    &::after {
+      right: 51%;
+      transform: translateX(50%);
+      bottom: 45px;
+      width: 300px;
+      height: 28px;
+    }
+     @media (max-width: 350px) {
+    
+    &::after {
+      right: 51%;
+      transform: translateX(50%);
+      bottom: 55px;
+      width: 300px;
+      height: 28px;
+    }
+     @media (max-width: 320px) {
+    
+    &::after {
+      right: 51%;
+      transform: translateX(50%);
+      bottom: 65px;
+      width: 300px;
+      height: 28px;
+    }
   }
 `;

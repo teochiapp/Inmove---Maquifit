@@ -33,7 +33,7 @@ const PlanesSection = styled.section`
   }
   
   @media (max-width: 480px) {
-    padding: 2.5rem 1rem;
+    padding: 2.5rem 1.5rem;
   }
 `;
 

@@ -19,9 +19,16 @@ const ContactSection = () => {
 
         <ContactItem>
           <ContactLabel>Horarios</ContactLabel>
-          <ContactValue>
-            Lun—Vie: 8:00 - 18:00 | Sáb: 9:00 - 15:00
-          </ContactValue>
+          <HoursContainer>
+            <DaysRow>
+              <DayLabel>Lun—Vie</DayLabel>
+              <DayLabel>Sáb</DayLabel>
+            </DaysRow>
+            <TimesRow>
+              <TimeValue>8:00 - 18:00</TimeValue>
+              <TimeValue>9:00 - 15:00</TimeValue>
+            </TimesRow>
+          </HoursContainer>
         </ContactItem>
       </ContactInfo>
 
@@ -72,18 +79,42 @@ const ContactValue = styled.span`
   }
 `;
 
-const HoursRow = styled.div`
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-
-  @media (max-width: 768px) {
-    gap: 1.25rem;
-  }
-`;
-
-const HourBlock = styled.div`
+const HoursContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+`;
+
+const DaysRow = styled.div`
+  display: flex;
+  gap: 3.5rem;
+
+  @media (max-width: 768px) {
+    gap: 2.5rem;
+  }
+`;
+
+const TimesRow = styled.div`
+  display: flex;
+  gap: 1.3rem;
+
+  @media (max-width: 768px) {
+    gap: 1.3rem;
+  }
+`;
+
+const DayLabel = styled.span`
+  font-family: "Onest", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--text-white);
+  min-width: 60px;
+`;
+
+const TimeValue = styled.span`
+  font-family: "Onest", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--text-white);
+  min-width: 100px;
 `;
