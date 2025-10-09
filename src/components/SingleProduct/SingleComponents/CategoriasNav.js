@@ -11,45 +11,60 @@ const CategoriasNav = () => {
     navigate(`/catalogo#categoria-${slug}`);
   };
 
+  if (loading) {
+    return (
+      <Section>
+        <Container>
+          <LoadingMessage>Cargando categorías...</LoadingMessage>
+        </Container>
+      </Section>
+    );
+  }
+
+  if (error) {
+    return (
+      <Section>
+        <Container>
+          <ErrorMessage>Error al cargar las categorías. Intenta nuevamente.</ErrorMessage>
+        </Container>
+      </Section>
+    );
+  }
+
   return (
     <Section>
       <Container>
         <Header>
-          <h2>Más Categorías</h2>
+          <h2>Nuestros Productos</h2>
         </Header>
 
-        {loading && <LoadingMessage>Cargando categorías...</LoadingMessage>}
-        {error && <ErrorMessage>Error al cargar las categorías.</ErrorMessage>}
+        <Grid>
+          {categorias.map((categoria) => (
+            <Card key={categoria.id} $color={categoria.color}>
+              <Image>
+                {categoria.portada ? (
+                  <img src={categoria.portada} alt={categoria.nombre} />
+                ) : (
+                  <Placeholder $color={categoria.color}>📦</Placeholder>
+                )}
+              </Image>
 
-        {!loading && !error && (
-          <Grid>
-            {categorias.map((categoria) => (
-              <Card key={categoria.id} $color={categoria.color}>
-                <Image>
-                  {categoria.portada ? (
-                    <img src={categoria.portada} alt={categoria.nombre} />
-                  ) : (
-                    <Placeholder $color={categoria.color}>📦</Placeholder>
-                  )}
-                </Image>
+              <Overlay>
+                <Icon>
+                  {categoria.icono ? <img src={categoria.icono} alt={categoria.nombre} /> : <span>📦</span>}
+                </Icon>
+                <Name>{categoria.nombre}</Name>
+              </Overlay>
 
-                <Overlay>
-                  <Icon>
-                    {categoria.icono ? <img src={categoria.icono} alt={categoria.nombre} /> : <span>📦</span>}
-                  </Icon>
-                  <Name>{categoria.nombre}</Name>
-                </Overlay>
-
-                <VerMasButton onClick={() => handleVerMas(categoria.slug)}>
-                  <ButtonText>Ver más</ButtonText>
-                  <ArrowIcon>
-                    <img src="/icons/arrow-top.png" alt="Arrow" />
-                  </ArrowIcon>
-                </VerMasButton>
-              </Card>
-            ))}
-          </Grid>
-        )}
+              <VerMasButton onClick={() => handleVerMas(categoria.slug)}>
+                <ButtonText>Ver más</ButtonText>
+                <ArrowIcon>
+                  <img src="/icons/arrow-top.png" alt="Arrow" />
+                </ArrowIcon>
+              </VerMasButton>
+            </Card>
+          ))}
+        </Grid>
       </Container>
     </Section>
   );
@@ -59,90 +74,103 @@ export default CategoriasNav;
 
 const Section = styled.section`
   padding: 4rem 2rem;
-  background: #F9F5F0;
+  background: var(--background-white-color);
   
-  @media (max-width: 768px) {
-    padding: 3rem 1.5rem;
-  }
-  
-  @media (max-width: 480px) {
-    padding: 2.5rem 1rem;
+  @media (max-width: 370px) {
+    padding: 4rem 1rem;
   }
 `;
 
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1rem;
-  
-  @media (max-width: 768px) {
-    padding: 0;
-  }
 `;
 
 const Header = styled.div`
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
+  padding: 0rem 2rem;
   text-align: center;
 
   h2 {
-    font-family: 'Onest', sans-serif;
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-size: 54px;
     font-weight: 600;
-    color: #262626;
-    margin: 0;
+    color: var(--text-black);
+    margin-bottom: 1rem;
   }
-  
+
+  p {
+    color: var(--text-black);
+    font-size: 19px;
+    font-weight: 300;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1024px) {
+    p {
+      font-size: 17px;
+    }
+  }
+
   @media (max-width: 768px) {
-    margin-bottom: 2rem;
+    h2 {
+      font-size: 27px;
+    }
+
+    p {
+      font-size: 16px;
+    }
   }
 `;
 
 const LoadingMessage = styled.div`
   text-align: center;
-  padding: 2rem 0;
-  font-size: 1rem;
+  padding: 4rem 0;
+  font-size: 1.2rem;
   color: var(--text-black);
 `;
 
 const ErrorMessage = styled.div`
   text-align: center;
-  padding: 2rem 0;
-  font-size: 1rem;
+  padding: 4rem 0;
+  font-size: 1.2rem;
   color: #e74c3c;
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  
   @media (max-width: 768px) {
-    gap: 1.25rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 `;
 
 const Card = styled.div`
   position: relative;
-  height: 190px;
-  border-radius: 24px;
+  height: 250px;
+  border-radius: 40px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-
+  
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   }
-
+  
   @media (max-width: 768px) {
-    height: 140px;
-    border-radius: 20px;
+    height: 180px;
+    border-radius: 15px;
   }
   
   @media (max-width: 480px) {
-    height: 130px;
-    border-radius: 16px;
+    height: 160px;
+    border-radius: 12px;
   }
 `;
 
@@ -152,7 +180,7 @@ const Image = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-
+  
   img {
     width: 100%;
     height: 100%;
@@ -167,7 +195,7 @@ const Placeholder = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: 4rem;
   opacity: 0.7;
 `;
 
@@ -177,78 +205,61 @@ const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(38, 38, 38, 0.75) 0%, rgba(38, 38, 38, 0.3) 60%, transparent 100%);
+  background: linear-gradient(135deg, rgba(38, 38, 38, 0.7), rgba(38, 38, 38, 0.1));
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
-  padding: 0 2rem;
-  gap: 1rem;
+  padding: 2rem;
   
   @media (max-width: 768px) {
-    padding: 0 1.5rem;
-    gap: 0.75rem;
+    padding: 1.5rem;
   }
   
   @media (max-width: 480px) {
-    padding: 0 1.25rem;
+    padding: 1rem;
   }
 `;
 
 const Icon = styled.div`
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
+  width: 40px;
+  height: 40px;
+  margin-bottom: 0.5rem;
+  
   img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     filter: brightness(0) invert(1);
   }
-
+  
   span {
     font-size: 2rem;
     color: white;
-  }
-  
-  @media (max-width: 768px) {
-    width: 36px;
-    height: 36px;
-    
-    span {
-      font-size: 1.75rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    width: 32px;
-    height: 32px;
-    
-    span {
-      font-size: 1.5rem;
-    }
   }
 `;
 
 const Name = styled.h3`
   color: white;
-  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-size: 1.5rem;
   font-weight: 600;
   text-align: left;
   margin: 0;
   font-family: 'Onest', sans-serif;
-  letter-spacing: -0.02em;
+  
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const VerMasButton = styled.button`
   position: absolute;
-  top: 50%;
-  right: 2rem;
-  transform: translateY(-50%);
+  bottom: 2.5rem;
+  right: 1.5rem;
   background: white;
   border: none;
   border-radius: 100px;
@@ -258,47 +269,70 @@ const VerMasButton = styled.button`
   gap: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
   &:hover {
-    transform: translateY(-50%) scale(1.05);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #f8f9fa;
   }
   
   &:active {
-    transform: translateY(-50%) scale(1);
+    transform: scale(0.95);
   }
   
-  @media (max-width: 768px) {
-    right: 1.5rem;
+  &:focus {
+    outline: 2px solid var(--inmove-rosa-color);
+    outline-offset: 2px;
+  }
+  
+  @media (max-width: 1024px) {
+    bottom: 1.2rem;
+    right: 1.2rem;
     padding: 8px 8px 8px 14px;
   }
   
+  @media (max-width: 768px) {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 6px 6px 6px 12px;
+  }
+  
   @media (max-width: 480px) {
-    right: 1.25rem;
-    padding: 8px 8px 8px 12px;
+    bottom: 0.8rem;
+    right: 0.8rem;
+    padding: 4px 4px 4px 10px;
   }
 `;
 
 const ButtonText = styled.span`
-  color: #262626;
+  color: var(--text-black);
   font-family: 'Onest', sans-serif;
   font-weight: 400;
-  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  font-size: 20px;
   padding-right: 3px;
+  
+  @media (max-width: 1024px) {
+    font-size: 18px;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 `;
 
 const ArrowIcon = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
   background: var(--inmove-rosa-color);
   border-radius: 50%;
-  padding: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  padding: 6px;
+  
   img {
     width: 100%;
     height: 100%;
@@ -306,16 +340,22 @@ const ArrowIcon = styled.div`
     transform: rotate(180deg) scaleX(-1);
   }
   
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     width: 28px;
     height: 28px;
-    padding: 6px;
+    padding: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    width: 24px;
+    height: 24px;
+    padding: 4px;
   }
   
   @media (max-width: 480px) {
-    width: 26px;
-    height: 26px;
-    padding: 5px;
+    width: 20px;
+    height: 20px;
+    padding: 3px;
   }
 `;
 

@@ -18,24 +18,14 @@ const TePuedeInteresar = ({ categoriaId, productoActualId }) => {
     return productos;
   }, [productosByCategoria]);
 
-  // Si no hay categoría, mostrar productos aleatorios
+  // Filtrar solo productos de la misma categoría
   const productosRelacionados = useMemo(() => {
-    let productos = [];
+    if (!categoriaId) return [];
 
-    if (categoriaId) {
-      // Filtrar productos de la misma categoría
-      productos = todosProductos.filter(p =>
-        p.categoriaId === categoriaId && p.id !== productoActualId
-      );
-    }
-
-    // Si no hay suficientes productos de la misma categoría, agregar otros productos
-    if (productos.length < 4) {
-      const otrosProductos = todosProductos.filter(p =>
-        p.id !== productoActualId && !productos.includes(p)
-      );
-      productos = [...productos, ...otrosProductos];
-    }
+    // Filtrar productos de la misma categoría, excluyendo el producto actual
+    const productos = todosProductos.filter(p =>
+      p.categoriaId === categoriaId && p.id !== productoActualId
+    );
 
     return productos.slice(0, 4);
   }, [categoriaId, productoActualId, todosProductos]);
@@ -55,7 +45,8 @@ const TePuedeInteresar = ({ categoriaId, productoActualId }) => {
           talle: producto.talle,
           color: producto.color,
           imagen: producto.imagen,
-          precio: producto.precio
+          precio: producto.precio,
+          categoriaId: producto.categoriaId
         }
       }
     });
@@ -67,7 +58,12 @@ const TePuedeInteresar = ({ categoriaId, productoActualId }) => {
         <Title>Te puede interesar</Title>
         <ProductsGrid>
           {productosRelacionados.map((producto) => (
-            <ProductCard key={producto.id}>
+            <ProductCard 
+              key={producto.id}
+              onClick={() => handleProductClick(producto)}
+              role="button"
+              aria-label={`Ver ${producto.nombre}`}
+            >
               <ProductImageContainer>
                 {producto.imagen ? (
                   <ProductImage
@@ -87,10 +83,25 @@ const TePuedeInteresar = ({ categoriaId, productoActualId }) => {
                 <ProductDescription>
                   {producto.descripcion || 'Descripción básica del producto.'}
                 </ProductDescription>
+                {(producto.talle || producto.color) && (
+                  <ProductDetails>
+                    {producto.talle && (
+                      <ProductDetail>Talle: {producto.talle}</ProductDetail>
+                    )}
+                    {producto.color && (
+                      <ProductDetail>Color: {producto.color}</ProductDetail>
+                    )}
+                  </ProductDetails>
+                )}
                 <ProductPrice>
-                  {producto.precio ? `$${producto.precio}` : '$123.00'}
+                  {producto.precio ? `$${producto.precio}` : 'Consultar precio'}
                 </ProductPrice>
-                <ViewProductButton onClick={() => handleProductClick(producto)}>
+                <ViewProductButton 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleProductClick(producto);
+                  }}
+                >
                   Ver Producto
                   <ArrowIcon>→</ArrowIcon>
                 </ViewProductButton>
@@ -105,102 +116,95 @@ const TePuedeInteresar = ({ categoriaId, productoActualId }) => {
 
 export default TePuedeInteresar;
 
-const Section = styled.div`
-  max-width: 1400px;
-  margin: 4rem auto;
-  padding: 0 1rem;
-  background: #F9F5F0;
+const Section = styled.section`
+  padding: 4rem 2rem;
+  background: #f9f8f3;
 
-  @media (max-width: 1024px) {
-    padding: 0 2rem;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0 1.5rem;
-    margin: 3rem auto;
-  }
-  
-  @media (max-width: 480px) {
-    padding: 0 1rem;
-    margin: 2rem auto;
+  @media (max-width: 370px) {
+    padding: 4rem 1rem;
   }
 `;
 
-const Container = styled.div``;
+const Container = styled.div`
+  max-width: 1400px;
+  margin: 0 auto;
+`;
 
 const Title = styled.h2`
-  font-family: 'Onest', sans-serif;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 600;
-  color: #262626;
-  margin: 0 0 2.5rem 0;
-  position: relative;
-  padding-left: 1rem;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: var(--inmove-rosa-color);
-    border-radius: 2px;
-  }
+  font-family: "Onest", sans-serif;
+  font-weight: 500;
+  font-size: 2rem;
+  color: var(--text-black);
+  margin: 0 0 2rem 0;
+  border-left: 3px solid var(--inmove-color);
+  padding-left: 1.5rem;
 
   @media (max-width: 768px) {
-    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    border-left-width: 3px;
+    padding-left: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.25rem;
+    border-left-width: 2px;
+    padding-left: 0.75rem;
   }
 `;
 
 const ProductsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.5rem;
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
   }
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
     gap: 1rem;
-    text-align: center;
   }
 `;
 
 const ProductCard = styled.div`
-  border-radius: 12px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  width: 100%;
+  max-width: 350px;
   display: flex;
   flex-direction: column;
-  
+  height: 100%;
+
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
 `;
 
 const ProductImageContainer = styled.div`
   width: 100%;
-  height: 280px;
+  border-radius: 24px;
+  height: 370px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  background: #F5F5F5;
-  border-radius: 15px;
+  flex-shrink: 0;
   
   @media (max-width: 768px) {
-    height: 220px;
-  }
-  
-  @media (max-width: 480px) {
-    height: 260px;
+    height: 150px;
   }
 `;
 
@@ -208,20 +212,10 @@ const ProductImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
-  
-  ${ProductCard}:hover & {
-    transform: scale(1.05);
-  }
 `;
 
 const ImagePlaceholder = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
+  font-size: 3rem;
   opacity: 0.3;
 `;
 
@@ -230,96 +224,96 @@ const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  
-  @media (max-width: 480px) {
-    padding: 1.25rem;
+
+  @media (max-width: 485px) {
+    text-align: center;
   }
 `;
 
 const ProductName = styled.h3`
-  font-family: 'Onest', sans-serif;
-  font-size: 1.1rem;
+  font-family: "Onest", sans-serif;
   font-weight: 600;
-  color: #262626;
-  margin: 0 0 0.75rem 0;
-  line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-height: 2.6rem;
-  
-  @media (max-width: 480px) {
-    font-size: 1rem;
-  }
+  font-size: 1.1rem;
+  color: var(--text-black);
+  margin: 0 0 0.5rem 0;
 `;
 
 const ProductDescription = styled.p`
-  font-family: 'Onest', sans-serif;
-  font-size: 0.9rem;
-  color: #666;
-  line-height: 1.5;
-  margin: 0 0 1rem 0;
+  font-family: "Onest", sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #807d7e;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: 2.7rem;
+  min-height: 2.8rem;
+`;
+
+const ProductDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+`;
+
+const ProductDetail = styled.span`
+  font-family: "Onest", sans-serif;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: #6b7280;
 `;
 
 const ProductPrice = styled.div`
-  font-family: 'Onest', sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
   color: var(--inmove-color);
-  margin: 0 0 1.25rem 0;
+  font-family: 'Onest', sans-serif;
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
   background: #FFF0F5;
   border: 1.5px solid #FFD6E8;
   padding: 8px 16px;
   border-radius: 8px;
   display: inline-block;
   width: fit-content;
-  
-  @media (max-width: 480px) {
-    font-size: 1.05rem;
-  }
 `;
 
 const ViewProductButton = styled.button`
   width: 100%;
   padding: 12px 20px;
-      background: var(--inmove-color);
+  background: var(--inmove-color);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-family: 'Onest', sans-serif;
-  font-size: 1rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
   margin-top: auto;
-  
-  &:hover {
 
-    transform: translateX(2px);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(218, 95, 139, 0.3);
   }
-  
+
   &:active {
-    transform: translateX(0);
+    transform: translateY(0);
   }
 `;
 
 const ArrowIcon = styled.span`
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: white;
   transition: transform 0.3s ease;
-  
+
   ${ViewProductButton}:hover & {
     transform: translateX(4px);
   }

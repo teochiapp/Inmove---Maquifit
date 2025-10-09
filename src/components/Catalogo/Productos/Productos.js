@@ -283,7 +283,6 @@ const Productos = () => {
                           {producto.precio
                             ? `$${producto.precio}`
                             : "Consultar precio"}
-                          {producto.precio ? `$${producto.precio}` : '$123.00'}
                         </ProductoPrecio>
                         <VerProductoButton
                           onClick={(e) => {
@@ -950,33 +949,5 @@ const QuantityInput = styled.input`
 
   &[type="number"] {
     -moz-appearance: textfield;
-  }
-`;
-
-const VerProductoButton = styled.button`
-  width: 100%;
-  padding: 12px 40px;
-  background: var(--inmove-color);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-family: "Onest", sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  &:hover {
-    background: var(--inmove-rosa-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(218, 95, 139, 0.3);
-  }
-
-  &:active {
-    transform: translateY(0);
   }
 `;
