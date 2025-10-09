@@ -11,7 +11,6 @@ import CheckoutPage from './pages/CheckoutPage';
 import CheckoutSuccess from './components/Maquifit/Planes/CheckoutSuccess';
 import CheckoutFailure from './components/Maquifit/Planes/CheckoutFailure';
 import CheckoutPending from './components/Maquifit/Planes/CheckoutPending';
-import TestEmail from './components/TestEmail';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -43,8 +42,6 @@ function App() {
                 <Route path="/checkout/success" element={<CheckoutSuccess />} />
                 <Route path="/checkout/failure" element={<CheckoutFailure />} />
                 <Route path="/checkout/pending" element={<CheckoutPending />} />
-                {/* Ruta de prueba para testear emails - REMOVER EN PRODUCCIÓN */}
-                <Route path="/test-email" element={<TestEmail />} />
               </Routes>
             </MainContent>
           </AppContainer>

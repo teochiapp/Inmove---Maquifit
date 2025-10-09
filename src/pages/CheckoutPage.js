@@ -105,7 +105,7 @@ const CheckoutPage = () => {
     <PageContainer>
       <Helmet>
         <title>Inmove - Finalizar Compra</title>
-        <meta name="description" content={`Completa tu compra. Total: $${Math.round(totalPrice)} - ${totalItems} ${totalItems === 1 ? 'producto' : 'productos'}.`} />
+        <meta name="description" content={`Completa tu compra. Total: $${Math.round(totalPrice || 0)} - ${totalItems || 0} ${totalItems === 1 ? 'producto' : 'productos'}.`} />
       </Helmet>
       <CatalogHeader />
       <HeaderSpacer />

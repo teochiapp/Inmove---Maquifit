@@ -10,7 +10,7 @@ const SingleProductPage = () => {
   return (
     <>
       <Helmet>
-        <title>Inmove - {productoNombre}</title>
+        <title>{`Inmove - ${productoNombre}`}</title>
         <meta name="description" content={`Descubre ${productoNombre}. Ropa deportiva de alta calidad para tu entrenamiento.`} />
         <meta property="og:title" content={`Inmove - ${productoNombre}`} />
         <meta property="og:description" content={`Descubre ${productoNombre}. Ropa deportiva de alta calidad para tu entrenamiento.`} />

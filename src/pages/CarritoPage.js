@@ -69,8 +69,8 @@ const CarritoPage = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>Inmove - Carrito de Compras ({totalItems} {totalItems === 1 ? 'producto' : 'productos'})</title>
-        <meta name="description" content={`Finaliza tu compra. Total: $${Math.round(totalPrice)} - ${totalItems} ${totalItems === 1 ? 'producto' : 'productos'} en tu carrito.`} />
+        <title>{`Inmove - Carrito de Compras (${totalItems || 0} ${totalItems === 1 ? 'producto' : 'productos'})`}</title>
+        <meta name="description" content={`Finaliza tu compra. Total: $${Math.round(totalPrice || 0)} - ${totalItems || 0} ${totalItems === 1 ? 'producto' : 'productos'} en tu carrito.`} />
       </Helmet>
       <CatalogHeader />
       <HeaderSpacer />
@@ -127,11 +127,17 @@ const CarritoPage = () => {
                     )}
                   </ProductImage>
                   <ProductDetails>
-                    <ProductName>
-                      {item.nombre}
-                      {item.talle && ` - ${item.talle}`}
-                      {item.color && ` - ${item.color}`}
-                    </ProductName>
+                    <ProductName>{item.nombre}</ProductName>
+                    {item.talle && (
+                      <ProductAttributes>
+                        Talla: {item.talle}
+                      </ProductAttributes>
+                    )}
+                    {item.color && (
+                      <ProductAttributes>
+                        Color: {item.color}
+                      </ProductAttributes>
+                    )}
                   </ProductDetails>
                 </ProductCell>
 
@@ -431,6 +437,14 @@ const ProductName = styled.div`
   font-weight: 600;
   color: #262626;
   margin-bottom: 0.25rem;
+`;
+
+const ProductAttributes = styled.div`
+  font-family: "Onest", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #999;
+  margin-top: 0.25rem;
 `;
 
 const ProductSpec = styled.div`
