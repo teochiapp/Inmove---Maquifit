@@ -168,7 +168,7 @@ const InfoProducto = ({
                 {tallasDisponibles.map((talla) => (
                   <SizeButton 
                     key={talla}
-                    active={selectedSize === talla} 
+                    $active={selectedSize === talla} 
                     onClick={() => setSelectedSize(talla)}
                   >
                     {talla}
@@ -185,7 +185,7 @@ const InfoProducto = ({
                   <ColorCircle 
                     key={color}
                     color={color} 
-                    active={selectedColor === color}
+                    $active={selectedColor === color}
                     onClick={() => setSelectedColor(color)}
                   />
                 ))}
@@ -533,9 +533,9 @@ const SizeButton = styled.button`
   height: 44px;
   padding: 0 1rem;
   border-radius: 8px;
-  border: 1.5px solid ${props => props.active ? 'var(--inmove-color)' : '#D1D5DB'};
-  background: ${props => props.active ? 'var(--inmove-color)' : 'white'};
-  color: ${props => props.active ? 'white' : '#262626'};
+  border: 1.5px solid ${props => props.$active ? 'var(--inmove-color)' : '#D1D5DB'};
+  background: ${props => props.$active ? 'var(--inmove-color)' : 'white'};
+  color: ${props => props.$active ? 'white' : '#262626'};
   font-family: 'Onest', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
@@ -544,7 +544,7 @@ const SizeButton = styled.button`
   
   &:hover {
     border-color: var(--inmove-color);
-    ${props => !props.active && `
+    ${props => !props.$active && `
       background: #FFF5F9;
     `}
   }
@@ -569,7 +569,7 @@ const ColorCircle = styled.button`
     return props.color.toLowerCase();
   }};
   cursor: pointer;
-  border: 3px solid ${props => props.active ? '#262626' : 'white'};
+  border: 3px solid ${props => props.$active ? '#262626' : 'white'};
   box-shadow: 0 0 0 1.5px #D1D5DB;
   transition: all 0.3s ease;
   padding: 0;

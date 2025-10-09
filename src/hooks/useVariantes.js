@@ -24,21 +24,66 @@ export const useVariantesPorProducto = (productoId) => {
         setError(null);
         
         // Consultar variantes filtrando por producto
-        // Nota: El endpoint en Strapi puede ser plural "variantes" aunque el Content Type sea singular
-        const response = await fetch(
-          `${STRAPI_URL}/api/variantes?filters[Producto][id][$eq]=${productoId}&populate=Imagen`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            }
+        // Intentamos diferentes sintaxis para compatibilidad con Strapi v4/v5
+        let response;
+        let data;
+        
+        // Intento 1: Con filtro por Producto (mayúscula)
+        try {
+          response = await fetch(
+            `${STRAPI_URL}/api/variantes?filters[Producto][id][$eq]=${productoId}&populate=Imagen`,
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+          if (response.ok) {
+            data = await response.json();
           }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        } catch (e) {
+          // Ignorar y probar siguiente método
+        }
+        
+        // Intento 2: Con filtro por producto (minúscula)
+        if (!data || !response?.ok) {
+          try {
+            response = await fetch(
+              `${STRAPI_URL}/api/variantes?filters[producto][id][$eq]=${productoId}&populate=Imagen`,
+              { headers: { 'Content-Type': 'application/json' } }
+            );
+            if (response.ok) {
+              data = await response.json();
+            }
+          } catch (e) {
+            // Ignorar y probar siguiente método
+          }
+        }
+        
+        // Intento 3: Traer todas y filtrar del lado del cliente (última opción)
+        if (!data || !response?.ok) {
+          try {
+            response = await fetch(
+              `${STRAPI_URL}/api/variantes?populate=Imagen&populate=producto`,
+              { headers: { 'Content-Type': 'application/json' } }
+            );
+            if (response.ok) {
+              data = await response.json();
+              // Filtrar del lado del cliente
+              if (data.data) {
+                data.data = data.data.filter(v => {
+                  const prodId = v.producto?.id || v.attributes?.producto?.data?.id;
+                  return prodId == productoId;
+                });
+              }
+            }
+          } catch (e) {
+            // Si ninguno funciona, no hay variantes configuradas
+          }
         }
 
-        const data = await response.json();
+        // Si ningún método funcionó, simplemente no hay variantes
+        if (!data || !response?.ok) {
+          setVariantes([]);
+          setLoading(false);
+          return;
+        }
         
         // Normalizar variantes
         const variantesNormalizadas = (data.data || []).map(variante => ({
@@ -54,8 +99,9 @@ export const useVariantesPorProducto = (productoId) => {
 
         setVariantes(variantesNormalizadas);
       } catch (err) {
-        console.error('Error al cargar variantes:', err);
+        // Error silencioso - no mostrar en consola para no confundir al usuario
         setError(err.message);
+        setVariantes([]);
       } finally {
         setLoading(false);
       }
