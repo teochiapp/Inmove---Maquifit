@@ -206,7 +206,8 @@ const Productos = () => {
                               talle: producto.talle,
                               color: producto.color,
                               imagen: producto.imagen,
-                              precio: producto.precio
+                              precio: producto.precio,
+                              categoriaId: producto.categoriaId
                             }
                           }
                         });
@@ -231,41 +232,32 @@ const Productos = () => {
                       <ProductoInfo>
                         <ProductoNombre>{producto.nombre}</ProductoNombre>
                         <ProductoDescripcion>{producto.descripcion}</ProductoDescripcion>
-                        <ProductoDetalles>
-                          {producto.talle && <ProductoDetalle>Talle: {producto.talle}</ProductoDetalle>}
-                          {producto.color && <ProductoDetalle>Color: {producto.color}</ProductoDetalle>}
-                        </ProductoDetalles>
                         <ProductoPrecio>
-                          {producto.precio ? `$${producto.precio}` : 'Consultar precio'}
+                          {producto.precio ? `$${producto.precio}` : '$123.00'}
                         </ProductoPrecio>
-                        <CartRow>
-                          <QuantitySelector>
-                            <QuantityButton onClick={(e) => handleQuantityChange(e, producto, -1)}>
-                              −
-                            </QuantityButton>
-                            <QuantityInput
-                              type="number"
-                              value={getLocalQuantity(producto.id)}
-                              onChange={(e) => handleQuantityInputChange(e, producto)}
-                              min="0"
-                            />
-                            <QuantityButton onClick={(e) => handleQuantityChange(e, producto, 1)}>
-                              +
-                            </QuantityButton>
-                          </QuantitySelector>
-                          <CartIconButton 
-                            onClick={(e) => handleAddToCart(e, producto)}
-                            disabled={getLocalQuantity(producto.id) === 0}
-                          >
-                            <CartIcon>
-                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M5.33333 14.6667C5.70152 14.6667 6 14.3682 6 14C6 13.6318 5.70152 13.3333 5.33333 13.3333C4.96514 13.3333 4.66667 13.6318 4.66667 14C4.66667 14.3682 4.96514 14.6667 5.33333 14.6667Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M12.6667 14.6667C13.0349 14.6667 13.3333 14.3682 13.3333 14C13.3333 13.6318 13.0349 13.3333 12.6667 13.3333C12.2985 13.3333 12 13.6318 12 14C12 14.3682 12.2985 14.6667 12.6667 14.6667Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M1.33333 2.66667L2.66667 2.66667L4.44 10.9467C4.50505 11.25 4.67378 11.5211 4.91714 11.7133C5.1605 11.9056 5.46327 12.0069 5.77333 12L12.2933 12C12.5968 12 12.891 11.896 13.1273 11.7057C13.3637 11.5154 13.528 11.2502 13.5933 10.9538L14.6933 6.00045L3.38 6.00045" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            </CartIcon>
-                          </CartIconButton>
-                        </CartRow>
+                        <VerProductoButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const slug = nombreToSlug(producto.nombre);
+                            navigate(`/catalogo/${slug}`, {
+                              state: {
+                                producto: {
+                                  id: producto.id,
+                                  nombre: producto.nombre,
+                                  descripcion: producto.descripcion,
+                                  talle: producto.talle,
+                                  color: producto.color,
+                                  imagen: producto.imagen,
+                                  precio: producto.precio,
+                                  categoriaId: producto.categoriaId
+                                }
+                              }
+                            });
+                          }}
+                        >
+                          Ver Producto
+                          <ArrowIcon>→</ArrowIcon>
+                        </VerProductoButton>
                       </ProductoInfo>
                     </ProductoCard>
                   ))}
@@ -634,6 +626,9 @@ const ProductoCard = styled.div`
   transition: transform 0.3s ease;
   width: 100%;
   max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   
   &:hover {
     transform: translateY(-4px);
@@ -648,6 +643,7 @@ const ProductoImage = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  flex-shrink: 0;
   
   @media (max-width: 768px) {
     height: 150px;
@@ -666,7 +662,14 @@ const ImagePlaceholder = styled.div`
 `;
 
 const ProductoInfo = styled.div`
-  padding: 1.5rem;
+  padding: 1.5rem 0rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  @media (max-width: 485px) {
+      text-align: center;
+    }
 `;
 
 const ProductoNombre = styled.h3`
@@ -684,6 +687,12 @@ const ProductoDescripcion = styled.p`
   color: #807D7E;
   margin: 0 0 0.5rem 0;
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.8rem; /* 2 líneas aprox (1.4 line-height * 2) */
 `;
 
 const ProductoDetalles = styled.div`
@@ -701,15 +710,55 @@ const ProductoDetalle = styled.span`
 `;
 
 const ProductoPrecio = styled.div`
-  background: #DA5F8B1A;
   color: var(--inmove-color);
-  padding: 10px 12px;
-  border-radius: 8px;
   font-family: 'Onest', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
-  display: inline-block;
+  font-size: 1.125rem;
   margin-bottom: 1rem;
+  background: #FFF0F5;
+  border: 1.5px solid #FFD6E8;
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: inline-block;
+  width: fit-content;
+`;
+
+const VerProductoButton = styled.button`
+  width: 100%;
+  padding: 12px 20px;
+  background: var(--inmove-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Onest', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: auto;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(218, 95, 139, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+const ArrowIcon = styled.span`
+  font-size: 1.25rem;
+  color: white;
+  transition: transform 0.3s ease;
+
+  ${VerProductoButton}:hover & {
+    transform: translateX(4px);
+  }
 `;
 
 const CartRow = styled.div`
@@ -717,6 +766,11 @@ const CartRow = styled.div`
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
+  margin-top: auto;
+
+  @media (max-width: 485px) {
+      justify-content: center;
+    }
 `;
 
 const CartIconButton = styled.button`

@@ -13,6 +13,10 @@ const InfoProducto = ({
 }) => {
   const { addItem } = useCarrito();
   const [showModal, setShowModal] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedColor, setSelectedColor] = useState('#EF4444');
+  const [quantity, setQuantity] = useState(1);
+  const [activeThumb, setActiveThumb] = useState(0);
 
   const handleAddToCart = () => {
     const producto = {
@@ -20,9 +24,10 @@ const InfoProducto = ({
       nombre: productoView?.nombre || productoNombre,
       descripcion: productoView?.descripcion || attributes.Descripcion || '',
       precio: productoView?.precio || attributes.Precio || '0',
-      talle: productoView?.talle || attributes.Talle || '',
-      color: productoView?.color || attributes.Color || '',
-      imagen: imageUrl
+      talle: selectedSize,
+      color: selectedColor,
+      imagen: imageUrl,
+      cantidad: quantity
     };
 
     addItem(producto);
@@ -33,183 +38,482 @@ const InfoProducto = ({
     setShowModal(false);
   };
 
+  const incrementQuantity = () => setQuantity(prev => prev + 1);
+  const decrementQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
+
 
   return (
+    <>
 <ProductDetails>
-  {/* Columna izquierda */}
+        {/* Columna izquierda - Galería */}
   <GalleryContainer>
     <Thumbnails>
-      <Thumbnail src="/catalogo/thumb1.webp" />
-      <Thumbnail src="/catalogo/thumb2.webp" />
-      <Thumbnail src="/catalogo/thumb3.webp" />
+            <Thumbnail 
+              src={imageUrl} 
+              alt="Thumbnail 1"
+              active={activeThumb === 0}
+              onClick={() => setActiveThumb(0)}
+            />
+            <Thumbnail 
+              src={imageUrl} 
+              alt="Thumbnail 2"
+              active={activeThumb === 1}
+              onClick={() => setActiveThumb(1)}
+            />
+            <Thumbnail 
+              src={imageUrl} 
+              alt="Thumbnail 3"
+              active={activeThumb === 2}
+              onClick={() => setActiveThumb(2)}
+            />
     </Thumbnails>
-    <ProductImageContainer>
+          <MainImageContainer>
       <ProductImage src={imageUrl} alt={imageAlt} />
-    </ProductImageContainer>
+          </MainImageContainer>
   </GalleryContainer>
 
-  {/* Columna derecha */}
+        {/* Columna derecha - Info */}
   <ProductInfo>
-    <ProductTitle>{productoView?.nombre || productoNombre}</ProductTitle>
+          <ProductTitle>{productoView?.nombre || productoNombre || 'Nombre del producto'}</ProductTitle>
     <ProductDescription>
       {productoView?.descripcion || attributes.Descripcion || 'Descripción del producto.'}
     </ProductDescription>
+          
     <ProductPrice>
       {productoView?.precio || attributes.Precio
-        ? `$${productoView?.precio || attributes.Precio}`
-        : 'Consultar precio'}
+              ? `$${Number(productoView?.precio || attributes.Precio).toFixed(2)}`
+              : '$123.00'}
     </ProductPrice>
 
     {/* Talles */}
+          <SelectorsRow>
+            <SelectorColumn>
     <SectionLabel>Selecciona tu talle</SectionLabel>
     <SizeOptions>
-      <SizeButton>S</SizeButton>
-      <SizeButton active>M</SizeButton>
-      <SizeButton>L</SizeButton>
+                <SizeButton 
+                  active={selectedSize === 'S'} 
+                  onClick={() => setSelectedSize('S')}
+                >
+                  S
+                </SizeButton>
+                <SizeButton 
+                  active={selectedSize === 'L'} 
+                  onClick={() => setSelectedSize('L')}
+                >
+                  L
+                </SizeButton>
+                <SizeButton 
+                  active={selectedSize === 'M'} 
+                  onClick={() => setSelectedSize('M')}
+                >
+                  M
+                </SizeButton>
     </SizeOptions>
+            </SelectorColumn>
 
     {/* Colores */}
+            <SelectorColumn>
     <SectionLabel>Colores Disponibles</SectionLabel>
     <ColorOptions>
-      <ColorCircle color="#F59E0B" />
-      <ColorCircle color="#EF4444" />
-      <ColorCircle color="#EC4899" />
-      <ColorCircle color="#8B5CF6" />
+                <ColorCircle 
+                  color="#EF4444" 
+                  active={selectedColor === '#EF4444'}
+                  onClick={() => setSelectedColor('#EF4444')}
+                />
+                <ColorCircle 
+                  color="#F59E0B" 
+                  active={selectedColor === '#F59E0B'}
+                  onClick={() => setSelectedColor('#F59E0B')}
+                />
+                <ColorCircle 
+                  color="#EC4899" 
+                  active={selectedColor === '#EC4899'}
+                  onClick={() => setSelectedColor('#EC4899')}
+                />
+                <ColorCircle 
+                  color="#991B1B" 
+                  active={selectedColor === '#991B1B'}
+                  onClick={() => setSelectedColor('#991B1B')}
+                />
     </ColorOptions>
+            </SelectorColumn>
+          </SelectorsRow>
 
-    <GuideLink href="#">📏 Guía de talles</GuideLink>
+          <GuideLink href="#"><SizeIcon>📏</SizeIcon> Guía de talles</GuideLink>
 
-    {/* Cantidad + carrito */}
+          {/* Cantidad + Carrito */}
     <QuantityAndCartRow>
       <QuantityContainer>
-        <QuantityButton>-</QuantityButton>
-        <QuantityValue>1</QuantityValue>
-        <QuantityButton>+</QuantityButton>
+              <QuantityButton onClick={decrementQuantity}>−</QuantityButton>
+              <QuantityValue>{quantity}</QuantityValue>
+              <QuantityButton onClick={incrementQuantity}>+</QuantityButton>
       </QuantityContainer>
       
       <AddToCartButton onClick={handleAddToCart}>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M5.33333 14.6667C5.70152 14.6667 6 14.3682 6 14C6 13.6318 5.70152 13.3333 5.33333 13.3333C4.96514 13.3333 4.66667 13.6318 4.66667 14C4.66667 14.3682 4.96514 14.6667 5.33333 14.6667Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M12.6667 14.6667C13.0349 14.6667 13.3333 14.3682 13.3333 14C13.3333 13.6318 13.0349 13.3333 12.6667 13.3333C12.2985 13.3333 12 13.6318 12 14C12 14.3682 12.2985 14.6667 12.6667 14.6667Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M1.33333 2.66667L2.66667 2.66667L4.44 10.9467C4.50505 11.25 4.67378 11.5211 4.91714 11.7133C5.1605 11.9056 5.46327 12.0069 5.77333 12L12.2933 12C12.5968 12 12.891 11.896 13.1273 11.7057C13.3637 11.5154 13.528 11.2502 13.5933 10.9538L14.6933 6.00045L3.38 6.00045" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+              <CartIcon width="16" height="17" viewBox="0 0 16 17" fill="none">
+                <path d="M5.33317 15.1667C5.70136 15.1667 5.99984 14.8682 5.99984 14.5C5.99984 14.1318 5.70136 13.8333 5.33317 13.8333C4.96498 13.8333 4.6665 14.1318 4.6665 14.5C4.6665 14.8682 4.96498 15.1667 5.33317 15.1667Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12.6665 15.1667C13.0347 15.1667 13.3332 14.8682 13.3332 14.5C13.3332 14.1318 13.0347 13.8333 12.6665 13.8333C12.2983 13.8333 11.9998 14.1318 11.9998 14.5C11.9998 14.8682 12.2983 15.1667 12.6665 15.1667Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M1.3335 3.16667H2.66683L4.44016 11.4467C4.50521 11.75 4.67394 12.0211 4.9173 12.2133C5.16066 12.4056 5.46343 12.5069 5.7735 12.5H12.2935C12.597 12.5 12.8912 12.396 13.1275 12.2057C13.3639 12.0154 13.5282 11.7502 13.5935 11.4538L14.6935 6.50045H3.38016" stroke="white" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+              </CartIcon>
         Añadir al carrito
       </AddToCartButton>
     </QuantityAndCartRow>
 
-    {/* Bullets de detalles */}
-    <BulletList>
-      <Bullet>✔ Lorem ipsum</Bullet>
-      <Bullet>✔ Lorem ipsum</Bullet>
-      <Bullet>✔ Lorem ipsum</Bullet>
-    </BulletList>
+          {/* Features con iconos */}
+          <FeaturesGrid>
+            <FeatureItem>
+              <FeatureIcon>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="7" stroke="black" strokeWidth="2"/>
+                  <path d="M13.5 13.5L16.5 16.5" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </FeatureIcon>
+              <FeatureText>Lorem ipsum</FeatureText>
+            </FeatureItem>
+            <FeatureItem>
+              <FeatureIcon>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="7" stroke="black" strokeWidth="2"/>
+                  <path d="M13.5 13.5L16.5 16.5" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </FeatureIcon>
+              <FeatureText>Lorem ipsum</FeatureText>
+            </FeatureItem>
+            <FeatureItem>
+              <FeatureIcon>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="7" stroke="black" strokeWidth="2"/>
+                  <path d="M13.5 13.5L16.5 16.5" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </FeatureIcon>
+              <FeatureText>Lorem ipsum</FeatureText>
+            </FeatureItem>
+            <FeatureItem>
+              <FeatureIcon>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="7" stroke="black" strokeWidth="2"/>
+                  <path d="M13.5 13.5L16.5 16.5" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </FeatureIcon>
+              <FeatureText>Lorem ipsum</FeatureText>
+            </FeatureItem>
+          </FeaturesGrid>
   </ProductInfo>
 </ProductDetails>
 
+      <CarritoModal 
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        producto={{
+          ...productoView,
+          nombre: productoView?.nombre || productoNombre,
+          talle: selectedSize,
+          color: selectedColor
+        }}
+        cantidad={quantity}
+      />
+    </>
   );
 };
 
 export default InfoProducto;
 
+// === Layout Principal ===
 const ProductDetails = styled.div`
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 4rem;
   padding: 0 2rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
-  align-items: start;
+  align-items: stretch;
+  background: #F9F5F0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 968px) {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 3rem;
+    padding: 0 1.5rem;
+  align-items: start;
+  }
+
+  @media (max-width: 480px) {
     padding: 0 1rem;
+    gap: 2rem;
   }
 `;
 
-const ProductImageContainer = styled.div`
-  position: sticky;
-  top: 2rem;
+// === Galería de Imágenes ===
+const GalleryContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  height: 100%;
+`;
+
+const Thumbnails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+  }
+`;
+
+const Thumbnail = styled.img`
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 3px solid ${props => props.active ? 'var(--inmove-color)' : 'transparent'};
+  transition: all 0.3s ease;
   background: white;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+
+  &:hover {
+    border-color: var(--inmove-rosa-color);
+    transform: scale(1.05);
+  }
 
   @media (max-width: 768px) {
-    position: static;
-    padding: 1.5rem;
+    width: 70px;
+    height: 70px;
   }
+  
+  @media (max-width: 480px) {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+  }
+`;
+
+const MainImageContainer = styled.div`
+  flex: 1;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 const ProductImage = styled.img`
   width: 100%;
-  height: 400px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 12px;
-  transition: transform 0.3s ease;
+  display: block;
   
-  &:hover {
-    transform: scale(1.02);
+  @media (max-width: 968px) {
+    height: 450px;
   }
 
   @media (max-width: 768px) {
+    height: 380px;
+  }
+  
+  @media (max-width: 480px) {
     height: 300px;
   }
 `;
 
+// === Información del Producto ===
 const ProductInfo = styled.div`
-  background: white;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   @media (max-width: 768px) {
-    padding: 1.5rem;
+    height: auto;
   }
 `;
 
 const ProductTitle = styled.h1`
   font-family: 'Onest', sans-serif;
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
   color: #262626;
-  margin-bottom: 0.5rem;
+  margin: 0 0 1rem 0;
   line-height: 1.2;
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
-`;
-
-
-const ProductPrice = styled.p`
-  font-family: 'Onest', sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--inmove-color);
-  margin-bottom: 1.5rem;
-
-  @media (max-width: 768px) {
-    font-size: 1.8rem;
-  }
 `;
 
 const ProductDescription = styled.p`
   font-family: 'Onest', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #666;
   line-height: 1.6;
-  margin-bottom: 2rem;
+  margin: 0 0 1.5rem 0;
+`;
+
+const ProductPrice = styled.div`
+  font-family: 'Onest', sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: #262626;
+  margin: 0 0 2rem 0;
 `;
 
 
 
+// === Selectores de Talle y Color ===
+const SelectorsRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+`;
 
+const SelectorColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
+const SectionLabel = styled.label`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 0.75rem;
+  display: block;
+`;
+
+const SizeOptions = styled.div`
+  display: flex;
+  gap: 0.75rem;
+`;
+
+const SizeButton = styled.button`
+  min-width: 50px;
+  height: 44px;
+  padding: 0 1rem;
+  border-radius: 8px;
+  border: 1.5px solid ${props => props.active ? 'var(--inmove-color)' : '#D1D5DB'};
+  background: ${props => props.active ? 'var(--inmove-color)' : 'white'};
+  color: ${props => props.active ? 'white' : '#262626'};
+  font-family: 'Onest', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: var(--inmove-color);
+    ${props => !props.active && `
+      background: #FFF5F9;
+    `}
+  }
+`;
+
+const ColorOptions = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+`;
+
+const ColorCircle = styled.button`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: ${props => props.color};
+  cursor: pointer;
+  border: 3px solid ${props => props.active ? '#262626' : 'white'};
+  box-shadow: 0 0 0 1.5px #D1D5DB;
+  transition: all 0.3s ease;
+  padding: 0;
+  
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px var(--inmove-color);
+  }
+`;
+
+const GuideLink = styled.a`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.9rem;
+  color: #262626;
+  text-decoration: none;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: var(--inmove-color);
+  }
+`;
+
+const SizeIcon = styled.span`
+  font-size: 1.1rem;
+`;
+
+// === Cantidad y Botón Carrito ===
+const QuantityAndCartRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  
+  @media (max-width: 580px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+`;
+
+const QuantityContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1.5px solid var(--inmove-rosa-color);
+  background: white;
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+`;
+
+const QuantityButton = styled.button`
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #262626;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: #F9FAFB;
+    border-radius: 4px;
+  }
+  
+  &:active {
+    background: #F3F4F6;
+  }
+`;
+
+const QuantityValue = styled.span`
+  font-family: 'Onest', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #262626;
+  min-width: 30px;
+  text-align: center;
+`;
 
 const AddToCartButton = styled.button`
-  padding: 12px 40px;
+  flex: 1;
+  padding: 12px 24px;
   background: var(--inmove-color);
   color: white;
   border: none;
@@ -222,12 +526,12 @@ const AddToCartButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  flex: 1;
+  gap: 10px;
+  min-height: 48px;
   
   &:hover {
-    background: var(--inmove-rosa-color);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(218, 95, 139, 0.4);
   }
   
   &:active {
@@ -235,122 +539,51 @@ const AddToCartButton = styled.button`
   }
 `;
 
-
-
-const GalleryContainer = styled.div`
-  display: flex;
-  gap: 1rem;
+const CartIcon = styled.svg`
+  flex-shrink: 0;
 `;
 
-const Thumbnails = styled.div`
-  display: flex;
-  flex-direction: column;
+// === Features Grid ===
+const FeaturesGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
-`;
-
-const Thumbnail = styled.img`
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 8px;
-  cursor: pointer;
-  border: 2px solid transparent;
-
-  &:hover {
-    border-color: var(--inmove-color);
+  margin-top: 2rem;
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const SectionLabel = styled.p`
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 1rem 0 0.5rem;
-  color: #444;
-`;
-
-const SizeOptions = styled.div`
+const FeatureItem = styled.div`
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  align-items: center;
+  gap: 0.75rem;
 `;
 
-const SizeButton = styled.button`
+const FeatureIcon = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid #ccc;
-  background: ${({ active }) => (active ? "var(--inmove-color)" : "white")};
-  color: ${({ active }) => (active ? "white" : "#444")};
-  font-weight: 600;
-  cursor: pointer;
-`;
-
-const ColorOptions = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-`;
-
-const ColorCircle = styled.div`
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: ${({ color }) => color};
-  cursor: pointer;
-  border: 2px solid white;
-  box-shadow: 0 0 0 1px #ccc;
-`;
-
-const GuideLink = styled.a`
-  font-size: 0.9rem;
-  color: var(--inmove-color);
-  text-decoration: underline;
-  cursor: pointer;
-  margin-bottom: 1.5rem;
-  display: inline-block;
-`;
-
-const QuantityAndCartRow = styled.div`
+  background: #E49CC4;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin: 1.5rem 0;
+  justify-content: center;
+  flex-shrink: 0;
+  color: black;
   
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
+  svg {
+    color: black;
+    
+    path, circle {
+      stroke: black;
+    }
   }
 `;
 
-const QuantityContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const QuantityButton = styled.button`
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-`;
-
-const QuantityValue = styled.span`
-  font-size: 1.2rem;
-  font-weight: 600;
-`;
-
-const BulletList = styled.ul`
-  margin-top: 2rem;
-  list-style: none;
-  padding: 0;
-`;
-
-const Bullet = styled.li`
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  color: #444;
+const FeatureText = styled.span`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.95rem;
+  color: #262626;
+  font-weight: 500;
 `;

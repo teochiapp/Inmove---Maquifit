@@ -172,6 +172,8 @@ export const useProductosByCategoria = () => {
             talle: producto.attributes?.Talle || '',
             color: producto.attributes?.Color || '',
             precio: producto.attributes?.Precio || '',
+            categoriaId: categoriaData.id,
+            categoriaSlug: categoriaSlug,
             imagen: producto.attributes?.Portada?.data?.attributes?.url 
               ? `${process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337'}${producto.attributes.Portada.data.attributes.url}`
               : null,
