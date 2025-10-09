@@ -6,7 +6,7 @@ const TiendaCTA = () => {
   const navigate = useNavigate();
 
   return (
-    <CTAButton onClick={() => navigate('/catalogo')}>
+    <CTAButton onClick={() => navigate('/')}>
       <ButtonText>Ir a la tienda</ButtonText>
       <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
     </CTAButton>

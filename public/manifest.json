@@ -1,9 +1,9 @@
 {
-  "short_name": "Maquifit",
-  "name": "Maquifit - Tu transformación fitness",
+  "short_name": "Inmove",
+  "name": "Inmove - Entrenamiento y Productos Deportivos",
   "icons": [
     {
-      "src": "logo.png",
+      "src": "inmove-logo.png",
       "sizes": "192x192",
       "type": "image/png"
     }

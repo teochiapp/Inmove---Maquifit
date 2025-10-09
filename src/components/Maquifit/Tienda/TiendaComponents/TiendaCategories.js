@@ -12,7 +12,7 @@ const TiendaCategories = () => {
   const handleCategoryClick = (categoriaSlug) => {
     setSelectedCategory(categoriaSlug);
     // Navegar al catálogo con la sección de la categoría
-    navigate(`/catalogo#categoria-${categoriaSlug}`);
+    navigate(`/#categoria-${categoriaSlug}`);
   };
 
   if (loading) {

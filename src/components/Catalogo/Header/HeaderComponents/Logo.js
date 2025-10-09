@@ -1,13 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
 const Logo = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogoClick = () => {
-    navigate('/catalogo');
+    // Si ya estamos en la página principal, hacer scroll al inicio
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Si estamos en otra página, navegar a la raíz
+      navigate('/');
+      // Hacer scroll al inicio después de navegar
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    }
   };
 
   return (

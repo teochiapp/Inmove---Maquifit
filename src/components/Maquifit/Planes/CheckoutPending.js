@@ -32,7 +32,7 @@ const CheckoutPending = () => {
   }, [searchParams]);
 
   const handleGoHome = () => {
-    navigate('/');
+    navigate('/maquifit');
   };
 
   const handleContactSupport = () => {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCarrito } from '../context/CarritoContext';
@@ -43,7 +44,7 @@ const CheckoutPage = () => {
     // Limpiar carrito después del envío
     clearCart();
     
-    // Redirigir al home
+    // Redirigir al catálogo (home)
     navigate('/');
   };
 
@@ -79,6 +80,10 @@ const CheckoutPage = () => {
   if (items.length === 0) {
     return (
       <PageContainer>
+        <Helmet>
+          <title>Inmove - Pago</title>
+          <meta name="description" content="Completa tu información para finalizar tu compra en Inmove." />
+        </Helmet>
         <CatalogHeader />
         <HeaderSpacer />
         <EmptyCartContainer>
@@ -87,7 +92,7 @@ const CheckoutPage = () => {
           <EmptyCartMessage>
             Agrega algunos productos para proceder al checkout
           </EmptyCartMessage>
-          <ContinueShoppingButton onClick={() => navigate('/catalogo')}>
+          <ContinueShoppingButton onClick={() => navigate('/')}>
             Ir al catálogo
           </ContinueShoppingButton>
         </EmptyCartContainer>
@@ -98,17 +103,15 @@ const CheckoutPage = () => {
 
   return (
     <PageContainer>
+      <Helmet>
+        <title>Inmove - Finalizar Compra</title>
+        <meta name="description" content={`Completa tu compra. Total: $${Math.round(totalPrice)} - ${totalItems} ${totalItems === 1 ? 'producto' : 'productos'}.`} />
+      </Helmet>
       <CatalogHeader />
       <HeaderSpacer />
       
       <Breadcrumb>
-        <BreadcrumbButton onClick={() => navigate('/')}>Inicio</BreadcrumbButton>
-        <BreadcrumbSeparator>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M6 12L10 8L6 4" stroke="#BEBCBD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </BreadcrumbSeparator>
-        <BreadcrumbButton onClick={() => navigate('/catalogo')}>Catálogo</BreadcrumbButton>
+        <BreadcrumbButton onClick={() => navigate('/')}>Catálogo</BreadcrumbButton>
         <BreadcrumbSeparator>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M6 12L10 8L6 4" stroke="#BEBCBD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

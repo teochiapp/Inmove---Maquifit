@@ -7,7 +7,7 @@ const PlanesContent = () => {
   const navigate = useNavigate();
 
   const handleGoToPlanes = () => {
-    navigate("/");
+    navigate("/maquifit");
     // Esperar a que la navegación se complete y luego hacer scroll
     setTimeout(() => {
       const planesSection = document.getElementById('planes-section');

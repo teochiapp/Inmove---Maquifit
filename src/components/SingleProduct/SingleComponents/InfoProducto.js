@@ -81,8 +81,8 @@ const InfoProducto = ({
           
     <ProductPrice>
       {productoView?.precio || attributes.Precio
-              ? `$${Number(productoView?.precio || attributes.Precio).toFixed(2)}`
-              : '$123.00'}
+              ? `$${Math.round(Number(productoView?.precio || attributes.Precio))}`
+              : '$123'}
     </ProductPrice>
 
     {/* Talles */}
@@ -224,7 +224,7 @@ const ProductDetails = styled.div`
   margin: 0 auto 4rem;
   padding: 0 2rem;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 4rem;
   align-items: stretch;
   background: #F9F5F0;
@@ -290,7 +290,6 @@ const Thumbnail = styled.img`
 const MainImageContainer = styled.div`
   flex: 1;
   background: white;
-  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   height: 100%;
@@ -301,19 +300,25 @@ const MainImageContainer = styled.div`
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
+  height: 70vh;
   object-fit: cover;
   display: block;
   
   @media (max-width: 968px) {
     height: 450px;
+  min-height: none;
   }
 
   @media (max-width: 768px) {
     height: 380px;
+  min-height: none;
+    
   }
   
   @media (max-width: 480px) {
     height: 300px;
+  min-height: none;
+
   }
 `;
 
@@ -348,7 +353,7 @@ const ProductDescription = styled.p`
 
 const ProductPrice = styled.div`
   font-family: 'Onest', sans-serif;
-  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-size: clamp(1.75rem, 3vw, 2rem);
   font-weight: 700;
   color: #262626;
   margin: 0 0 2rem 0;

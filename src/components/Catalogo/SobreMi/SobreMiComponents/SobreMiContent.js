@@ -21,7 +21,7 @@ const SobreMiContent = () => {
       </TextContainer>
       <ButtonContainer>
         <CTAButton onClick={() => {
-          navigate('/');
+          navigate('/maquifit');
           setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }, 100);

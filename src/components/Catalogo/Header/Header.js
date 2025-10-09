@@ -12,7 +12,7 @@ const Header = () => {
   const location = useLocation();
   
   // Detectar si estamos en la página del catálogo
-  const isCatalogPage = location.pathname === '/catalogo';
+  const isCatalogPage = location.pathname === '/';
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -49,7 +49,7 @@ const Header = () => {
       if (fromMobile) {
         closeMobileMenu();
       }
-      navigate(`/catalogo#categoria-${categoriaSlug}`);
+      navigate(`/#categoria-${categoriaSlug}`);
     }
   };
 

@@ -1,15 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
+import { HelmetProvider } from 'react-helmet-async';
 import { CarritoProvider } from './context/CarritoContext';
-import HomePage from './pages/HomePage';
+import MaquifitPage from './pages/MaquifitPage';
 import CatalogoPage from './pages/CatalogoPage';
 import SingleProductPage from './pages/SingleProductPage';
 import CarritoPage from './pages/CarritoPage';
 import CheckoutPage from './pages/CheckoutPage';
-import CheckoutSuccess from './components/Home/Planes/CheckoutSuccess';
-import CheckoutFailure from './components/Home/Planes/CheckoutFailure';
-import CheckoutPending from './components/Home/Planes/CheckoutPending';
+import CheckoutSuccess from './components/Maquifit/Planes/CheckoutSuccess';
+import CheckoutFailure from './components/Maquifit/Planes/CheckoutFailure';
+import CheckoutPending from './components/Maquifit/Planes/CheckoutPending';
+import TestEmail from './components/TestEmail';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -27,24 +29,28 @@ const MainContent = styled.main`
 
 function App() {
   return (
-    <CarritoProvider>
-      <Router>
-        <AppContainer>
-          <MainContent>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/catalogo" element={<CatalogoPage />} />
-              <Route path="/catalogo/:nombre" element={<SingleProductPage />} />
-              <Route path="/carrito" element={<CarritoPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/checkout/success" element={<CheckoutSuccess />} />
-              <Route path="/checkout/failure" element={<CheckoutFailure />} />
-              <Route path="/checkout/pending" element={<CheckoutPending />} />
-            </Routes>
-          </MainContent>
-        </AppContainer>
-      </Router>
-    </CarritoProvider>
+    <HelmetProvider>
+      <CarritoProvider>
+        <Router>
+          <AppContainer>
+            <MainContent>
+              <Routes>
+                <Route path="/" element={<CatalogoPage />} />
+                <Route path="/maquifit" element={<MaquifitPage />} />
+                <Route path="/catalogo/:nombre" element={<SingleProductPage />} />
+                <Route path="/carrito" element={<CarritoPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/checkout/success" element={<CheckoutSuccess />} />
+                <Route path="/checkout/failure" element={<CheckoutFailure />} />
+                <Route path="/checkout/pending" element={<CheckoutPending />} />
+                {/* Ruta de prueba para testear emails - REMOVER EN PRODUCCIÓN */}
+                <Route path="/test-email" element={<TestEmail />} />
+              </Routes>
+            </MainContent>
+          </AppContainer>
+        </Router>
+      </CarritoProvider>
+    </HelmetProvider>
   );
 }
 

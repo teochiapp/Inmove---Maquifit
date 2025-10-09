@@ -66,9 +66,9 @@ const NavigationSection = () => {
           </>
         )}
         
-        <NavLink href="/catalogo#faq">FAQ</NavLink>
+        <NavLink href="/#faq">FAQ</NavLink>
         <Separator>/</Separator>
-        <NavLink href="/catalogo#sobre-mi">Sobre Mi</NavLink>
+        <NavLink href="/#sobre-mi">Sobre Mi</NavLink>
       </NavRow>
     </NavigationContainer>
   );

@@ -32,11 +32,11 @@ const CheckoutFailure = () => {
   }, [searchParams]);
 
   const handleRetry = () => {
-    navigate('/#planes');
+    navigate('/maquifit#planes');
   };
 
   const handleGoHome = () => {
-    navigate('/');
+    navigate('/maquifit');
   };
 
   const handleContactSupport = () => {

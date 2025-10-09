@@ -131,7 +131,6 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
                 </FormGroup>
 
                 <InfoMessage>
-                  <InfoIcon>💪</InfoIcon>
                   <InfoText>
                     Maqui se contactará contigo luego de procesar el pago para continuar con tu entrenamiento y lograr los resultados que soñaste.
                   </InfoText>

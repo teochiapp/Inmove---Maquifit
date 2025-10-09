@@ -8,7 +8,7 @@ const CategoriasNav = () => {
   const { categorias, loading, error } = useCategoriasWithFallback();
 
   const handleVerMas = (slug) => {
-    navigate(`/catalogo#categoria-${slug}`);
+    navigate(`/#categoria-${slug}`);
   };
 
   if (loading) {

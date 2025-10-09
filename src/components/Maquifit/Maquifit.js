@@ -10,7 +10,7 @@ import PrimerPaso from "./PrimerPaso/PrimerPaso";
 import Footer from "./Footer/Footer";
 import ScrollToTopButton from "./Footer/FooterComponents/ScrollToTopButton";
 
-const Home = () => {
+const Maquifit = () => {
   return (
     <>
       <div id="hero">
@@ -51,4 +51,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Maquifit;

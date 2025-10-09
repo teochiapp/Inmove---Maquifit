@@ -1,0 +1,33 @@
+# ===================================================
+# COPIA ESTE CONTENIDO EN TU ARCHIVO .env
+# ===================================================
+
+# ===== MERCADOPAGO =====
+REACT_APP_MERCADOPAGO_ACCESS_TOKEN=tu_access_token_de_mercadopago_aqui
+
+# ===== EMAILJS =====
+# Email configurado: teochiapps@gmail.com
+
+# ✅ Service ID - CONFIGURADO
+REACT_APP_EMAILJS_SERVICE_ID=service_2owznmm
+
+# ⚠️ Template ID - NECESITAS CREAR EL TEMPLATE Y ACTUALIZAR ESTE ID
+REACT_APP_EMAILJS_TEMPLATE_ID=template_xxxxxxx
+
+# ✅ Public Key - CONFIGURADO
+REACT_APP_EMAILJS_PUBLIC_KEY=WLL8nQofIZqlZIq9e
+
+# ===================================================
+# INSTRUCCIONES:
+# ===================================================
+# 1. Crea un archivo llamado .env en la raíz del proyecto
+# 2. Copia TODO este contenido (desde REACT_APP hasta el final)
+# 3. Reemplaza "template_xxxxxxx" con tu Template ID
+# 4. Reemplaza "tu_public_key_aqui" con tu Public Key
+# 5. Guarda el archivo .env
+# 6. Reinicia el servidor: Ctrl+C y luego npm start
+#
+# PRÓXIMOS PASOS:
+# - Crear Email Template (ver COMO-CONFIGURAR-EMAIL.md - Paso 3)
+# - Copiar Public Key (ver COMO-CONFIGURAR-EMAIL.md - Paso 4)
+

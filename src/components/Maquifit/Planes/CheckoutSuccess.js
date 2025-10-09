@@ -81,14 +81,14 @@ const CheckoutSuccess = () => {
   }, [searchParams]);
 
   const handleGoHome = () => {
-    navigate('/');
+    navigate('/maquifit');
   };
 
   const handleModalClose = () => {
     setShowModal(false);
     // Redirigir al home después de cerrar el modal
     setTimeout(() => {
-      navigate('/');
+      navigate('/maquifit');
     }, 300);
   };
 

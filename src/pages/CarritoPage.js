@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useCarrito } from "../context/CarritoContext";
@@ -29,12 +30,16 @@ const CarritoPage = () => {
   };
 
   const handleContinueShopping = () => {
-    navigate("/catalogo");
+    navigate("/");
   };
 
   if (items.length === 0) {
     return (
       <PageContainer>
+        <Helmet>
+          <title>Inmove - Carrito</title>
+          <meta name="description" content="Tu carrito de compras está vacío. Descubre nuestra colección de productos deportivos." />
+        </Helmet>
         <CatalogHeader />
         <HeaderSpacer />
         <EmptyCartContainer>
@@ -63,25 +68,15 @@ const CarritoPage = () => {
 
   return (
     <PageContainer>
+      <Helmet>
+        <title>Inmove - Carrito de Compras ({totalItems} {totalItems === 1 ? 'producto' : 'productos'})</title>
+        <meta name="description" content={`Finaliza tu compra. Total: $${Math.round(totalPrice)} - ${totalItems} ${totalItems === 1 ? 'producto' : 'productos'} en tu carrito.`} />
+      </Helmet>
       <CatalogHeader />
       <HeaderSpacer />
 
       <Breadcrumb>
         <BreadcrumbButton onClick={() => navigate("/")}>
-          Inicio
-        </BreadcrumbButton>
-        <BreadcrumbSeparator>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path
-              d="M6 12L10 8L6 4"
-              stroke="#BEBCBD"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </BreadcrumbSeparator>
-        <BreadcrumbButton onClick={() => navigate("/catalogo")}>
           Catálogo
         </BreadcrumbButton>
         <BreadcrumbSeparator>

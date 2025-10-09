@@ -81,12 +81,12 @@ const SingleProduct = () => {
   // Funciones de navegación
   const handleNavigateHome = (e) => {
     e.preventDefault();
-    navigate('/');
+    navigate('/maquifit');
   };
 
   const handleNavigateCatalog = (e) => {
     e.preventDefault();
-    navigate('/catalogo');
+    navigate('/');
   };
   
   // Si está cargando, mostrar loading
@@ -108,7 +108,7 @@ const SingleProduct = () => {
         <ErrorContainer>
           <ErrorTitle>Error al cargar el producto</ErrorTitle>
           <ErrorMessage>{error}</ErrorMessage>
-          <BackButton to="/catalogo">Volver al Catálogo</BackButton>
+          <BackButton to="/">Volver al Catálogo</BackButton>
         </ErrorContainer>
       </ProductContainer>
     );
@@ -121,7 +121,7 @@ const SingleProduct = () => {
         <NotFoundContainer>
           <NotFoundTitle>Producto no encontrado</NotFoundTitle>
           <NotFoundMessage>El producto "{slugToNombre(nombre)}" no existe o ha sido eliminado.</NotFoundMessage>
-          <BackButton to="/catalogo">Volver al Catálogo</BackButton>
+          <BackButton to="/">Volver al Catálogo</BackButton>
         </NotFoundContainer>
       </ProductContainer>
     );
@@ -247,7 +247,7 @@ const ProductDetails = styled.div`
   margin: 0 auto;
   padding: 0 2rem;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 4rem;
   align-items: start;
 
@@ -275,7 +275,7 @@ const ProductImageContainer = styled.div`
 
 const ProductImage = styled.img`
   width: 100%;
-  height: 400px;
+  height: 70vh;
   object-fit: cover;
   border-radius: 12px;
   transition: transform 0.3s ease;
