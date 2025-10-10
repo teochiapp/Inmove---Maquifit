@@ -48,8 +48,6 @@ export const useAPI = (endpoint, options = {}) => {
           fullURL = `${fullURL}${separator}populate=*&pagination[pageSize]=100`;
         }
         
-        console.log('Fetching from:', fullURL); // Para debugging
-        
         // Configuración de headers para Strapi
         const fetchOptions = {
           method: 'GET',
@@ -89,13 +87,6 @@ export const useAPI = (endpoint, options = {}) => {
         
         const result = await response.json();
         
-        // Debug: ver la respuesta completa
-        console.log('📦 Respuesta de Strapi:', result);
-        if (endpoint.includes('/productos') && result.data) {
-          console.log('📋 Productos recibidos:', result.data.length);
-          console.log('🔍 Primer producto (sample):', result.data[0]);
-        }
-        
         // Validar estructura de respuesta de Strapi
         if (result && typeof result === 'object') {
           setData(result);
@@ -116,6 +107,7 @@ export const useAPI = (endpoint, options = {}) => {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endpoint]);
 
   return { data, loading, error };

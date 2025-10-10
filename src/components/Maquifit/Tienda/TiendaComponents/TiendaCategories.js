@@ -60,7 +60,6 @@ const TiendaCategories = () => {
               src={categoria.icono} 
               alt={categoria.nombre}
               onError={(e) => {
-                console.warn(`Error cargando icono para ${categoria.nombre}`);
                 e.target.style.display = 'none';
               }}
             />

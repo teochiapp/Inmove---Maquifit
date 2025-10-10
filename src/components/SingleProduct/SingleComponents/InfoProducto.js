@@ -15,7 +15,7 @@ const InfoProducto = ({
   const { addItem } = useCarrito();
   
   // Obtener variantes del producto
-  const { variantes, loading: loadingVariantes, tieneVariantes } = useVariantesPorProducto(productoId);
+  const { variantes, tieneVariantes } = useVariantesPorProducto(productoId);
   const opcionesVariantes = useOpcionesVariantes(variantes);
   
   const [showModal, setShowModal] = useState(false);

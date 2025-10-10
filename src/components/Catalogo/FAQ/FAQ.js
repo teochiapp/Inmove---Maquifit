@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMessageCircle } from "react-icons/fi"; // ícono del botón
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);

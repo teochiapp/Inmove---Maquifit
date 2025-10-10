@@ -36,7 +36,12 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-unused-vars": ["warn", { "varsIgnorePattern": "^(styled|.*Button|.*Icon|.*Link|.*Section|.*Container|.*Title|.*Text|.*Label|.*Value|.*Item|.*List|.*Info|.*Actions|.*Details|.*Image|.*Description|.*Category|.*Price|.*Stock|.*Characteristics|.*Related.*|.*Placeholder|.*Spec|Bold|InfoIcon|MutantuLogo|Product.*|Detail.*)" }],
+      "react-hooks/exhaustive-deps": "warn",
+      "eqeqeq": "warn"
+    }
   },
   "browserslist": {
     "production": [

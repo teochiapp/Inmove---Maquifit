@@ -9,7 +9,7 @@ export const usePlanes = () => {
   const { data, loading, error } = useAPI('/planes');
   
   // Procesar datos de Strapi
-  const planes = data?.data || [];
+  const planes = useMemo(() => data?.data || [], [data]);
   const meta = data?.meta || {};
   
   // Normalizar planes para que tengan la estructura esperada (memoizado)

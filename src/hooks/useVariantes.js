@@ -69,7 +69,7 @@ export const useVariantesPorProducto = (productoId) => {
               if (data.data) {
                 data.data = data.data.filter(v => {
                   const prodId = v.producto?.id || v.attributes?.producto?.data?.id;
-                  return prodId == productoId;
+                  return prodId === productoId;
                 });
               }
             }

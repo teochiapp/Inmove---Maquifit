@@ -13,7 +13,7 @@ const NavigationSection = () => {
           <LoadingText>Cargando categorías...</LoadingText>
         ) : categorias.length > 0 ? (
           <>
-            {categorias.slice(0, 3).map((categoria, index) => (
+            {categorias.slice(0, 3).map((categoria) => (
               <React.Fragment key={categoria.id}>
                 <NavLink href={`/catalogo#categoria-${categoria.slug}`}>
                   <CategoryIconContainer>
@@ -22,7 +22,6 @@ const NavigationSection = () => {
                         src={categoria.icono} 
                         alt={categoria.nombre}
                         onError={(e) => {
-                          console.warn(`❌ Error cargando icono para ${categoria.nombre}:`, categoria.icono);
                           e.target.style.display = 'none';
                         }}
                       />

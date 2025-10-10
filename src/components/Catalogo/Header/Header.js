@@ -157,7 +157,6 @@ const Header = () => {
                     src={categoria.icono} 
                     alt={categoria.nombre}
                     onError={(e) => {
-                      console.warn(`❌ Error cargando icono para ${categoria.nombre}:`, categoria.icono);
                       e.target.style.display = 'none';
                     }}
                   />
@@ -213,7 +212,6 @@ const Header = () => {
                     src={categoria.icono} 
                     alt={categoria.nombre}
                     onError={(e) => {
-                      console.warn(`❌ Error cargando icono para ${categoria.nombre}:`, categoria.icono);
                       e.target.style.display = 'none';
                     }}
                   />

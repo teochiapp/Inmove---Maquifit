@@ -17,79 +17,12 @@ const Productos = () => {
     error,
   } = useProductosByCategoria();
   const navigate = useNavigate();
-  const { addItem, removeItem, updateQuantity, getItemQuantity, isInCart } =
-    useCarrito();
+  const { addItem } = useCarrito();
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const [productQuantities, setProductQuantities] = useState({});
 
   const loading = categoriasLoading || productosLoading;
-
-  // Debug: ver qué productos hay por categoría
-  console.log("🔍 Productos por categoría:", productosByCategoria);
-  console.log("🔍 Categorías:", categorias);
-
-  const getLocalQuantity = (productoId) => {
-    return productQuantities[productoId] || 0;
-  };
-
-  const handleQuantityChange = (e, producto, change) => {
-    e.stopPropagation();
-
-    const currentQuantity = getLocalQuantity(producto.id);
-    const newQuantity = Math.max(0, currentQuantity + change);
-
-    setProductQuantities((prev) => ({
-      ...prev,
-      [producto.id]: newQuantity,
-    }));
-  };
-
-  const handleQuantityInputChange = (e, producto) => {
-    e.stopPropagation();
-
-    const newQuantity = Math.max(0, parseInt(e.target.value) || 0);
-
-    setProductQuantities((prev) => ({
-      ...prev,
-      [producto.id]: newQuantity,
-    }));
-  };
-
-  const handleAddToCart = (e, producto) => {
-    e.stopPropagation();
-
-    const quantity = getLocalQuantity(producto.id);
-    if (quantity <= 0) return;
-
-    const productoParaCarrito = {
-      id: producto.id,
-      nombre: producto.nombre,
-      descripcion: producto.descripcion,
-      precio: producto.precio,
-      talle: producto.talle,
-      color: producto.color,
-      imagen: producto.imagen,
-    };
-
-    // Agregar la cantidad especificada al carrito
-    for (let i = 0; i < quantity; i++) {
-      addItem(productoParaCarrito);
-    }
-
-    // Guardar la cantidad antes de resetear
-    setSelectedQuantity(quantity);
-
-    setSelectedProduct(productoParaCarrito);
-    setShowModal(true);
-
-    // Resetear la cantidad local
-    setProductQuantities((prev) => ({
-      ...prev,
-      [producto.id]: 0,
-    }));
-  };
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -145,11 +78,6 @@ const Productos = () => {
           const mostrarBotones = productosDeCategoria.length > 4; // Desktop: más de 4
           const mostrarCarruselMobile = productosDeCategoria.length > 1; // Mobile: más de 1
 
-          // Debug log
-          console.log(
-            `📦 Categoría: ${categoria.nombre} | Productos: ${productosDeCategoria.length} | Desktop Carrusel: ${mostrarBotones} | Mobile Carrusel: ${mostrarCarruselMobile}`
-          );
-
           return (
             <CategoriaSection
               key={categoria.id}
@@ -171,10 +99,6 @@ const Productos = () => {
                       src={categoria.icono}
                       alt={categoria.nombre}
                       onError={(e) => {
-                        console.warn(
-                          `❌ Error cargando icono para ${categoria.nombre}:`,
-                          categoria.icono
-                        );
                         e.target.style.display = "none";
                       }}
                     />
@@ -251,10 +175,6 @@ const Productos = () => {
                             src={producto.imagen}
                             alt={producto.nombre}
                             onError={(e) => {
-                              console.warn(
-                                `❌ Error cargando imagen para ${producto.nombre}:`,
-                                producto.imagen
-                              );
                               e.target.style.display = "none";
                             }}
                           />
@@ -833,121 +753,5 @@ const ArrowIcon = styled.span`
 
   ${VerProductoButton}:hover & {
     transform: translateX(4px);
-  }
-`;
-
-const CartRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
-  margin-top: auto;
-
-  @media (max-width: 485px) {
-      justify-content: center;
-    }
-`;
-
-const CartIconButton = styled.button`
-  width: 40px;
-  height: 40px;
-  background: var(--inmove-rosa-color);
-  border: none;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: white;
-
-  &:hover:not(:disabled) {
-    background: var(--inmove-color);
-    transform: scale(1.1);
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(0.95);
-    transition: all 0.1s ease;
-  }
-
-  &:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-`;
-
-const CartIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    width: 18px;
-    height: 18px;
-    color: white;
-  }
-`;
-
-const QuantitySelector = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(218, 95, 139, 0.1);
-  border-radius: 25px;
-  padding: 0.4rem;
-`;
-
-const QuantityButton = styled.button`
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: var(--inmove-rosa-color);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: var(--inmove-color);
-    transform: scale(1.1);
-  }
-
-  &:active {
-    transform: scale(0.9);
-    transition: all 0.1s ease;
-  }
-`;
-
-const QuantityInput = styled.input`
-  width: 45px;
-  height: 32px;
-  border: none;
-  background: transparent;
-  text-align: center;
-  font-family: "Onest", sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--inmove-color);
-
-  &:focus {
-    outline: none;
-  }
-
-  /* Ocultar las flechas del input number */
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  &[type="number"] {
-    -moz-appearance: textfield;
   }
 `;

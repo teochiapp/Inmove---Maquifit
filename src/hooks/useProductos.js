@@ -30,15 +30,11 @@ export const useProductos = () => {
   const { data, loading, error } = useAPI('/productos');
   
   // Procesar datos de Strapi v5 (sin attributes wrapper)
-  const productos = data?.data || [];
+  const productos = useMemo(() => data?.data || [], [data]);
   const meta = data?.meta || {};
   
   // Normalizar productos para mantener compatibilidad con el código existente (memoizado)
   const productosNormalizados = useMemo(() => {
-    console.log('🔄 Normalizando productos...', productos.length);
-    if (productos.length > 0) {
-      console.log('📦 Producto raw (antes de normalizar):', productos[0]);
-    }
     return productos.map(producto => ({
       id: producto.id || producto.documentId,
       documentId: producto.documentId,
@@ -97,11 +93,6 @@ export const useProductos = () => {
       }
     }));
   }, [productos]);
-  
-  console.log('✅ Productos normalizados:', productosNormalizados.length);
-  if (productosNormalizados.length > 0) {
-    console.log('🎯 Producto normalizado (después):', productosNormalizados[0]);
-  }
   
   return {
     productos: productosNormalizados,

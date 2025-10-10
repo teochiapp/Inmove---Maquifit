@@ -28,7 +28,6 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
   };
 
   const handleCheckoutSuccess = () => {
-    console.log('Pago exitoso');
     handleClose();
   };
 

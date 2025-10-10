@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { storePaymentData } from '../../../api/emailService';
 
-const MercadoPagoCheckout = ({ plan, userData, onSuccess, onError, onCancel }) => {
-  const [preferenceId, setPreferenceId] = useState(null);
+const MercadoPagoCheckout = ({ plan, userData, onError, onCancel }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
    useEffect(() => {
      // Crear preferencia de pago al montar el componente
      createPreference();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [plan, userData]);
 
   const createPreference = async () => {
@@ -53,15 +53,6 @@ const MercadoPagoCheckout = ({ plan, userData, onSuccess, onError, onCancel }) =
         }
       };
 
-       console.log('🔍 Datos de la preferencia:');
-       console.log('- Plan:', plan.title, '- Precio:', plan.price);
-       console.log('- Usuario:', userData.nombre, userData.mail);
-       console.log('🔗 URLs de retorno:');
-       console.log('- Success:', preferenceData.back_urls.success);
-       console.log('- Failure:', preferenceData.back_urls.failure);
-       console.log('- Pending:', preferenceData.back_urls.pending);
-       console.log('🌐 Origin actual:', window.location.origin);
-
        // DESARROLLO: Crear preferencia real para obtener init_point
        // Esto nos dará la URL real del Checkout Pro de MercadoPago
        
@@ -71,12 +62,6 @@ const MercadoPagoCheckout = ({ plan, userData, onSuccess, onError, onCancel }) =
          throw new Error('Access token no configurado en variables de entorno');
        }
 
-       console.log('🧪 MODO DESARROLLO - Creando preferencia para Checkout Pro');
-       console.log('⚠️ IMPORTANTE: Si ves el error "Una de las partes es de prueba", necesitas:');
-       console.log('1. Crear cuentas de prueba en developers.mercadopago.com');
-       console.log('2. Usar credenciales de la cuenta de prueba del vendedor');
-       console.log('3. Hacer login con la cuenta de prueba del comprador al pagar');
-       
        const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
          method: 'POST',
          headers: {
@@ -93,18 +78,12 @@ const MercadoPagoCheckout = ({ plan, userData, onSuccess, onError, onCancel }) =
        }
 
        const data = await response.json();
-       console.log('✅ Preferencia creada exitosamente:', data);
-       console.log('🔗 Init point (Checkout Pro URL):', data.init_point);
        
        // Almacenar datos del cliente y plan para el email
        storePaymentData(userData, plan);
        
-       // Guardar tanto el ID como la URL del checkout
-       setPreferenceId(data.id);
-       
        // Redirigir inmediatamente al Checkout Pro
        if (data.init_point) {
-         console.log('🚀 Redirigiendo a Checkout Pro...');
          window.location.href = data.init_point;
        } else {
          throw new Error('No se recibió URL de Checkout Pro');
@@ -120,45 +99,6 @@ const MercadoPagoCheckout = ({ plan, userData, onSuccess, onError, onCancel }) =
       setLoading(false);
     }
   };
-
-  const handlePaymentSuccess = (data) => {
-    console.log('Pago exitoso:', data);
-    if (onSuccess) {
-      onSuccess(data);
-    }
-  };
-
-   const handlePaymentError = (error) => {
-     console.error('Error en el pago:', error);
-     
-     // Si es un error no crítico de obtener detalles de preferencia, intentar continuar
-     if (error.cause === 'get_preference_details_failed' && error.type === 'non_critical') {
-       console.warn('⚠️ Error no crítico detectado, continuando...');
-       return; // No mostrar error al usuario para errores no críticos
-     }
-     
-     // Para otros errores, mostrar mensaje
-     let errorMessage = 'Error procesando el pago';
-     if (error.message) {
-       errorMessage += `: ${error.message}`;
-     }
-     
-     setError(errorMessage);
-     if (onError) {
-       onError(error);
-     }
-   };
-
-   const handleDemoPayment = () => {
-     console.log('🧪 DEMO: Redirigiendo a Checkout Pro de MercadoPago');
-     
-     // Para demo, redirigir a una URL de ejemplo de MercadoPago
-     // En producción, aquí usarías el init_point real de la preferencia
-     const checkoutUrl = 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=DEMO-PREFERENCE';
-     
-     // Abrir en la misma ventana (como lo hace MercadoPago normalmente)
-     window.location.href = checkoutUrl;
-   };
 
    if (loading) {
      return (
@@ -227,7 +167,7 @@ const MercadoPagoCheckout = ({ plan, userData, onSuccess, onError, onCancel }) =
        </PurchaseSummary>
 
        <WalletContainer>
-         <DemoPaymentButton onClick={() => handleDemoPayment()}>
+         <DemoPaymentButton onClick={createPreference}>
            <DemoButtonIcon>💳</DemoButtonIcon>
            <DemoButtonText>
              <DemoButtonTitle>Ir a Checkout Pro de MercadoPago</DemoButtonTitle>
