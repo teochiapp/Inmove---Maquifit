@@ -61,6 +61,7 @@ const ProductsGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
+  justify-items: start;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

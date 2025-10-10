@@ -522,7 +522,7 @@ const ProductosCarrusel = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
-    justify-items: center;
+    justify-items: start;
     
     @media (max-width: 1400px) {
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
