@@ -72,11 +72,14 @@ const InfoProducto = ({
       talle: selectedSize,
       color: selectedColor,
       imagen: imagenActual,
-      cantidad: quantity,
       varianteId: varianteSeleccionada?.id
     };
 
-    addItem(producto);
+    // Agregar la cantidad seleccionada al carrito
+    for (let i = 0; i < quantity; i++) {
+      addItem(producto);
+    }
+    
     setShowModal(true);
   };
 
