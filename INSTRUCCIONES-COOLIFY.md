@@ -4,10 +4,10 @@
 
 Tienes **2 aplicaciones separadas** en Coolify:
 
-| Aplicación | Tecnología | Puerto | Dominio Sugerido |
+| Aplicación | Tecnología | Puerto | Dominio |
 |-----------|-----------|--------|------------------|
 | **Frontend** | React (CRA) | 3000 | `https://inmove.com.ar` |
-| **Backend** | Strapi v5 | 1337 | `https://api.inmove.com.ar` |
+| **Backend** | Strapi v5 | 1337 | `https://admin.inmove.com.ar` |
 
 ---
 
@@ -22,10 +22,10 @@ Y agrega estas variables:
 
 ```bash
 # URL del backend Strapi (sin /api al final)
-REACT_APP_STRAPI_URL=https://api.inmove.com.ar
+REACT_APP_STRAPI_URL=https://admin.inmove.com.ar
 
 # URL de la API (con /api al final)
-REACT_APP_API_URL=https://api.inmove.com.ar/api
+REACT_APP_API_URL=https://admin.inmove.com.ar/api
 
 # EmailJS (si ya lo configuraste)
 REACT_APP_EMAILJS_SERVICE_ID=service_2owznmm
@@ -56,8 +56,8 @@ En tu aplicación de **Strapi** en Coolify, agrega:
 
 ```bash
 # URLs del backend
-STRAPI_ADMIN_BACKEND_URL=https://api.inmove.com.ar
-STRAPI_BACKEND_URL=https://api.inmove.com.ar
+STRAPI_ADMIN_BACKEND_URL=https://admin.inmove.com.ar
+STRAPI_BACKEND_URL=https://admin.inmove.com.ar
 
 # Permitir el dominio del frontend
 APP_KEYS=tu_app_key_aqui
@@ -121,7 +121,7 @@ module.exports = [
 
 ### Backend (Strapi)
 - **Port**: 1337
-- **Dominio**: Asigna un subdominio (ej: `api.inmove.com.ar`)
+- **Dominio**: Asigna un subdominio (ej: `admin.inmove.com.ar`)
 
 ---
 
@@ -131,7 +131,7 @@ module.exports = [
 
 Abre en tu navegador:
 ```
-https://api.inmove.com.ar/api/productos
+https://admin.inmove.com.ar/api/productos
 ```
 
 ✅ Deberías ver JSON con tus productos
@@ -201,7 +201,7 @@ https://inmove.com.ar/admin
 
 Y serás redirigido a:
 ```
-https://api.inmove.com.ar/admin
+https://admin.inmove.com.ar/admin
 ```
 
 ---
