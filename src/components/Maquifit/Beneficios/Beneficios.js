@@ -84,7 +84,7 @@ function Beneficios() {
       >
         <DownloadTitle>Descargá la App</DownloadTitle>
         <DownloadButtons>
-          <AppStoreLink href="#" target="_blank" rel="noopener noreferrer">
+          <AppStoreLink href="#app-store" onClick={(e) => e.preventDefault()}>
             <AppStore src="/home/beneficios/app-store.png" alt="App Store" />
           </AppStoreLink>
           <PlayStoreLink href="https://play.google.com/store/apps/details?id=com.arceus.teammaquifit&hl=es_AR" target="_blank" rel="noopener noreferrer">

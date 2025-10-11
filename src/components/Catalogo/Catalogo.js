@@ -16,12 +16,20 @@ const Catalogo = () => {
     const HEADER_OFFSET = 100;
 
     const scrollToHash = (hash) => {
-      if (!hash) return;
+      if (!hash || hash === '#') return; // Evitar hash vacío
       const selector = hash.startsWith('#') ? hash : `#${hash}`;
-      const target = document.querySelector(selector);
-      if (target) {
-        const top = target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-        window.scrollTo({ top, behavior: 'smooth' });
+      // Validar que el selector tenga contenido después del #
+      if (selector.length <= 1) return;
+      
+      try {
+        const target = document.querySelector(selector);
+        if (target) {
+          const top = target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      } catch (error) {
+        // Ignorar errores de selector inválido
+        console.warn('Invalid selector:', selector);
       }
     };
 

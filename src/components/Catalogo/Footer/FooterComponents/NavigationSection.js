@@ -7,13 +7,13 @@ const NavigationSection = () => {
 
   return (
     <NavigationContainer>
-      {/* Primera fila: Calzas, Remeras, Tops */}
+      {/* Primera fila: Todas las categorías */}
       <NavRow>
         {loading ? (
           <LoadingText>Cargando categorías...</LoadingText>
         ) : categorias.length > 0 ? (
           <>
-            {categorias.slice(0, 3).map((categoria) => (
+            {categorias.map((categoria, index) => (
               <React.Fragment key={categoria.id}>
                 <NavLink href={`/catalogo#categoria-${categoria.slug}`}>
                   <CategoryIconContainer>
@@ -31,7 +31,7 @@ const NavigationSection = () => {
                   </CategoryIconContainer>
                   <CategoryName>{categoria.nombre}</CategoryName>
                 </NavLink>
-                <Separator>/</Separator>
+                {index < categorias.length - 1 && <Separator>/</Separator>}
               </React.Fragment>
             ))}
           </>
@@ -40,31 +40,8 @@ const NavigationSection = () => {
         )}
       </NavRow>
       
-      {/* Segunda fila: Conjuntos, FAQ, Sobre Mi */}
+      {/* Segunda fila: FAQ, Sobre Mi */}
       <NavRow>
-        {categorias.length > 3 && (
-          <>
-            <NavLink href={`/catalogo#categoria-${categorias[3].slug}`}>
-              <CategoryIconContainer>
-                {categorias[3].icono ? (
-                  <CategoryIcon 
-                    src={categorias[3].icono} 
-                    alt={categorias[3].nombre}
-                    onError={(e) => {
-                      console.warn(`❌ Error cargando icono para ${categorias[3].nombre}:`, categorias[3].icono);
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                ) : (
-                  <CategoryIconPlaceholder>📦</CategoryIconPlaceholder>
-                )}
-              </CategoryIconContainer>
-              <CategoryName>{categorias[3].nombre}</CategoryName>
-            </NavLink>
-            <Separator>/</Separator>
-          </>
-        )}
-        
         <NavLink href="/#faq">FAQ</NavLink>
         <Separator>/</Separator>
         <NavLink href="/#sobre-mi">Sobre Mi</NavLink>
