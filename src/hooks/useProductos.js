@@ -52,6 +52,17 @@ export const useProductos = () => {
             }
           }
         } : null,
+        Galeria: producto.Galeria ? {
+          data: producto.Galeria.map(imagen => ({
+            id: imagen.id || imagen.documentId,
+            attributes: {
+              url: imagen.url,
+              formats: imagen.formats,
+              alternativeText: imagen.alternativeText,
+              name: imagen.name
+            }
+          }))
+        } : null,
         Talle: producto.Talle,
         Color: producto.Color,
         Categoria: producto.CategoriaProducto ? {

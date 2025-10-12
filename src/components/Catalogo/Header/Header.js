@@ -342,6 +342,10 @@ const Navigation = styled.nav`
       font-size: 0.8rem !important;
     }
   }
+
+  @media (max-width: 1380px) {
+    gap: 0.8rem;
+  }
   
   @media (max-width: 1280px) {
     gap: 0.5rem;

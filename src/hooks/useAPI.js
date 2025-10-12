@@ -41,7 +41,7 @@ export const useAPI = (endpoint, options = {}) => {
         if (endpoint.includes('/productos') && !endpoint.includes('populate')) {
           const separator = endpoint.includes('?') ? '&' : '?';
           // Strapi v5 syntax: populate específico con notación de objeto
-          fullURL = `${fullURL}${separator}populate[0]=Portada&populate[1]=CategoriaProducto&populate[2]=variantes&populate[3]=variantes.Imagen&pagination[pageSize]=100`;
+          fullURL = `${fullURL}${separator}populate[0]=Portada&populate[1]=Galeria&populate[2]=CategoriaProducto&populate[3]=variantes&populate[4]=variantes.Imagen&pagination[pageSize]=100`;
         } else if (endpoint.includes('/categorias') && !endpoint.includes('populate')) {
           const separator = endpoint.includes('?') ? '&' : '?';
           // Strapi v5 syntax: populate all relations + sin límite de paginación

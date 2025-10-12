@@ -84,7 +84,7 @@ function Beneficios() {
       >
         <DownloadTitle>Descargá la App</DownloadTitle>
         <DownloadButtons>
-          <AppStoreLink href="#app-store" onClick={(e) => e.preventDefault()}>
+          <AppStoreLink href="https://apps.apple.com/ar/app/team-maquifit/id6451448025" target="_blank" rel="noopener noreferrer">
             <AppStore src="/home/beneficios/app-store.png" alt="App Store" />
           </AppStoreLink>
           <PlayStoreLink href="https://play.google.com/store/apps/details?id=com.arceus.teammaquifit&hl=es_AR" target="_blank" rel="noopener noreferrer">

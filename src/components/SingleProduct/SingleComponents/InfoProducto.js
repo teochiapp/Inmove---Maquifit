@@ -24,6 +24,36 @@ const InfoProducto = ({
   const [quantity, setQuantity] = useState(1);
   const [activeThumb, setActiveThumb] = useState(0);
   
+  // Construir array de imágenes: Portada + Galería
+  const imagenesGaleria = useMemo(() => {
+    const imagenes = [];
+    const strapiUrl = process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337';
+    
+    // Agregar Portada como primera imagen
+    if (imageUrl) {
+      imagenes.push({
+        url: imageUrl,
+        alt: imageAlt || productoNombre
+      });
+    }
+    
+    // Agregar imágenes de la galería
+    const galeriaData = attributes?.Galeria?.data;
+    if (galeriaData && Array.isArray(galeriaData)) {
+      galeriaData.forEach((imagen, index) => {
+        const imgUrl = imagen.attributes?.url;
+        if (imgUrl) {
+          imagenes.push({
+            url: imgUrl.startsWith('http') ? imgUrl : `${strapiUrl}${imgUrl}`,
+            alt: imagen.attributes?.alternativeText || `${productoNombre} - Imagen ${index + 2}`
+          });
+        }
+      });
+    }
+    
+    return imagenes.length > 0 ? imagenes : [{ url: imageUrl || '/catalogo/elementos.webp', alt: imageAlt || productoNombre }];
+  }, [imageUrl, imageAlt, productoNombre, attributes]);
+  
   // Obtener variante seleccionada
   const varianteSeleccionada = useVarianteSeleccionada(variantes, selectedSize, selectedColor);
   
@@ -41,13 +71,17 @@ const InfoProducto = ({
   const tallasDisponibles = tieneVariantes ? opcionesVariantes.tallas : ['S', 'M', 'L'];
   const coloresDisponibles = tieneVariantes ? opcionesVariantes.colores : ['#EF4444', '#F59E0B', '#EC4899', '#991B1B'];
   
-  // Imagen a mostrar (prioritiza la imagen de la variante seleccionada)
+  // Imagen a mostrar (prioritiza la imagen de la variante seleccionada, sino usa la imagen de la galería seleccionada)
   const imagenActual = useMemo(() => {
     if (varianteSeleccionada?.imagen) {
       return varianteSeleccionada.imagen;
     }
+    // Usar la imagen seleccionada de la galería
+    if (imagenesGaleria && imagenesGaleria[activeThumb]) {
+      return imagenesGaleria[activeThumb].url;
+    }
     return imageUrl;
-  }, [varianteSeleccionada, imageUrl]);
+  }, [varianteSeleccionada, imagenesGaleria, activeThumb, imageUrl]);
   
   // Stock disponible
   const stockDisponible = varianteSeleccionada?.stock ?? null;
@@ -92,9 +126,10 @@ const InfoProducto = ({
 
 
   const scrollThumbnails = (direction) => {
+    const maxIndex = imagenesGaleria.length - 1;
     if (direction === 'up' && activeThumb > 0) {
       setActiveThumb(activeThumb - 1);
-    } else if (direction === 'down' && activeThumb < 2) {
+    } else if (direction === 'down' && activeThumb < maxIndex) {
       setActiveThumb(activeThumb + 1);
     }
   };
@@ -106,47 +141,40 @@ const InfoProducto = ({
   <GalleryContainer>
     <ThumbnailsWrapper>
       <Thumbnails>
-              <Thumbnail 
-                src={imageUrl} 
-                alt="Thumbnail 1"
-                $active={activeThumb === 0}
-                onClick={() => setActiveThumb(0)}
-              />
-              <Thumbnail 
-                src={imageUrl} 
-                alt="Thumbnail 2"
-                $active={activeThumb === 1}
-                onClick={() => setActiveThumb(1)}
-              />
-              <Thumbnail 
-                src={imageUrl} 
-                alt="Thumbnail 3"
-                $active={activeThumb === 2}
-                onClick={() => setActiveThumb(2)}
-              />
+        {imagenesGaleria.map((imagen, index) => (
+          <Thumbnail 
+            key={index}
+            src={imagen.url} 
+            alt={imagen.alt}
+            $active={activeThumb === index}
+            onClick={() => setActiveThumb(index)}
+          />
+        ))}
       </Thumbnails>
       
-      <ArrowsContainer>
-        <ArrowButton onClick={() => scrollThumbnails('up')} disabled={activeThumb === 0}>
-          <ArrowIcon>
-            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11 7L6 2L1 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </ArrowIcon>
-        </ArrowButton>
-        
-        <ArrowButton $isDown onClick={() => scrollThumbnails('down')} disabled={activeThumb === 2}>
-          <ArrowIcon>
-            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </ArrowIcon>
-        </ArrowButton>
-      </ArrowsContainer>
+      {imagenesGaleria.length > 1 && (
+        <ArrowsContainer>
+          <ArrowButton onClick={() => scrollThumbnails('up')} disabled={activeThumb === 0}>
+            <ArrowIcon>
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 7L6 2L1 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </ArrowIcon>
+          </ArrowButton>
+          
+          <ArrowButton $isDown onClick={() => scrollThumbnails('down')} disabled={activeThumb === imagenesGaleria.length - 1}>
+            <ArrowIcon>
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </ArrowIcon>
+          </ArrowButton>
+        </ArrowsContainer>
+      )}
     </ThumbnailsWrapper>
     
           <MainImageContainer>
-      <ProductImage src={imagenActual} alt={imageAlt} />
+      <ProductImage src={imagenActual} alt={imagenesGaleria[activeThumb]?.alt || imageAlt} />
           </MainImageContainer>
   </GalleryContainer>
 
@@ -287,6 +315,7 @@ const InfoProducto = ({
         producto={{
           ...productoView,
           nombre: productoView?.nombre || productoNombre,
+          imagen: imagenActual,
           talle: selectedSize,
           color: selectedColor
         }}

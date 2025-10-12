@@ -49,7 +49,14 @@ const CarritoModal = ({ isOpen, onClose, producto, cantidad = 1 }) => {
             <ProductInfo>
               <ProductImage>
                 {producto.imagen ? (
-                  <ProductImageSrc src={producto.imagen} alt={producto.nombre} />
+                  <ProductImageSrc 
+                    src={producto.imagen} 
+                    alt={producto.nombre}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = '<div style="font-size: 2rem; opacity: 0.3;">🛍️</div>';
+                    }}
+                  />
                 ) : (
                   <ImagePlaceholder>🛍️</ImagePlaceholder>
                 )}
