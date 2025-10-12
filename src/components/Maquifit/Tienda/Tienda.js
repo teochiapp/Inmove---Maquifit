@@ -38,14 +38,14 @@ export default Tienda;
 
 const TiendaContainer = styled.section`
   position: relative;
-  height: 60vh;
+  min-height: 60vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 
   @media screen and (max-width: 768px) {
-    height: fit-content;
+    min-height: fit-content;
   }
 `;
 
@@ -77,12 +77,16 @@ const ContentContainer = styled.div`
   position: relative;
   z-index: 2;
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 2rem;
   padding: 1.5rem;
   margin: 0 auto;
+
+  @media screen and (max-width: 768px) {
+    gap: 1.5rem;
+    padding: 1rem;
+  }
 `;
 
 const TopSection = styled.div`

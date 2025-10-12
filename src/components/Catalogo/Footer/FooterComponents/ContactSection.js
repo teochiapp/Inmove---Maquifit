@@ -31,22 +31,6 @@ const ContactSection = () => {
           </HoursContainer>
         </ContactItem>
       </ContactInfo>
-
-      <SocialLinks>
-        <SocialLink 
-          href="https://www.instagram.com/maquifit.p/?hl=es-la" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          aria-label="Instagram"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M16.5 7.5V7.501" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </SocialLink>
-      </SocialLinks>
-
     </ContactContainer>
   );
 };
@@ -132,37 +116,4 @@ const TimeValue = styled.span`
   font-size: 1rem;
   color: var(--text-white);
   min-width: 100px;
-`;
-
-const SocialLinks = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-
-  @media (max-width: 768px) {
-    justify-content: center;
-  }
-`;
-
-const SocialLink = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(218, 95, 139, 0.1);
-  color: var(--inmove-rosa-color);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: var(--inmove-rosa-color);
-    color: white;
-    transform: translateY(-2px);
-  }
-  
-  svg {
-    width: 20px;
-    height: 20px;
-  }
 `;

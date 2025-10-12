@@ -103,10 +103,10 @@ const CategoryButton = styled.button`
   background: rgba(255, 255, 255, 0.2);
   border: 2px solid ${props => props.$isActive ? 'var(--inmove-color)' : 'transparent'};
   border-radius: 100px;
-  padding: 16px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: row;
-  height: 56px;
+  min-height: 48px;
   align-items: center;
   justify-content: center;
   gap: 0.7rem;
@@ -119,6 +119,12 @@ const CategoryButton = styled.button`
   &:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 10px 14px;
+    min-height: 44px;
+    gap: 0.5rem;
   }
 `;
 
@@ -144,10 +150,14 @@ const CategoryIconPlaceholder = styled.div`
 const CategoryText = styled.span`
   color: var(--text-white);
   font-weight: 400;
-  font-size: 20px;
+  font-size: clamp(16px, 2vw, 20px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media screen and (max-width: 768px) {
+    font-size: clamp(14px, 4vw, 18px);
+  }
 `;
 
 const LoadingText = styled.div`
