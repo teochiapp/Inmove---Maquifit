@@ -14,7 +14,7 @@ const ContactSection = () => {
 
         <ContactItem>
           <ContactLabel>Email</ContactLabel>
-          <ContactValue>soymaquifit@gmail.com</ContactValue>
+          <ContactValue>maquiponce96@gmail.com</ContactValue>
         </ContactItem>
 
         <ContactItem>
@@ -25,8 +25,8 @@ const ContactSection = () => {
               <DayLabel>Sáb</DayLabel>
             </DaysRow>
             <TimesRow>
-              <TimeValue>8:00 - 18:00</TimeValue>
-              <TimeValue>9:00 - 15:00</TimeValue>
+              <TimeValue>8am - 18pm</TimeValue>
+              <TimeValue>9am - 15pm</TimeValue>
             </TimesRow>
           </HoursContainer>
         </ContactItem>

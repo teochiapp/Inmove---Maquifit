@@ -31,6 +31,7 @@ const NavigationContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  align-items: center;
 `;
 
 const NavRow = styled.div`

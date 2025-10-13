@@ -21,7 +21,7 @@ const HeroGirl = () => {
         <Strength src="/home/strength.png" alt="Strength" />
         <Weight src="/home/weight.png" alt="Weight" />
         <Health src="/home/health.png" alt="Health" />
-         <CTAButton>
+         <CTAButton href="mailto:maquiponce96@gmail.com">
             <Icon src="/icons/user.png" alt="User" />
             <ButtonMaquifit> Maquifit</ButtonMaquifit>
          </CTAButton>
@@ -127,6 +127,7 @@ bottom: 387px;
 const Health = styled.img`
 display: inline-flex;
 padding: 18.666px;
+overflow: visible;
 flex-direction: column;
 justify-content: center;
 align-items: center;
@@ -144,7 +145,7 @@ border-radius: 50px;
  bottom: 559px;
  right: -178px;
  width: 90px;
- z-index: 8;
+ z-index: 1;
 
 }
  @media (max-width:650px){
@@ -153,7 +154,7 @@ border-radius: 50px;
 }
 `
 
-const CTAButton = styled.button`
+const CTAButton = styled.a`
   background: rgba(255, 255, 255, 0.40);
   backdrop-filter: blur(8px);
   border: none;
@@ -168,6 +169,7 @@ const CTAButton = styled.button`
   left: 320px;
   z-index: 9;
   transition: transform 0.3s ease;
+  text-decoration: none;
   
   &:hover {
     transform: translateY(-2px);
