@@ -31,6 +31,7 @@ const ContactSection = () => {
           </HoursContainer>
         </ContactItem>
       </ContactInfo>
+
     </ContactContainer>
   );
 };
