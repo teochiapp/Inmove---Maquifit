@@ -170,6 +170,7 @@ const CTAButton = styled.a`
   z-index: 9;
   transition: transform 0.3s ease;
   text-decoration: none;
+  width: fit-content;
   
   &:hover {
     transform: translateY(-2px);
