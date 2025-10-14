@@ -11,6 +11,8 @@ const ModalPlanesEscribime = ({ isOpen, onClose }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
+  console.log('Modal isOpen:', isOpen, 'Planes cargados:', planes.length);
+
   // Colores predefinidos para los planes
   const planColors = ["#C58ADA", "#9DC6DA", "#9FC329"];
 
@@ -171,15 +173,18 @@ const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   backdrop-filter: blur(5px);
   padding: 1rem;
+  overflow-y: auto;
 
   @media (max-width: 768px) {
     padding: 1.25rem;

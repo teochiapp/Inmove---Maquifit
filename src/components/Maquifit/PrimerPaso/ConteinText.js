@@ -7,6 +7,7 @@ const Text = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
+    console.log('Abriendo modal de planes...');
     setIsModalOpen(true);
   };
 
@@ -57,7 +58,7 @@ export default Text;
 const Texts = styled.div`
   display: flex;
   flex-direction: column;
-  z-index: 999;
+  z-index: 1001;
   position: absolute;
   top: 100px;
   left: 150px;
@@ -130,39 +131,39 @@ const Texts = styled.div`
   }
   @media (max-width: 419px) {
       
-      top:70px;
+      top:50px;
       left:1%;
       width: 400px;
   }
 
    @media (max-width: 400px) {
       
-      top:70px;
+      top:50px;
       left:-10px;
       width: 400px;
   }
 
    @media (max-width: 375px) {
       
-      top:70px;
+      top:50px;
       left:-15px;
       width: 400px;
   }
    @media (max-width: 360px) {
       
-      top:70px;
+      top:50px;
       left:-25px;
       width: 400px;
   }
    @media (max-width: 340px) {
       
-      top:70px;
+      top:50px;
       left:-35px;
       width: 400px;
   }
    @media (max-width: 325px) {
       
-      top:70px;
+      top:50px;
       left:-39px;
       width: 400px;
   }
@@ -255,6 +256,8 @@ const CTAButton = styled.button`
   gap: 0.5rem;
   cursor: pointer;
   transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1002;
 
   @media (max-width: 768px) {
     padding: 0.6rem 1.2rem;
@@ -314,6 +317,8 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   margin-top: clamp(30px, 8vw, 50px);
+  position: relative;
+  z-index: 1002;
 
   @media (max-width: 768px) {
     justify-content: center;

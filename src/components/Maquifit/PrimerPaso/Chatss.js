@@ -90,6 +90,7 @@ const ChatsContainer = styled.div`
   gap: 60px;
   top: 15%;
   align-items: flex-end;
+  pointer-events: none;
 
   @media (max-width: 1500px) {
     right: 5%;
