@@ -1,22 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
-
 
 const HeroGirl = () => {
   return (
     <HeroMaquifit>
-      <motion.div
-        initial={{ x: 100, opacity: 0 }}
-        whileInView={{ x: 0, opacity: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ 
-          duration: 0.8, 
-          ease: "easeOut",
-          delay: 0.3 
-        }}
-        style={{ position: 'relative', width: '100%', height: '100%' }}
-      >
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
         <Girl src="/home/maquifit.webp" alt="Girl" fetchpriority="high" loading="eager" />
         <Strength src="/home/strength.png" alt="Strength" loading="lazy" />
         <Weight src="/home/weight.png" alt="Weight" loading="lazy" />
@@ -25,7 +13,7 @@ const HeroGirl = () => {
             <Icon src="/icons/user.png" alt="User" />
             <ButtonMaquifit> Maquifit</ButtonMaquifit>
          </CTAButton>
-      </motion.div>
+      </div>
     </HeroMaquifit>
   );
 };
