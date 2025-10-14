@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { usePlanes } from '../../../hooks/usePlanes';
 import ModalCheckout from '../Planes/ModalCheckout';
 
 const ModalPlanesEscribime = ({ isOpen, onClose }) => {
   const { planes, loading } = usePlanes();
+  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
@@ -49,6 +51,26 @@ const ModalPlanesEscribime = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  const handleMoreInfo = () => {
+    onClose(); // Cerrar el modal
+    navigate('/maquifit#planes'); // Navegar a la sección de planes
+    
+    // Backup: scroll manual después de navegar
+    setTimeout(() => {
+      const planesSection = document.getElementById('planes');
+      if (planesSection) {
+        const headerOffset = 100;
+        const elementPosition = planesSection.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 300);
+  };
+
   const CustomArrowIcon = ({ $color }) => (
     <svg width="24" height="24" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M4.66699 5.53809L11.3337 12.2048" stroke={$color} strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
@@ -83,6 +105,10 @@ const ModalPlanesEscribime = ({ isOpen, onClose }) => {
                 <ModalSubtitle>
                   Elegí el plan que mejor se adapte a tus objetivos y charlemos para diseñar juntos tu entrenamiento personalizado.
                 </ModalSubtitle>
+                <InfoButton onClick={handleMoreInfo}>
+                  <InfoButtonText>Más información</InfoButtonText>
+                  <DialogIcon src="/icons/dialog.png" alt="Info" />
+                </InfoButton>
               </ModalHeader>
 
               {loading ? (
@@ -253,6 +279,72 @@ const ModalSubtitle = styled.p`
   }
 `;
 
+const InfoButton = styled.button`
+  background: var(--terciary-color);
+  border: none;
+  border-radius: 100px;
+  padding: 10px 10px 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  margin-top: 1.25rem;
+
+  @media (max-width: 768px) {
+    padding: 0.6rem 1.2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 1rem;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+const InfoButtonText = styled.span`
+  color: var(--text-black);
+  font-family: 'Onest', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  padding-right: 3px;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
+`;
+
+const DialogIcon = styled.img`
+  width: clamp(28px, 4vw, 32px);
+  height: clamp(28px, 4vw, 32px);
+  object-fit: contain;
+  background: var(--secondary-color);
+  border-radius: 43%;
+  padding: clamp(6px, 1.5vw, 8px);
+
+  @media (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+    padding: 6px;
+  }
+
+  @media (max-width: 480px) {
+    width: 24px;
+    height: 24px;
+    padding: 5px;
+  }
+`;
+
 const LoadingText = styled.p`
   text-align: center;
   color: #6b7280;
@@ -262,10 +354,11 @@ const LoadingText = styled.p`
 `;
 
 const PlansGrid = styled.div`
-  display: grid;
+  display: grid !important;
   gap: 1rem;
   width: 100%;
   grid-template-columns: repeat(3, 1fr);
+  flex: none;
   
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
