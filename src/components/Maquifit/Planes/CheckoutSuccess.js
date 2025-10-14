@@ -45,16 +45,10 @@ const CheckoutSuccess = () => {
           setPlanData(storedPlan);
           
           console.log('📋 Datos del cliente y plan obtenidos:', { storedClient, storedPlan });
+          console.log('ℹ️ Email ya fue enviado cuando el cliente hizo clic en "Continuar con el pago"');
           
-          // Enviar email con los datos del cliente
-          const emailResult = await sendPaymentSuccessEmail(paymentInfo, storedClient, storedPlan);
-          
-          if (emailResult.success) {
-            console.log('✅ Email enviado exitosamente');
-            setEmailSent(true);
-          } else {
-            console.warn('⚠️ No se pudo enviar el email:', emailResult.message);
-          }
+          // NO enviamos email aquí porque ya se envió antes del pago
+          setEmailSent(true);
           
           // Limpiar datos almacenados
           clearStoredPaymentData();

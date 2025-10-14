@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import MercadoPagoCheckout from './MercadoPagoCheckout';
+import { sendClientContactEmail } from '../../../api/emailService';
 
 const ModalCheckout = ({ isOpen, onClose, plan }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
     mail: ''
   });
   const [showCheckout, setShowCheckout] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,10 +21,23 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Validar que todos los campos estén completos
     if (formData.nombre && formData.telefono && formData.mail) {
+      // Enviar email de contacto ANTES de ir al checkout
+      setSendingEmail(true);
+      console.log('📧 Enviando email con datos del cliente...');
+      
+      const emailResult = await sendClientContactEmail(formData, plan);
+      
+      if (emailResult.success) {
+        console.log('✅ Email enviado. Redirigiendo al checkout...');
+      } else {
+        console.warn('⚠️ Email no se envió, pero continuamos con el checkout:', emailResult.message);
+      }
+      
+      setSendingEmail(false);
       setShowCheckout(true);
     }
   };
@@ -131,16 +146,16 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
 
                 <InfoMessage>
                   <InfoText>
-                    Maqui se contactará contigo luego de procesar el pago para continuar con tu entrenamiento y lograr los resultados que soñaste.
+                    Maqui recibirá tus datos y se contactará contigo para diseñar tu entrenamiento personalizado y ayudarte a lograr los resultados que soñaste.
                   </InfoText>
                 </InfoMessage>
 
                 <ButtonContainer>
-                  <CancelButton type="button" onClick={handleClose}>
+                  <CancelButton type="button" onClick={handleClose} disabled={sendingEmail}>
                     Cancelar
                   </CancelButton>
-                  <PayButton type="submit">
-                    Continuar con el pago
+                  <PayButton type="submit" disabled={sendingEmail}>
+                    {sendingEmail ? '📧 Enviando...' : 'Continuar con el pago'}
                   </PayButton>
                 </ButtonContainer>
               </Form>
@@ -341,9 +356,14 @@ const CancelButton = styled.button`
   transition: all 0.3s ease;
   font-family: 'Onest', sans-serif;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: #e5e7eb;
     border-color: #d1d5db;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -360,13 +380,18 @@ const PayButton = styled.button`
   transition: all 0.3s ease;
   font-family: 'Onest', sans-serif;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: #b079d1;
     transform: translateY(-2px);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 `;
 

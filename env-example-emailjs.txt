@@ -8,30 +8,30 @@
 
 REACT_APP_EMAILJS_SERVICE_ID=service_2owznmm
 REACT_APP_EMAILJS_TEMPLATE_ID=template_pjck9zy
-REACT_APP_EMAILJS_PUBLIC_KEY=WLL8nQofIZqlZIq9e
+REACT_APP_EMAILJS_PUBLIC_KEY=Egizjd8jOmECOzre0
 
 # Ejemplo de template de EmailJS:
-# Template Name: payment_success
+# Template Name: contact_form / nuevo_cliente
+# ⚠️ IMPORTANTE: El email se envía cuando el cliente hace clic en "Continuar con el pago"
+# NO después del pago. Por lo tanto NO incluye payment_id, payment_status, etc.
+#
 # Template Variables que debes usar en el template:
 # - {{client_name}} - Nombre del cliente
 # - {{client_email}} - Email del cliente
 # - {{client_phone}} - Teléfono del cliente
 # - {{plan_title}} - Título del plan
-# - {{plan_price}} - Precio del plan
-# - {{plan_description}} - Descripción del plan
-# - {{payment_id}} - ID del pago de MercadoPago
-# - {{payment_status}} - Estado del pago
-# - {{payment_reference}} - Referencia externa del pago
-# - {{payment_date}} - Fecha y hora del pago
-# - {{to_email}} - Email de destino (teochiapps@gmail.com)
+# - {{plan_price}} - Precio del plan (ej: $50000)
+# - {{plan_description}} - Descripción del plan (subtítulo del plan)
+# - {{contact_date}} - Fecha y hora del contacto
+# - {{to_email}} - Email de destino (maquiponce96@gmail.com)
 # - {{subject}} - Asunto del email
 # - {{website_url}} - URL del sitio web
 
 # Ejemplo de HTML para el template de EmailJS:
 # <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
 #   <div style="background: linear-gradient(135deg, #C58ADA 0%, #9DC6DA 100%); padding: 30px; border-radius: 10px; text-align: center; margin-bottom: 30px;">
-#     <h1 style="color: white; margin: 0; font-size: 28px;">🎉 Nuevo Pago Recibido</h1>
-#     <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">Maquifit - Sistema de Pagos</p>
+#     <h1 style="color: white; margin: 0; font-size: 28px;">🎉 Nuevo Cliente Interesado</h1>
+#     <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">Maquifit - Sistema de Contactos</p>
 #   </div>
 #   
 #   <div style="background: #f9f9f9; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
@@ -42,23 +42,22 @@ REACT_APP_EMAILJS_PUBLIC_KEY=WLL8nQofIZqlZIq9e
 #   </div>
 #   
 #   <div style="background: #f0f9ff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
-#     <h2 style="color: #0369a1; margin-top: 0;">💪 Plan Adquirido</h2>
+#     <h2 style="color: #0369a1; margin-top: 0;">💪 Plan Seleccionado</h2>
 #     <p><strong>Plan:</strong> {{plan_title}}</p>
 #     <p><strong>Precio:</strong> {{plan_price}}</p>
 #     <p><strong>Descripción:</strong> {{plan_description}}</p>
 #   </div>
 #   
-#   <div style="background: #f0fdf4; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
-#     <h2 style="color: #166534; margin-top: 0;">💳 Detalles del Pago</h2>
-#     <p><strong>ID de Pago:</strong> {{payment_id}}</p>
-#     <p><strong>Estado:</strong> {{payment_status}}</p>
-#     <p><strong>Referencia:</strong> {{payment_reference}}</p>
-#     <p><strong>Fecha:</strong> {{payment_date}}</p>
+#   <div style="background: #fffbeb; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+#     <h2 style="color: #d97706; margin-top: 0;">⏰ Fecha de Contacto</h2>
+#     <p>{{contact_date}}</p>
+#     <p style="font-size: 14px; color: #666;">Desde: {{website_url}}</p>
 #   </div>
 #   
 #   <div style="text-align: center; padding: 20px; background: #fef7ff; border-radius: 8px;">
 #     <p style="margin: 0; color: #7c3aed; font-size: 16px;">
-#       <strong>¡Contacta al cliente para continuar con su entrenamiento personalizado!</strong>
+#       <strong>⚠️ El cliente completará el pago en MercadoPago.</strong><br>
+#       <strong>¡Contacta al cliente para diseñar su entrenamiento personalizado!</strong>
 #     </p>
 #   </div>
 # </div>

@@ -5,7 +5,7 @@ const HeroGirl = () => {
   return (
     <HeroMaquifit>
       <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-        <Girl src="/home/maquifit.webp" alt="Girl" fetchpriority="high" loading="eager" />
+        <Girl src="/home/maquifit.webp" alt="Girl" fetchPriority="high" loading="eager" />
         <Strength src="/home/strength.png" alt="Strength" loading="lazy" />
         <Weight src="/home/weight.png" alt="Weight" loading="lazy" />
         <Health src="/home/health.png" alt="Health" loading="lazy" />

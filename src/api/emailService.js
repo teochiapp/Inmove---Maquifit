@@ -6,8 +6,32 @@ const EMAIL_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID || 'service_ma
 const EMAIL_TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || 'template_payment_success';
 const EMAIL_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || 'your_public_key_here';
 
+console.log('🔧 EmailJS Config COMPLETA:', {
+  serviceId: EMAIL_SERVICE_ID,
+  templateId: EMAIL_TEMPLATE_ID,
+  publicKey: EMAIL_PUBLIC_KEY,
+  publicKeyLength: EMAIL_PUBLIC_KEY?.length
+});
+
+// Hacer las variables globales para poder verificarlas en la consola (solo para debug)
+window.DEBUG_EMAILJS_CONFIG = {
+  serviceId: EMAIL_SERVICE_ID,
+  templateId: EMAIL_TEMPLATE_ID,
+  publicKey: EMAIL_PUBLIC_KEY,
+  hasEnvFile: EMAIL_PUBLIC_KEY !== 'your_public_key_here'
+};
+
+console.log('💡 Para ver la config en consola, escribe: window.DEBUG_EMAILJS_CONFIG');
+
 // Inicializar EmailJS
-emailjs.init(EMAIL_PUBLIC_KEY);
+if (!EMAIL_PUBLIC_KEY || EMAIL_PUBLIC_KEY === 'your_public_key_here') {
+  console.error('❌ PUBLIC KEY NO CONFIGURADA o es el valor por defecto!');
+  console.error('❌ Verifica tu archivo .env');
+  console.error('❌ La Public Key actual es:', EMAIL_PUBLIC_KEY);
+} else {
+  emailjs.init(EMAIL_PUBLIC_KEY);
+  console.log('✅ EmailJS inicializado correctamente');
+}
 
 /**
  * Envía un email con los datos del cliente después de un pago exitoso
@@ -15,9 +39,22 @@ emailjs.init(EMAIL_PUBLIC_KEY);
  * @param {Object} clientData - Datos del cliente del formulario
  * @param {Object} planData - Datos del plan seleccionado
  */
-export const sendPaymentSuccessEmail = async (paymentData, clientData, planData) => {
+/**
+ * Envía un email cuando el cliente hace clic en "Continuar con el pago"
+ * NO después del pago - esto es antes del checkout
+ */
+export const sendClientContactEmail = async (clientData, planData) => {
   try {
-    console.log('📧 Enviando email de confirmación de pago...');
+    console.log('📧 Iniciando envío de email de contacto...');
+    console.log('📧 Config EmailJS:', { 
+      serviceId: EMAIL_SERVICE_ID, 
+      templateId: EMAIL_TEMPLATE_ID,
+      publicKeySet: !!EMAIL_PUBLIC_KEY 
+    });
+    console.log('📧 Datos recibidos:', {
+      clientData,
+      planData
+    });
     
     // Preparar los datos para el template de email
     const templateParams = {
@@ -29,19 +66,13 @@ export const sendPaymentSuccessEmail = async (paymentData, clientData, planData)
       // Datos del plan
       plan_title: planData.title || 'Plan no especificado',
       plan_price: planData.price ? `$${planData.price.toLocaleString("es-AR")}` : 'Precio no disponible',
-      plan_description: planData.description || 'Descripción no disponible',
+      plan_description: planData.highlight || planData.description || 'Sin descripción',
       
-      // Datos del pago
-      payment_id: paymentData.paymentId || 'No disponible',
-      payment_status: paymentData.status || 'No disponible',
-      payment_reference: paymentData.externalReference || 'No disponible',
-      merchant_order_id: paymentData.merchantOrderId || 'No disponible',
+      // Email de destino (siempre a maquiponce96@gmail.com)
+      to_email: 'maquiponce96@gmail.com',
       
-      // Email de destino (siempre a teochiapps@gmail.com)
-      to_email: 'teochiapps@gmail.com',
-      
-      // Fecha y hora del pago
-      payment_date: new Date().toLocaleDateString('es-AR', {
+      // Fecha y hora del contacto
+      contact_date: new Date().toLocaleDateString('es-AR', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -51,10 +82,14 @@ export const sendPaymentSuccessEmail = async (paymentData, clientData, planData)
       
       // Información adicional
       website_url: window.location.origin,
-      subject: `Nuevo pago recibido - ${clientData.nombre} - ${planData.title}`
+      subject: `Nuevo cliente interesado - ${clientData.nombre} - ${planData.title}`
     };
 
-    console.log('📋 Datos del email:', templateParams);
+    console.log('📋 Template params preparados:', templateParams);
+    console.log('📤 Enviando a EmailJS con:', {
+      serviceId: EMAIL_SERVICE_ID,
+      templateId: EMAIL_TEMPLATE_ID
+    });
 
     // Enviar el email usando EmailJS
     const result = await emailjs.send(
@@ -63,7 +98,9 @@ export const sendPaymentSuccessEmail = async (paymentData, clientData, planData)
       templateParams
     );
 
-    console.log('✅ Email enviado exitosamente:', result);
+    console.log('✅ Email enviado exitosamente!');
+    console.log('✅ Resultado:', result);
+    
     return {
       success: true,
       messageId: result.text,
@@ -71,17 +108,23 @@ export const sendPaymentSuccessEmail = async (paymentData, clientData, planData)
     };
 
   } catch (error) {
-    console.error('❌ Error enviando email:', error);
+    console.error('❌ ERROR COMPLETO enviando email:', {
+      message: error.message,
+      text: error.text,
+      error: error
+    });
     
     // No lanzar error para no interrumpir el flujo del usuario
-    // Solo logear el error y retornar información del fallo
     return {
       success: false,
-      error: error.message || 'Error desconocido',
+      error: error.message || error.text || 'Error desconocido',
       message: 'No se pudo enviar el email de confirmación'
     };
   }
 };
+
+// Mantener esta función para compatibilidad, pero ya no se usa después del pago
+export const sendPaymentSuccessEmail = sendClientContactEmail;
 
 /**
  * Función alternativa usando fetch para enviar email a través de un servicio web
