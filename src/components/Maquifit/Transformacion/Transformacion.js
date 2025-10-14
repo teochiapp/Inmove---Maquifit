@@ -48,9 +48,16 @@ const Transformacion = () => {
                   </ContentTitle>
                   <ButtonContainer>
                     <CTAButton onClick={() => {
-                      const planesSection = document.getElementById('planes-section');
+                      const planesSection = document.getElementById('planes');
                       if (planesSection) {
-                        planesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        const headerOffset = 100;
+                        const elementPosition = planesSection.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+                        
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: 'smooth'
+                        });
                       }
                     }}>
                       <ButtonText>{step.button1}</ButtonText>

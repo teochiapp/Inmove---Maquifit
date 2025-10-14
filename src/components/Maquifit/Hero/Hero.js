@@ -52,6 +52,7 @@ const BackgroundsDiagonal = styled.div`
     width: 1150.021px;
     height: 800.586px;
     transform: rotate(-7.138deg);
+    z-index: 1;
 `
 
 const BackgroundsDiagonalTwo = styled.div`
@@ -64,4 +65,5 @@ const BackgroundsDiagonalTwo = styled.div`
  border-radius: 1074.895px;
  background: linear-gradient(227deg, #A0C2DB 50.16%, #C3D5DF 69.47%);
  filter: blur(102.01569366455078px);
+ z-index: 1;
 `

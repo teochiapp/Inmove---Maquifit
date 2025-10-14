@@ -7,14 +7,23 @@ const PlanesContent = () => {
   const navigate = useNavigate();
 
   const handleGoToPlanes = () => {
-    navigate("/maquifit");
-    // Esperar a que la navegación se complete y luego hacer scroll
+    // Navegar con hash para que el scroll sea automático
+    navigate("/maquifit#planes");
+    
+    // Backup: intentar scroll manual después de navegación
     setTimeout(() => {
-      const planesSection = document.getElementById('planes-section');
+      const planesSection = document.getElementById('planes');
       if (planesSection) {
-        planesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const headerOffset = 100;
+        const elementPosition = planesSection.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
       }
-    }, 100);
+    }, 300);
   };
 
   return (

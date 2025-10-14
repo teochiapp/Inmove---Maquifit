@@ -1,36 +1,54 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import ModalPlanesEscribime from "./ModalPlanesEscribime";
 
 const Text = () => {
-  return (
-    <Texts
-      as={motion.div}
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ 
-        duration: 0.4, 
-        ease: "easeOut" 
-      }}
-    >
-      <Title>
-        <div>Es hora de dar</div>
-        <div>el primer paso.</div>
-        <div>Es hora de dar el</div>
-        <div>primer paso.</div>
-      </Title>
-      <Subtitle>
-        Cada proceso es único. Escribime y juntos diseñemos un plan adaptado a
-        tu medida.
-      </Subtitle>
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-      <ButtonContainer>
-        <CTAButton>
-          <ButtonText>Escribime!</ButtonText>
-          <DialogIcon src="/icons/dialog.png" alt="Dialog" />
-        </CTAButton>
-      </ButtonContainer>
-    </Texts>
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <>
+      <Texts
+        as={motion.div}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ 
+          duration: 0.4, 
+          ease: "easeOut" 
+        }}
+      >
+        <Title>
+          <div>Es hora de dar</div>
+          <div>el primer paso.</div>
+          <div>Es hora de dar el</div>
+          <div>primer paso.</div>
+        </Title>
+        <Subtitle>
+          Cada proceso es único. Elegí tu plan y juntos diseñemos un entrenamiento adaptado a tu medida.
+        </Subtitle>
+
+        <ButtonContainer>
+          <CTAButton onClick={handleOpenModal}>
+            <ButtonText>Escribime!</ButtonText>
+            <DialogIcon src="/icons/dialog.png" alt="Dialog" />
+          </CTAButton>
+        </ButtonContainer>
+      </Texts>
+
+      <ModalPlanesEscribime 
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
+    </>
   );
 };
 
@@ -248,6 +266,10 @@ const CTAButton = styled.button`
 
   &:hover {
     transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 

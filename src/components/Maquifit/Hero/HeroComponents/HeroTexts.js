@@ -4,6 +4,20 @@ import { motion } from "framer-motion";
 
 
 const HeroTexts = () => {
+  const handleScrollToPlanes = () => {
+    const planesSection = document.getElementById('planes');
+    if (planesSection) {
+      const headerOffset = 100;
+      const elementPosition = planesSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <Texts>
       <motion.div
@@ -33,7 +47,7 @@ const HeroTexts = () => {
             Entrenamiento y alimentación a tu medida.
           </Subtitle>
           </TextMobile>
-          <CTAButton>
+          <CTAButton onClick={handleScrollToPlanes}>
             <ButtonText>Empezá hoy!</ButtonText>
             <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
           </CTAButton>
@@ -135,29 +149,36 @@ const CTAButton = styled.button`
   gap: 0.5rem;
   cursor: pointer;
   position:relative;
-  top : 240px;
+  top : 150px;
+  z-index: 15;
   transition: transform 0.3s ease;
   
   &:hover {
     transform: translateY(-2px);
   }
 
+  &:active {
+    transform: translateY(0);
+  }
+
   @media (max-width:992px) { 
-    
     transform: translate(-50%, -15%);
     top: 315px;
     left: 50%;
     z-index: 10;
+
+    &:hover {
+      transform: translate(-50%, calc(-15% - 2px));
+    }
+
+    &:active {
+      transform: translate(-50%, -15%);
+    }
   }
 
    @media (max-width:425px) { 
-    
-
-   top:380px;
-   
+    top:380px;
   }
-
- 
 `;
 
 const ButtonText = styled.span`

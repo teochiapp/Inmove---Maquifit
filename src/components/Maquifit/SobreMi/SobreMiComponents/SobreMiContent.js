@@ -1,28 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import ModalPlanesEscribime from '../../PrimerPaso/ModalPlanesEscribime';
 
 const SobreMiContent = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <ContentSection>
-      <TextContainer>
-      <SectionTitle>
-        <TitleLine1>Hola! </TitleLine1>
-        <TitleLine2>Soy Maquifit :)</TitleLine2>
-      </SectionTitle>
-      <Description>
-        Soy técnica en musculación y antropometrista ISAK 1, realicé cursos de nutrición deportiva y llevo 7 años en el ámbito del fitness.
-      </Description>
-      <Description>
-        Estoy capacitada para entrenar tanto hombres como mujeres. Acompaño a mis alumnos a cambiar su estilo de vida, trabajar sobre su mentalidad y amor propio con entrenamiento acorde y alimentación saludable, dando como resultado un cambio físico.
-      </Description>
-      </TextContainer>
-      <ButtonContainer>
-      <CTAButton onClick={() => window.open('https://wa.me/5493513797137', '_blank')}>
-        <ButtonText>Escribime!</ButtonText>
-        <DialogIcon src="/icons/dialog.png" alt="Dialog" />
-      </CTAButton>
-      </ButtonContainer>
-    </ContentSection>
+    <>
+      <ContentSection>
+        <TextContainer>
+        <SectionTitle>
+          <TitleLine1>Hola! </TitleLine1>
+          <TitleLine2>Soy Maquifit :)</TitleLine2>
+        </SectionTitle>
+        <Description>
+          Soy técnica en musculación y antropometrista ISAK 1, realicé cursos de nutrición deportiva y llevo 7 años en el ámbito del fitness.
+        </Description>
+        <Description>
+          Estoy capacitada para entrenar tanto hombres como mujeres. Acompaño a mis alumnos a cambiar su estilo de vida, trabajar sobre su mentalidad y amor propio con entrenamiento acorde y alimentación saludable, dando como resultado un cambio físico.
+        </Description>
+        </TextContainer>
+        <ButtonContainer>
+        <CTAButton onClick={handleOpenModal}>
+          <ButtonText>Escribime!</ButtonText>
+          <DialogIcon src="/icons/dialog.png" alt="Dialog" />
+        </CTAButton>
+        </ButtonContainer>
+      </ContentSection>
+
+      <ModalPlanesEscribime 
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
+    </>
   );
 };
 
@@ -96,6 +114,10 @@ const CTAButton = styled.button`
   
   &:hover {
     transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
