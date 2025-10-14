@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
-
 
 const HeroTexts = () => {
   const handleScrollToPlanes = () => {
@@ -20,17 +18,7 @@ const HeroTexts = () => {
 
   return (
     <Texts>
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ 
-          duration: 1, 
-          ease: "easeOut",
-          delay: 0.1 
-        }}
-        style={{ width: '100%', height: '100%' }}
-      >
+      <div style={{ width: '100%', height: '100%' }}>
         <Title>
           <div>Tu cuerpo,</div>
           <div>Tu mente,</div>
@@ -51,7 +39,7 @@ const HeroTexts = () => {
             <ButtonText>Empezá hoy!</ButtonText>
             <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
           </CTAButton>
-      </motion.div>
+      </div>
     </Texts>
   );
 };
@@ -68,6 +56,8 @@ const Texts = styled.div`
   z-index: 10;
   position: relative;
   left:100px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
  @media (max-width: 1500px) {
        font-size: 88px;
@@ -152,27 +142,34 @@ const CTAButton = styled.button`
   top : 150px;
   z-index: 15;
   transition: transform 0.3s ease;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   
   &:hover {
     transform: translateY(-2px);
+    -webkit-transform: translateY(-2px);
   }
 
   &:active {
     transform: translateY(0);
+    -webkit-transform: translateY(0);
   }
 
   @media (max-width:992px) { 
     transform: translate(-50%, -15%);
+    -webkit-transform: translate(-50%, -15%);
     top: 315px;
     left: 50%;
     z-index: 10;
 
     &:hover {
       transform: translate(-50%, calc(-15% - 2px));
+      -webkit-transform: translate(-50%, calc(-15% - 2px));
     }
 
     &:active {
       transform: translate(-50%, -15%);
+      -webkit-transform: translate(-50%, -15%);
     }
   }
 
@@ -198,6 +195,9 @@ const ArrowIcon = styled.img`
     border-radius: 50%;
     padding: 6px;
     transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 `;
 
 const TextMobile = styled.div`

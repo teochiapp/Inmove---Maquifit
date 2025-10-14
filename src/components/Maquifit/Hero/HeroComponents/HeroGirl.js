@@ -25,7 +25,8 @@ position: absolute;
 right: calc(-400px + 9vw);
 bottom: -61px;
 z-index: 5;
-
+-webkit-transform: translate3d(0, 0, 0);
+transform: translate3d(0, 0, 0);
 
 @media (min-width: 1600px) {
        
@@ -42,6 +43,7 @@ z-index: 5;
         left: 67%;
         top: 64%;
         transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
         z-index: 5;
 }
 
@@ -58,6 +60,9 @@ flex-shrink: 0;
 aspect-ratio: 523.24/750.37;
 position:relative;
 z-index: 6;
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
+image-rendering: -webkit-optimize-contrast;
 
 @media (max-width:992px){
 width: 407.423px;
@@ -79,6 +84,8 @@ bottom: 165px;
 left: -136px;
 z-index: 4;
 width:220px;
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
 
 @media (max-width:992px){
 bottom: 125px;
@@ -99,7 +106,8 @@ bottom: 310px;
 right: 184px;
 width: 170px;
 z-index: 7;
-
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
 
 @media (max-width:992px){
 bottom: 255px;
@@ -127,7 +135,10 @@ bottom: 578px;
 right: 458px;
 background: rgba(255, 255, 255, 0.30); 
 backdrop-filter: blur(5.125992298126221px);
+-webkit-backdrop-filter: blur(5.125992298126221px);
 border-radius: 50px;
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
 
 @media (max-width:992px){
  bottom: 559px;
@@ -145,6 +156,7 @@ border-radius: 50px;
 const CTAButton = styled.a`
   background: rgba(255, 255, 255, 0.40);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: none;
   border-radius: 100px;
   padding: 0.75rem 1.5rem;
@@ -159,6 +171,8 @@ const CTAButton = styled.a`
   transition: transform 0.3s ease;
   text-decoration: none;
   width: fit-content;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   
   &:hover {
     transform: translateY(-2px);
@@ -187,4 +201,7 @@ const Icon = styled.img`
     border-radius: 50%;
     padding: 6px;
     transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 `;

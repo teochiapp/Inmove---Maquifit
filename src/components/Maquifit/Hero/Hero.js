@@ -31,6 +31,8 @@ const HeroContainer = styled.section`
   padding-bottom: 56px;
   width: 100%;
   max-width: 100vw;
+  -webkit-overflow-scrolling: touch;
+  isolation: isolate;
 
   @media (max-width: 1400px) {
    padding-left: 30px;
@@ -53,7 +55,11 @@ const BackgroundsDiagonal = styled.div`
     height: 800.586px;
     transform: rotate(-7.138deg);
     z-index: 1;
-`
+    will-change: transform;
+    -webkit-transform: rotate(-7.138deg);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+`;
 
 const BackgroundsDiagonalTwo = styled.div`
  width: 1150.021px;
@@ -66,4 +72,8 @@ const BackgroundsDiagonalTwo = styled.div`
  background: linear-gradient(227deg, #A0C2DB 50.16%, #C3D5DF 69.47%);
  filter: blur(102.01569366455078px);
  z-index: 1;
-`
+ will-change: transform;
+ -webkit-transform: rotate(158.442deg);
+ -webkit-backface-visibility: hidden;
+ backface-visibility: hidden;
+`;
