@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import MercadoPagoCheckout from './MercadoPagoCheckout';
-import { sendClientContactEmail } from '../../../api/emailService';
 
 const ModalCheckout = ({ isOpen, onClose, plan }) => {
   const [formData, setFormData] = useState({
@@ -11,7 +10,6 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
     mail: ''
   });
   const [showCheckout, setShowCheckout] = useState(false);
-  const [sendingEmail, setSendingEmail] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,19 +23,9 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
     e.preventDefault();
     // Validar que todos los campos estén completos
     if (formData.nombre && formData.telefono && formData.mail) {
-      // Enviar email de contacto ANTES de ir al checkout
-      setSendingEmail(true);
-      console.log('📧 Enviando email con datos del cliente...');
-      
-      const emailResult = await sendClientContactEmail(formData, plan);
-      
-      if (emailResult.success) {
-        console.log('✅ Email enviado. Redirigiendo al checkout...');
-      } else {
-        console.warn('⚠️ Email no se envió, pero continuamos con el checkout:', emailResult.message);
-      }
-      
-      setSendingEmail(false);
+      // NO enviamos email aquí - se enviará DESPUÉS del pago exitoso
+      console.log('✅ Datos del cliente capturados. Redirigiendo al checkout...');
+      console.log('ℹ️ El email se enviará automáticamente después de completar el pago');
       setShowCheckout(true);
     }
   };
@@ -151,11 +139,11 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
                 </InfoMessage>
 
                 <ButtonContainer>
-                  <CancelButton type="button" onClick={handleClose} disabled={sendingEmail}>
+                  <CancelButton type="button" onClick={handleClose}>
                     Cancelar
                   </CancelButton>
-                  <PayButton type="submit" disabled={sendingEmail}>
-                    {sendingEmail ? '📧 Enviando...' : 'Continuar con el pago'}
+                  <PayButton type="submit">
+                    Continuar con el pago
                   </PayButton>
                 </ButtonContainer>
               </Form>

@@ -34,16 +34,12 @@ if (!EMAIL_PUBLIC_KEY || EMAIL_PUBLIC_KEY === 'your_public_key_here') {
 }
 
 /**
- * Envía un email con los datos del cliente después de un pago exitoso
- * @param {Object} paymentData - Datos del pago de MercadoPago
+ * Envía un email con los datos del cliente DESPUÉS de un pago exitoso
+ * @param {Object} paymentData - Datos del pago de MercadoPago (opcional)
  * @param {Object} clientData - Datos del cliente del formulario
  * @param {Object} planData - Datos del plan seleccionado
  */
-/**
- * Envía un email cuando el cliente hace clic en "Continuar con el pago"
- * NO después del pago - esto es antes del checkout
- */
-export const sendClientContactEmail = async (clientData, planData) => {
+export const sendPaymentSuccessEmail = async (paymentData, clientData, planData) => {
   try {
     console.log('📧 Iniciando envío de email de contacto...');
     console.log('📧 Config EmailJS:', { 
@@ -68,11 +64,17 @@ export const sendClientContactEmail = async (clientData, planData) => {
       plan_price: planData.price ? `$${planData.price.toLocaleString("es-AR")}` : 'Precio no disponible',
       plan_description: planData.highlight || planData.description || 'Sin descripción',
       
+      // Datos del pago (si están disponibles)
+      payment_id: paymentData?.paymentId || 'N/A',
+      payment_status: paymentData?.status || 'approved',
+      payment_reference: paymentData?.externalReference || 'N/A',
+      merchant_order_id: paymentData?.merchantOrderId || 'N/A',
+      
       // Email de destino (siempre a maquiponce96@gmail.com)
       to_email: 'maquiponce96@gmail.com',
       
-      // Fecha y hora del contacto
-      contact_date: new Date().toLocaleDateString('es-AR', {
+      // Fecha y hora del pago
+      payment_date: new Date().toLocaleDateString('es-AR', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -82,7 +84,7 @@ export const sendClientContactEmail = async (clientData, planData) => {
       
       // Información adicional
       website_url: window.location.origin,
-      subject: `Nuevo cliente interesado - ${clientData.nombre} - ${planData.title}`
+      subject: `💳 Pago Exitoso - ${clientData.nombre} - ${planData.title}`
     };
 
     console.log('📋 Template params preparados:', templateParams);
@@ -122,9 +124,6 @@ export const sendClientContactEmail = async (clientData, planData) => {
     };
   }
 };
-
-// Mantener esta función para compatibilidad, pero ya no se usa después del pago
-export const sendPaymentSuccessEmail = sendClientContactEmail;
 
 /**
  * Función alternativa usando fetch para enviar email a través de un servicio web
