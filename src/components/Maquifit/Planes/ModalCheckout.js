@@ -202,7 +202,7 @@ const ModalOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 100000;
   backdrop-filter: blur(5px);
 `;
 
@@ -222,7 +222,7 @@ const ModalContent = styled.div`
     width: 95%;
     margin: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction: column !important;
   }
 `;
 
