@@ -155,7 +155,7 @@ const CheckoutSuccess = () => {
 
   // const handleContactSupport = () => {
   //   // Abrir WhatsApp o email de soporte
-  //   window.open('https://wa.me/1234567890?text=Hola! Acabo de completar mi pago y necesito más información sobre mi plan.', '_blank');
+  //   window.open('https://wa.me/5493513797137?text=Hola! Acabo de completar mi pago y necesito más información sobre mi plan.', '_blank');
   // };
 
   // Si estamos procesando, mostrar pantalla de carga

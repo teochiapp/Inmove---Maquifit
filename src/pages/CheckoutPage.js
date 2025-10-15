@@ -35,7 +35,7 @@ const CheckoutPage = () => {
 
     // Generar mensaje de WhatsApp
     const mensaje = generarMensajeWhatsApp();
-    const numeroWhatsApp = '543564361590'; // Reemplazar con el número real
+    const numeroWhatsApp = '5493513797137'; // WhatsApp: 351-3797137
     const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
     
     // Abrir WhatsApp

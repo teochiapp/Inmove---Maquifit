@@ -41,7 +41,7 @@ const CheckoutFailure = () => {
 
   const handleContactSupport = () => {
     // Abrir WhatsApp o email de soporte
-    window.open('https://wa.me/1234567890?text=Hola! Tuve un problema con mi pago y necesito ayuda.', '_blank');
+    window.open('https://wa.me/5493513797137?text=Hola! Tuve un problema con mi pago y necesito ayuda.', '_blank');
   };
 
   return (

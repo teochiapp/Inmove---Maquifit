@@ -37,7 +37,7 @@ const CheckoutPending = () => {
 
   const handleContactSupport = () => {
     // Abrir WhatsApp o email de soporte
-    window.open('https://wa.me/1234567890?text=Hola! Mi pago está pendiente y necesito información sobre el estado.', '_blank');
+    window.open('https://wa.me/5493513797137?text=Hola! Mi pago está pendiente y necesito información sobre el estado.', '_blank');
   };
 
   const handleCheckStatus = () => {
