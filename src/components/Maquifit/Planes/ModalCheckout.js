@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import MercadoPagoCheckout from './MercadoPagoCheckout';
+import { guardarDatosEnStrapi } from '../../../api/strapiPaymentService';
 
 const ModalCheckout = ({ isOpen, onClose, plan }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
     mail: ''
   });
   const [showCheckout, setShowCheckout] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [externalReference, setExternalReference] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -21,10 +24,39 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     // Validar que todos los campos estén completos
     if (formData.nombre && formData.telefono && formData.mail) {
-      // NO enviamos email aquí - se enviará DESPUÉS del pago exitoso
-      console.log('✅ Datos del cliente capturados. Redirigiendo al checkout...');
+      setSaving(true);
+      
+      try {
+        // 🔥 GUARDAR EN STRAPI INMEDIATAMENTE (antes de ir a MercadoPago)
+        const reference = `plan_${plan.id}_${Date.now()}`;
+        setExternalReference(reference);
+        
+        console.log('💾 Guardando datos del cliente en Strapi...');
+        console.log('📋 External reference:', reference);
+        console.log('📋 Datos del cliente:', formData);
+        console.log('📋 Datos del plan:', plan);
+        
+        const result = await guardarDatosEnStrapi(reference, formData, plan);
+        
+        if (result.success) {
+          console.log('✅ Datos guardados correctamente en Strapi!');
+          console.log('✅ Ahora redirigiendo al checkout de MercadoPago...');
+        } else {
+          console.warn('⚠️ No se pudieron guardar en Strapi:', result.message);
+          console.warn('⚠️ Continuando con el checkout de todas formas...');
+        }
+        
+      } catch (error) {
+        console.error('❌ Error guardando datos:', error);
+        console.warn('⚠️ Continuando con el checkout de todas formas...');
+      } finally {
+        setSaving(false);
+      }
+      
+      // Continuar al checkout
       console.log('ℹ️ El email se enviará automáticamente después de completar el pago');
       setShowCheckout(true);
     }
@@ -87,6 +119,7 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
               <MercadoPagoCheckout
                 plan={plan}
                 userData={formData}
+                externalReference={externalReference}
                 onSuccess={handleCheckoutSuccess}
                 onError={handleCheckoutError}
                 onCancel={handleCheckoutCancel}
@@ -139,11 +172,11 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
                 </InfoMessage>
 
                 <ButtonContainer>
-                  <CancelButton type="button" onClick={handleClose}>
+                  <CancelButton type="button" onClick={handleClose} disabled={saving}>
                     Cancelar
                   </CancelButton>
-                  <PayButton type="submit">
-                    Continuar con el pago
+                  <PayButton type="submit" disabled={saving}>
+                    {saving ? '💾 Guardando datos...' : 'Continuar con el pago'}
                   </PayButton>
                 </ButtonContainer>
               </Form>

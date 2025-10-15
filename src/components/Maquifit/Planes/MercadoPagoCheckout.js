@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { storePaymentData } from '../../../api/emailService';
 import { guardarDatosEnStrapi } from '../../../api/strapiPaymentService';
 
-const MercadoPagoCheckout = ({ plan, userData, onError, onCancel }) => {
+const MercadoPagoCheckout = ({ plan, userData, externalReference, onError, onCancel }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -43,7 +43,7 @@ const MercadoPagoCheckout = ({ plan, userData, onError, onCancel }) => {
          },
          // Remover auto_return para evitar validación estricta en desarrollo
          // auto_return: 'approved',
-        external_reference: `plan_${plan.id}_${Date.now()}`,
+        external_reference: externalReference || `plan_${plan.id}_${Date.now()}`,
         // notification_url: 'https://your-domain.com/webhook/mercadopago', // Solo para producción
         metadata: {
           plan_id: plan.id,
@@ -79,25 +79,17 @@ const MercadoPagoCheckout = ({ plan, userData, onError, onCancel }) => {
        }
 
       const data = await response.json();
-      const externalReference = preferenceData.external_reference;
+      const finalReference = preferenceData.external_reference;
       
-      console.log('💾 Preparando para guardar datos del cliente y plan...');
-      console.log('💾 External reference:', externalReference);
-      console.log('💾 Datos del cliente:', userData);
-      console.log('💾 Datos del plan:', plan);
+      console.log('💾 Respaldo adicional en localStorage...');
+      console.log('💾 External reference:', finalReference);
       
-      // 1️⃣ Guardar en localStorage/sessionStorage (backup rápido)
+      // Guardar en localStorage/sessionStorage como backup
       storePaymentData(userData, plan);
-      console.log('✅ Datos guardados en localStorage/sessionStorage');
+      console.log('✅ Backup en localStorage completado');
       
-      // 2️⃣ Guardar en Strapi (persistente y más confiable)
-      const strapiResult = await guardarDatosEnStrapi(externalReference, userData, plan);
-      
-      if (strapiResult.success) {
-        console.log('✅ Datos guardados en Strapi correctamente');
-      } else {
-        console.warn('⚠️ No se pudieron guardar en Strapi, usando solo localStorage');
-      }
+      // Los datos YA están guardados en Strapi desde ModalCheckout.js ✅
+      console.log('ℹ️ Datos ya guardados en Strapi desde el paso anterior')
       
       // Redirigir inmediatamente al Checkout Pro
       if (data.init_point) {
