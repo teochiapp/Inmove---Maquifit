@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { storePaymentData } from '../../../api/emailService';
+import { guardarDatosEnStrapi } from '../../../api/strapiPaymentService';
 
 const MercadoPagoCheckout = ({ plan, userData, onError, onCancel }) => {
   const [loading, setLoading] = useState(true);
@@ -78,19 +79,25 @@ const MercadoPagoCheckout = ({ plan, userData, onError, onCancel }) => {
        }
 
       const data = await response.json();
+      const externalReference = preferenceData.external_reference;
       
       console.log('💾 Preparando para guardar datos del cliente y plan...');
+      console.log('💾 External reference:', externalReference);
       console.log('💾 Datos del cliente:', userData);
       console.log('💾 Datos del plan:', plan);
       
-      // Almacenar datos del cliente y plan para el email
+      // 1️⃣ Guardar en localStorage/sessionStorage (backup rápido)
       storePaymentData(userData, plan);
+      console.log('✅ Datos guardados en localStorage/sessionStorage');
       
-      console.log('✅ Datos guardados en sessionStorage');
-      console.log('✅ Verificando guardado:', {
-        client: sessionStorage.getItem('maquifit_client_data'),
-        plan: sessionStorage.getItem('maquifit_plan_data')
-      });
+      // 2️⃣ Guardar en Strapi (persistente y más confiable)
+      const strapiResult = await guardarDatosEnStrapi(externalReference, userData, plan);
+      
+      if (strapiResult.success) {
+        console.log('✅ Datos guardados en Strapi correctamente');
+      } else {
+        console.warn('⚠️ No se pudieron guardar en Strapi, usando solo localStorage');
+      }
       
       // Redirigir inmediatamente al Checkout Pro
       if (data.init_point) {

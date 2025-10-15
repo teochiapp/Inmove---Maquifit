@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { sendPaymentSuccessEmail, getStoredPaymentData, clearStoredPaymentData } from '../../../api/emailService';
+import { recuperarDatosDeStrapi, actualizarEstadoPagoEnStrapi } from '../../../api/strapiPaymentService';
 import ThankYouModal from './ThankYouModal';
 
 const CheckoutSuccess = () => {
@@ -14,6 +15,9 @@ const CheckoutSuccess = () => {
   const [clientData, setClientData] = useState({});
   const [planData, setPlanData] = useState({});
   const [isProcessing, setIsProcessing] = useState(true);
+  
+  // 🛡️ Protección contra envíos duplicados
+  const emailAlreadySent = useRef(false);
 
   useEffect(() => {
     const processPaymentSuccess = async () => {
@@ -37,13 +41,12 @@ const CheckoutSuccess = () => {
 
         console.log('Pago exitoso - Datos:', paymentInfo);
 
-      // 🔍 DIAGNÓSTICO: Verificar qué hay en sessionStorage
-      console.log('🔍 Verificando sessionStorage...');
-      console.log('🔍 maquifit_client_data:', sessionStorage.getItem('maquifit_client_data'));
-      console.log('🔍 maquifit_plan_data:', sessionStorage.getItem('maquifit_plan_data'));
+      // 🔍 PASO 1: Intentar recuperar de localStorage/sessionStorage
+      console.log('🔍 Verificando localStorage/sessionStorage...');
+      console.log('🔍 maquifit_client_data:', localStorage.getItem('maquifit_client_data'));
+      console.log('🔍 maquifit_plan_data:', localStorage.getItem('maquifit_plan_data'));
       
-      // Obtener datos almacenados del cliente y plan
-      const { clientData: storedClient, planData: storedPlan, hasData } = getStoredPaymentData();
+      let { clientData: storedClient, planData: storedPlan, hasData } = getStoredPaymentData();
       
       console.log('🔍 Resultado de getStoredPaymentData:', { 
         hasData, 
@@ -51,26 +54,65 @@ const CheckoutSuccess = () => {
         storedPlan 
       });
       
+      // 🔍 PASO 2: Si no hay datos en localStorage, intentar recuperar de Strapi
+      if (!hasData && externalReference) {
+        console.log('⚠️ No hay datos en localStorage, intentando recuperar de Strapi...');
+        console.log('🔍 External reference:', externalReference);
+        
+        const strapiResult = await recuperarDatosDeStrapi(externalReference);
+        
+        if (strapiResult.success && strapiResult.hasData) {
+          console.log('✅ Datos recuperados de Strapi!');
+          storedClient = strapiResult.clientData;
+          storedPlan = strapiResult.planData;
+          hasData = true;
+        } else {
+          console.log('❌ No se pudieron recuperar datos de Strapi');
+        }
+      }
+      
       if (hasData) {
         setClientData(storedClient);
         setPlanData(storedPlan);
         
         console.log('📋 Datos del cliente y plan obtenidos:', { storedClient, storedPlan });
-        console.log('✅ Pago exitoso confirmado. Enviando email de notificación...');
         
-        // ENVIAR EMAIL DESPUÉS del pago exitoso
-        const emailResult = await sendPaymentSuccessEmail(paymentInfo, storedClient, storedPlan);
-        
-        if (emailResult.success) {
-          console.log('✅ Email de pago exitoso enviado correctamente');
+        // 🛡️ VERIFICAR SI YA SE ENVIÓ EL EMAIL (evitar duplicados)
+        if (emailAlreadySent.current) {
+          console.log('⚠️ Email ya fue enviado anteriormente, saltando envío duplicado');
           setEmailSent(true);
         } else {
-          console.warn('⚠️ No se pudo enviar el email:', emailResult.message);
-          setEmailSent(false);
+          console.log('✅ Pago exitoso confirmado. Enviando email de notificación...');
+          
+          // Marcar como enviado ANTES de enviar (para evitar race conditions)
+          emailAlreadySent.current = true;
+          
+          // Limpiar datos ANTES de enviar (para que si se ejecuta 2 veces, la 2da no encuentre datos)
+          clearStoredPaymentData();
+          
+          // ENVIAR EMAIL DESPUÉS del pago exitoso
+          const emailResult = await sendPaymentSuccessEmail(paymentInfo, storedClient, storedPlan);
+          
+          if (emailResult.success) {
+            console.log('✅ Email de pago exitoso enviado correctamente');
+            setEmailSent(true);
+            
+            // Actualizar estado en Strapi si tenemos external_reference
+            if (externalReference) {
+              await actualizarEstadoPagoEnStrapi(externalReference, paymentInfo, true);
+            }
+          } else {
+            console.warn('⚠️ No se pudo enviar el email:', emailResult.message);
+            setEmailSent(false);
+            // Si falló, permitir reintento
+            emailAlreadySent.current = false;
+            
+            // Actualizar estado en Strapi como email NO enviado
+            if (externalReference) {
+              await actualizarEstadoPagoEnStrapi(externalReference, paymentInfo, false);
+            }
+          }
         }
-        
-        // Limpiar datos almacenados
-        clearStoredPaymentData();
         
       } else {
         console.error('❌ No se encontraron datos del cliente almacenados en sessionStorage');
