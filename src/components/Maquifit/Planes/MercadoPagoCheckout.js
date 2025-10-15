@@ -77,17 +77,28 @@ const MercadoPagoCheckout = ({ plan, userData, onError, onCancel }) => {
          throw new Error(`Error HTTP: ${response.status} - ${errorData.message || 'Error desconocido'}`);
        }
 
-       const data = await response.json();
-       
-       // Almacenar datos del cliente y plan para el email
-       storePaymentData(userData, plan);
-       
-       // Redirigir inmediatamente al Checkout Pro
-       if (data.init_point) {
-         window.location.href = data.init_point;
-       } else {
-         throw new Error('No se recibió URL de Checkout Pro');
-       }
+      const data = await response.json();
+      
+      console.log('💾 Preparando para guardar datos del cliente y plan...');
+      console.log('💾 Datos del cliente:', userData);
+      console.log('💾 Datos del plan:', plan);
+      
+      // Almacenar datos del cliente y plan para el email
+      storePaymentData(userData, plan);
+      
+      console.log('✅ Datos guardados en sessionStorage');
+      console.log('✅ Verificando guardado:', {
+        client: sessionStorage.getItem('maquifit_client_data'),
+        plan: sessionStorage.getItem('maquifit_plan_data')
+      });
+      
+      // Redirigir inmediatamente al Checkout Pro
+      if (data.init_point) {
+        console.log('🔄 Redirigiendo a MercadoPago:', data.init_point);
+        window.location.href = data.init_point;
+      } else {
+        throw new Error('No se recibió URL de Checkout Pro');
+      }
 
     } catch (error) {
       console.error('Error creando preferencia:', error);

@@ -37,33 +37,50 @@ const CheckoutSuccess = () => {
 
         console.log('Pago exitoso - Datos:', paymentInfo);
 
-        // Obtener datos almacenados del cliente y plan
-        const { clientData: storedClient, planData: storedPlan, hasData } = getStoredPaymentData();
+      // 🔍 DIAGNÓSTICO: Verificar qué hay en sessionStorage
+      console.log('🔍 Verificando sessionStorage...');
+      console.log('🔍 maquifit_client_data:', sessionStorage.getItem('maquifit_client_data'));
+      console.log('🔍 maquifit_plan_data:', sessionStorage.getItem('maquifit_plan_data'));
+      
+      // Obtener datos almacenados del cliente y plan
+      const { clientData: storedClient, planData: storedPlan, hasData } = getStoredPaymentData();
+      
+      console.log('🔍 Resultado de getStoredPaymentData:', { 
+        hasData, 
+        storedClient, 
+        storedPlan 
+      });
+      
+      if (hasData) {
+        setClientData(storedClient);
+        setPlanData(storedPlan);
         
-        if (hasData) {
-          setClientData(storedClient);
-          setPlanData(storedPlan);
-          
-          console.log('📋 Datos del cliente y plan obtenidos:', { storedClient, storedPlan });
-          console.log('✅ Pago exitoso confirmado. Enviando email de notificación...');
-          
-          // ENVIAR EMAIL DESPUÉS del pago exitoso
-          const emailResult = await sendPaymentSuccessEmail(paymentInfo, storedClient, storedPlan);
-          
-          if (emailResult.success) {
-            console.log('✅ Email de pago exitoso enviado correctamente');
-            setEmailSent(true);
-          } else {
-            console.warn('⚠️ No se pudo enviar el email:', emailResult.message);
-            setEmailSent(false);
-          }
-          
-          // Limpiar datos almacenados
-          clearStoredPaymentData();
-          
+        console.log('📋 Datos del cliente y plan obtenidos:', { storedClient, storedPlan });
+        console.log('✅ Pago exitoso confirmado. Enviando email de notificación...');
+        
+        // ENVIAR EMAIL DESPUÉS del pago exitoso
+        const emailResult = await sendPaymentSuccessEmail(paymentInfo, storedClient, storedPlan);
+        
+        if (emailResult.success) {
+          console.log('✅ Email de pago exitoso enviado correctamente');
+          setEmailSent(true);
         } else {
-          console.warn('⚠️ No se encontraron datos del cliente almacenados');
+          console.warn('⚠️ No se pudo enviar el email:', emailResult.message);
+          setEmailSent(false);
         }
+        
+        // Limpiar datos almacenados
+        clearStoredPaymentData();
+        
+      } else {
+        console.error('❌ No se encontraron datos del cliente almacenados en sessionStorage');
+        console.error('❌ El email NO se enviará');
+        console.error('❌ Posibles causas:');
+        console.error('   1. Los datos no se guardaron antes de la redirección a MercadoPago');
+        console.error('   2. El navegador limpió el sessionStorage durante la redirección');
+        console.error('   3. Estás usando modo incógnito o configuración de privacidad estricta');
+        console.error('📋 Datos del pago disponibles:', paymentInfo);
+      }
         
         // Esperar un momento y mostrar el modal
         setTimeout(() => {

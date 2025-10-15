@@ -209,18 +209,42 @@ export const sendPaymentEmailAlternative = async (paymentData, clientData, planD
 };
 
 /**
- * Función para obtener los datos del cliente y plan desde el localStorage o sessionStorage
+ * Función para obtener los datos del cliente y plan desde localStorage Y sessionStorage
  * (útil en la página de éxito cuando no tenemos acceso directo a los datos)
+ * Intenta primero con localStorage (más persistente) y luego con sessionStorage
  */
 export const getStoredPaymentData = () => {
   try {
-    const clientData = JSON.parse(sessionStorage.getItem('maquifit_client_data') || '{}');
-    const planData = JSON.parse(sessionStorage.getItem('maquifit_plan_data') || '{}');
+    console.log('🔍 Intentando obtener datos de localStorage...');
     
+    // Intentar primero con localStorage (más persistente durante redirecciones)
+    let clientData = JSON.parse(localStorage.getItem('maquifit_client_data') || '{}');
+    let planData = JSON.parse(localStorage.getItem('maquifit_plan_data') || '{}');
+    
+    let hasDataInLocalStorage = Object.keys(clientData).length > 0 && Object.keys(planData).length > 0;
+    
+    if (hasDataInLocalStorage) {
+      console.log('✅ Datos encontrados en localStorage');
+      return { clientData, planData, hasData: true };
+    }
+    
+    // Si no hay datos en localStorage, intentar con sessionStorage
+    console.log('⚠️ No hay datos en localStorage, intentando sessionStorage...');
+    clientData = JSON.parse(sessionStorage.getItem('maquifit_client_data') || '{}');
+    planData = JSON.parse(sessionStorage.getItem('maquifit_plan_data') || '{}');
+    
+    const hasDataInSessionStorage = Object.keys(clientData).length > 0 && Object.keys(planData).length > 0;
+    
+    if (hasDataInSessionStorage) {
+      console.log('✅ Datos encontrados en sessionStorage');
+      return { clientData, planData, hasData: true };
+    }
+    
+    console.log('❌ No se encontraron datos en ningún storage');
     return {
-      clientData,
-      planData,
-      hasData: Object.keys(clientData).length > 0 && Object.keys(planData).length > 0
+      clientData: {},
+      planData: {},
+      hasData: false
     };
   } catch (error) {
     console.error('Error obteniendo datos almacenados:', error);
@@ -234,25 +258,49 @@ export const getStoredPaymentData = () => {
 
 /**
  * Función para almacenar los datos del cliente y plan antes del pago
+ * Guarda en AMBOS: localStorage (más persistente) Y sessionStorage (backup)
  */
 export const storePaymentData = (clientData, planData) => {
   try {
+    console.log('💾 Guardando datos en localStorage y sessionStorage...');
+    
+    // Guardar en localStorage (más persistente durante redirecciones externas)
+    localStorage.setItem('maquifit_client_data', JSON.stringify(clientData));
+    localStorage.setItem('maquifit_plan_data', JSON.stringify(planData));
+    
+    // También guardar en sessionStorage como backup
     sessionStorage.setItem('maquifit_client_data', JSON.stringify(clientData));
     sessionStorage.setItem('maquifit_plan_data', JSON.stringify(planData));
-    console.log('💾 Datos almacenados para el email:', { clientData, planData });
+    
+    console.log('✅ Datos almacenados en AMBOS storages:', { clientData, planData });
+    console.log('✅ localStorage:', {
+      client: localStorage.getItem('maquifit_client_data'),
+      plan: localStorage.getItem('maquifit_plan_data')
+    });
+    console.log('✅ sessionStorage:', {
+      client: sessionStorage.getItem('maquifit_client_data'),
+      plan: sessionStorage.getItem('maquifit_plan_data')
+    });
   } catch (error) {
-    console.error('Error almacenando datos:', error);
+    console.error('❌ Error almacenando datos:', error);
   }
 };
 
 /**
  * Función para limpiar los datos almacenados después del envío del email
+ * Limpia AMBOS: localStorage Y sessionStorage
  */
 export const clearStoredPaymentData = () => {
   try {
+    // Limpiar localStorage
+    localStorage.removeItem('maquifit_client_data');
+    localStorage.removeItem('maquifit_plan_data');
+    
+    // Limpiar sessionStorage
     sessionStorage.removeItem('maquifit_client_data');
     sessionStorage.removeItem('maquifit_plan_data');
-    console.log('🧹 Datos de pago limpiados del storage');
+    
+    console.log('🧹 Datos de pago limpiados de AMBOS storages');
   } catch (error) {
     console.error('Error limpiando datos:', error);
   }
