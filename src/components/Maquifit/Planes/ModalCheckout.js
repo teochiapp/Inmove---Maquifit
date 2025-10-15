@@ -221,6 +221,8 @@ const ModalContent = styled.div`
     padding: 1.5rem;
     width: 95%;
     margin: 1rem;
+    display: flex;
+    flex-direction: column;
   }
 `;
 
