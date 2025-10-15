@@ -30,6 +30,7 @@ const HeroContainer = styled.section`
   padding-right: 56px;
   padding-bottom: 56px;
   width: 100%;
+  z-index: 1000;
   max-width: 100vw;
   -webkit-overflow-scrolling: touch;
   isolation: isolate;

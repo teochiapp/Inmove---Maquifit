@@ -4,12 +4,16 @@ Este documento explica cómo configurar el sistema de envío automático de emai
 
 ## 🚀 Características Implementadas
 
-- ✅ **Envío automático de email** después de un pago exitoso
+- ✅ **Envío automático de email DESPUÉS de un pago exitoso** (actualizado)
+- ✅ **Incluye información del pago** (ID, estado, referencia, fecha)
 - ✅ **Modal personalizado** con mensaje de agradecimiento
 - ✅ **Redirección automática** al home con modal
 - ✅ **Captura de datos del cliente** (nombre, email, teléfono)
-- ✅ **Información completa del pago** en el email
+- ✅ **Solo notifica pagos completados** (no envía emails de checkouts abandonados)
 - ✅ **Diseño responsive** y animaciones suaves
+
+## ⚠️ IMPORTANTE: Cambio en el flujo
+El email ahora se envía **DESPUÉS** de que el pago se complete exitosamente, no antes del checkout. Ver `NUEVO-FLUJO-EMAIL.md` para más detalles.
 
 ## 🛠️ Configuración de EmailJS
 
@@ -33,7 +37,7 @@ Este documento explica cómo configurar el sistema de envío automático de emai
 2. Haz click en **"Create New Template"**
 3. Usa el siguiente contenido como base:
 
-**Subject:** `Nuevo pago recibido - {{client_name}} - {{plan_title}}`
+**Subject:** `💳 Pago Exitoso - {{client_name}} - {{plan_title}}`
 
 **HTML Content:**
 ```html
@@ -62,6 +66,7 @@ Este documento explica cómo configurar el sistema de envío automático de emai
     <p><strong>ID de Pago:</strong> {{payment_id}}</p>
     <p><strong>Estado:</strong> {{payment_status}}</p>
     <p><strong>Referencia:</strong> {{payment_reference}}</p>
+    <p><strong>Order ID:</strong> {{merchant_order_id}}</p>
     <p><strong>Fecha:</strong> {{payment_date}}</p>
   </div>
   
@@ -73,7 +78,7 @@ Este documento explica cómo configurar el sistema de envío automático de emai
 </div>
 ```
 
-4. Configura el **"To Email"** como `teochiapps@gmail.com`
+4. Configura el **"To Email"** como `maquiponce96@gmail.com`
 5. Guarda el template y anota el **Template ID**
 
 ### Paso 4: Obtener Public Key
@@ -92,16 +97,19 @@ REACT_APP_EMAILJS_TEMPLATE_ID=tu_template_id_aqui
 REACT_APP_EMAILJS_PUBLIC_KEY=tu_public_key_aqui
 ```
 
-## 🔄 Flujo de Funcionamiento
+## 🔄 Flujo de Funcionamiento (Actualizado)
 
 1. **Cliente completa el formulario** con sus datos (nombre, email, teléfono)
-2. **Se procesa el pago** con MercadoPago
-3. **Se almacenan los datos** temporalmente en sessionStorage
-4. **Cliente es redirigido** a la página de éxito (`/checkout/success`)
-5. **Se envía email automáticamente** con todos los datos
-6. **Se muestra pantalla de procesamiento** con indicador de email
-7. **Se abre modal personalizado** con mensaje de agradecimiento
-8. **Cliente puede cerrar modal** y volver al home
+2. **Datos se guardan** temporalmente en sessionStorage
+3. **Cliente es redirigido a MercadoPago** para completar el pago
+4. **Cliente completa el pago** en MercadoPago
+5. **MercadoPago redirige** a la página de éxito (`/checkout/success`)
+6. **Se envía email automáticamente** con todos los datos del cliente, plan Y pago
+7. **Se muestra pantalla de procesamiento** con indicador de email
+8. **Se abre modal personalizado** con mensaje de agradecimiento
+9. **Cliente puede cerrar modal** y volver al home
+
+⚠️ **Cambio importante:** El email ahora se envía DESPUÉS de que el pago se complete exitosamente, no antes del checkout.
 
 ## 📱 Experiencia del Usuario
 

@@ -257,3 +257,58 @@ export const clearStoredPaymentData = () => {
     console.error('Error limpiando datos:', error);
   }
 };
+
+/**
+ * 🧪 FUNCIÓN DE TESTING - Para probar el envío de emails desde la consola
+ * Llama esta función desde la consola del navegador:
+ * window.testEmail()
+ */
+export const testEmailFunction = async () => {
+  console.log('🧪 Iniciando test de email...');
+  
+  // Datos de prueba
+  const testPaymentData = {
+    paymentId: '1234567890',
+    status: 'approved',
+    externalReference: 'plan_2_1729000000000',
+    merchantOrderId: '9876543210'
+  };
+  
+  const testClientData = {
+    nombre: 'Juan Pérez (TEST)',
+    mail: 'test@example.com',
+    telefono: '1234567890'
+  };
+  
+  const testPlanData = {
+    id: 2,
+    title: 'Plan Premium (TEST)',
+    price: 15000,
+    description: 'Plan de prueba',
+    highlight: 'Entrenamiento personalizado 3x semana'
+  };
+  
+  console.log('📋 Datos de prueba:', {
+    payment: testPaymentData,
+    client: testClientData,
+    plan: testPlanData
+  });
+  
+  // Enviar email de prueba
+  const result = await sendPaymentSuccessEmail(testPaymentData, testClientData, testPlanData);
+  
+  if (result.success) {
+    console.log('✅ ¡Email de prueba enviado exitosamente!');
+    console.log('📧 Revisa tu bandeja de entrada en:', 'maquiponce96@gmail.com');
+  } else {
+    console.error('❌ Error enviando email de prueba:', result.message);
+  }
+  
+  return result;
+};
+
+// Exponer la función de testing globalmente para poder usarla desde la consola
+if (typeof window !== 'undefined') {
+  window.testEmail = testEmailFunction;
+  console.log('🧪 Función de testing disponible! Usa: window.testEmail()');
+}
