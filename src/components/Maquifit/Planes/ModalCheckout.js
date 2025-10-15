@@ -359,7 +359,7 @@ const ButtonContainer = styled.div`
   gap: 1rem;
   margin-top: 1rem;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
@@ -385,6 +385,10 @@ const CancelButton = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 
@@ -413,6 +417,10 @@ const PayButton = styled.button`
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 
