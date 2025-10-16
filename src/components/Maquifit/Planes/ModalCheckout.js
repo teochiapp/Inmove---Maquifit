@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import MercadoPagoCheckout from './MercadoPagoCheckout';
@@ -13,6 +13,64 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
   const [showCheckout, setShowCheckout] = useState(false);
   const [saving, setSaving] = useState(false);
   const [externalReference, setExternalReference] = useState(null);
+  const [isIOS, setIsIOS] = useState(false);
+
+  // Detectar si es iOS Safari
+  useEffect(() => {
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
+                       !window.MSStream && 
+                       'ontouchstart' in window;
+    setIsIOS(isIOSDevice);
+  }, []);
+
+  // Manejar el comportamiento del teclado virtual en iOS
+  useEffect(() => {
+    if (!isOpen || !isIOS) return;
+
+    const handleResize = () => {
+      // Forzar re-render cuando cambie el viewport (teclado virtual)
+      if (window.visualViewport) {
+        const viewport = window.visualViewport;
+        if (viewport.height < window.innerHeight * 0.75) {
+          // Teclado abierto - ajustar el modal
+          document.body.style.position = 'fixed';
+          document.body.style.top = `-${viewport.offsetTop}px`;
+          document.body.style.width = '100%';
+        } else {
+          // Teclado cerrado - restaurar
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.width = '';
+        }
+      }
+    };
+
+    const handleScroll = (e) => {
+      // Prevenir scroll del body cuando el modal está abierto en iOS
+      if (isOpen) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+    }
+    
+    document.addEventListener('scroll', handleScroll, { passive: false });
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+      }
+      document.removeEventListener('scroll', handleScroll);
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [isOpen, isIOS]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -90,6 +148,7 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={handleClose}
+          $isIOS={isIOS}
         >
           <ModalContent
             as={motion.div}
@@ -97,6 +156,7 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
+            $isIOS={isIOS}
           >
             <CloseButton onClick={handleClose}>
               <CloseIcon>×</CloseIcon>
@@ -204,6 +264,36 @@ const ModalOverlay = styled.div`
   justify-content: center;
   z-index: 100000;
   backdrop-filter: blur(5px);
+  
+  /* Fix para Safari iOS */
+  -webkit-overflow-scrolling: touch;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* Prevenir scroll del body cuando el modal está abierto */
+  overflow: hidden;
+  
+  /* Asegurar que el modal se mantenga centrado en Safari iOS */
+  @supports (-webkit-touch-callout: none) {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+  
+  /* Ajustes específicos para iOS cuando el teclado está abierto */
+  ${props => props.$isIOS && `
+    @supports (-webkit-touch-callout: none) {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      height: 100vh !important;
+      height: -webkit-fill-available !important;
+    }
+  `}
 `;
 
 const ModalContent = styled.div`
@@ -216,6 +306,15 @@ const ModalContent = styled.div`
   overflow-y: auto;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  
+  /* Fix para Safari iOS - scroll suave */
+  -webkit-overflow-scrolling: touch;
+  
+  /* Asegurar que el contenido se mantenga visible cuando aparece el teclado */
+  @supports (-webkit-touch-callout: none) {
+    max-height: 85vh;
+    max-height: calc(100vh - 2rem);
+  }
 
   @media (max-width: 768px) {
     padding: 1.5rem;
@@ -223,7 +322,35 @@ const ModalContent = styled.div`
     margin: 1rem;
     display: flex;
     flex-direction: column !important;
+    
+    /* Ajustes específicos para móviles iOS */
+    @supports (-webkit-touch-callout: none) {
+      max-height: calc(100vh - 4rem);
+      margin: 0.5rem;
+      padding: 1rem;
+    }
   }
+  
+  /* Fix específico para Safari iOS cuando el teclado está abierto */
+  @media screen and (-webkit-min-device-pixel-ratio: 0) {
+    @supports (-webkit-touch-callout: none) {
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+  }
+  
+  /* Ajustes específicos para iOS */
+  ${props => props.$isIOS && `
+    @supports (-webkit-touch-callout: none) {
+      @media (max-width: 768px) {
+        max-height: calc(100vh - 6rem) !important;
+        margin: 1rem 0.5rem !important;
+        padding: 1rem !important;
+        transform: translateZ(0) !important;
+        -webkit-transform: translateZ(0) !important;
+      }
+    }
+  `}
 `;
 
 const CloseButton = styled.button`
@@ -319,14 +446,39 @@ const Input = styled.input`
   font-size: 1rem;
   font-family: 'Onest', sans-serif;
   transition: border-color 0.3s ease;
+  
+  /* Fix para Safari iOS */
+  -webkit-appearance: none;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  
+  /* Prevenir zoom automático en Safari iOS */
+  font-size: 16px;
+  
+  /* Asegurar que el input sea clickeable */
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: text;
+  user-select: text;
 
   &:focus {
     outline: none;
     border-color: #C58ADA;
+    
+    /* Fix para Safari iOS - prevenir zoom */
+    @supports (-webkit-touch-callout: none) {
+      transform: translateZ(0);
+    }
   }
 
   &::placeholder {
     color: #9ca3af;
+  }
+  
+  /* Asegurar que el input sea visible en Safari iOS */
+  @supports (-webkit-touch-callout: none) {
+    background-color: white;
+    -webkit-appearance: none;
   }
 `;
 
