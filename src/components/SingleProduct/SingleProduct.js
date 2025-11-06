@@ -78,6 +78,19 @@ const SingleProduct = () => {
     }
   }, [producto, nombre]);
 
+  // Debug: Ver datos del producto y productoId
+  useEffect(() => {
+    const productoId = producto?.documentId || producto?.id || productoView?.id;
+    if (productoId) {
+      console.log('🔍 DEBUG - ProductoId en SingleProduct:', {
+        documentId: producto?.documentId,
+        id: producto?.id,
+        productoIdUsado: productoId,
+        attributes: producto?.attributes
+      });
+    }
+  }, [producto, productoView]);
+
   // Funciones de navegación
   const handleNavigateHome = (e) => {
     e.preventDefault();
@@ -128,7 +141,7 @@ const SingleProduct = () => {
   }
 
   const attributes = producto?.attributes || {};
-  const productoId = productoView?.id || producto?.id;
+  const productoId = producto?.documentId || producto?.id || productoView?.id;
 
   return (
     <ProductContainer>

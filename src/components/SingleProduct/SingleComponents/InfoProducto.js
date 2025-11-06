@@ -14,11 +14,22 @@ const InfoProducto = ({
 }) => {
   const { addItem } = useCarrito();
   
+  // Debug: Ver qué datos llegan al componente
+  useEffect(() => {
+    console.log('🔍 DEBUG - InfoProducto recibió:', {
+      productoId,
+      tieneGuiaTalles: !!attributes?.GuiaTalles,
+      GuiaTalles: attributes?.GuiaTalles,
+      attributesCompletos: attributes
+    });
+  }, [productoId, attributes]);
+  
   // Obtener variantes del producto
-  const { variantes, tieneVariantes } = useVariantesPorProducto(productoId);
+  const { variantes, loading, tieneVariantes } = useVariantesPorProducto(productoId);
   const opcionesVariantes = useOpcionesVariantes(variantes);
   
   const [showModal, setShowModal] = useState(false);
+  const [showGuiaTalles, setShowGuiaTalles] = useState(false);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -67,9 +78,9 @@ const InfoProducto = ({
     }
   }, [tieneVariantes, opcionesVariantes, selectedSize, selectedColor]);
   
-  // Si no hay variantes, usar valores por defecto (hardcoded)
-  const tallasDisponibles = tieneVariantes ? opcionesVariantes.tallas : ['S', 'M', 'L'];
-  const coloresDisponibles = tieneVariantes ? opcionesVariantes.colores : ['#EF4444', '#F59E0B', '#EC4899', '#991B1B'];
+  // Usar solo datos de Strapi (sin fallback hardcodeado)
+  const tallasDisponibles = opcionesVariantes.tallas;
+  const coloresDisponibles = opcionesVariantes.colores;
   
   // Imagen a mostrar (prioritiza la imagen de la variante seleccionada, sino usa la imagen de la galería seleccionada)
   const imagenActual = useMemo(() => {
@@ -191,38 +202,54 @@ const InfoProducto = ({
               : '$123'}
     </ProductPrice>
 
-    {/* Talles */}
-          <SelectorsRow>
-            <SelectorColumn>
-    <SectionLabel>Selecciona tu talle</SectionLabel>
-    <SizeOptions>
-                {tallasDisponibles.map((talla) => (
-                  <SizeButton 
-                    key={talla}
-                    $active={selectedSize === talla} 
-                    onClick={() => setSelectedSize(talla)}
-                  >
-                    {talla}
-                  </SizeButton>
-                ))}
-    </SizeOptions>
-            </SelectorColumn>
+    {/* Talles y Colores */}
+          {loading ? (
+            <LoadingMessage>Cargando variantes disponibles...</LoadingMessage>
+          ) : !tieneVariantes ? (
+            <NoVariantesMessage>
+              No hay variantes disponibles para este producto. Por favor, contacta al administrador.
+            </NoVariantesMessage>
+          ) : (
+            <SelectorsRow>
+              <SelectorColumn>
+                <SectionLabel>Selecciona tu talle</SectionLabel>
+                {tallasDisponibles.length > 0 ? (
+                  <SizeOptions>
+                    {tallasDisponibles.map((talla) => (
+                      <SizeButton 
+                        key={talla}
+                        $active={selectedSize === talla} 
+                        onClick={() => setSelectedSize(talla)}
+                      >
+                        {talla}
+                      </SizeButton>
+                    ))}
+                  </SizeOptions>
+                ) : (
+                  <EmptyMessage>No hay talles disponibles</EmptyMessage>
+                )}
+              </SelectorColumn>
 
-    {/* Colores */}
-            <SelectorColumn>
-    <SectionLabel>Colores Disponibles</SectionLabel>
-    <ColorOptions>
-                {coloresDisponibles.map((color) => (
-                  <ColorCircle 
-                    key={color}
-                    color={color} 
-                    $active={selectedColor === color}
-                    onClick={() => setSelectedColor(color)}
-                  />
-                ))}
-    </ColorOptions>
-            </SelectorColumn>
-          </SelectorsRow>
+              {/* Colores */}
+              <SelectorColumn>
+                <SectionLabel>Colores Disponibles</SectionLabel>
+                {coloresDisponibles.length > 0 ? (
+                  <ColorOptions>
+                    {coloresDisponibles.map((color) => (
+                      <ColorCircle 
+                        key={color}
+                        color={color} 
+                        $active={selectedColor === color}
+                        onClick={() => setSelectedColor(color)}
+                      />
+                    ))}
+                  </ColorOptions>
+                ) : (
+                  <EmptyMessage>No hay colores disponibles</EmptyMessage>
+                )}
+              </SelectorColumn>
+            </SelectorsRow>
+          )}
           
           {/* Stock disponible */}
           {stockDisponible !== null && (
@@ -234,7 +261,13 @@ const InfoProducto = ({
             </StockInfo>
           )}
 
-          <GuideLink href="#guia-talles" onClick={(e) => e.preventDefault()}>
+          <GuideLink 
+            href="#guia-talles" 
+            onClick={(e) => {
+              e.preventDefault();
+              setShowGuiaTalles(true);
+            }}
+          >
             <SizeIcon>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5.33366 2L2.66699 4.66667L5.33366 7.33333" stroke="#1A1F22" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/>
@@ -321,6 +354,29 @@ const InfoProducto = ({
         }}
         cantidad={quantity}
       />
+
+      {/* Modal de Guía de Talles */}
+      {showGuiaTalles && (
+        <ModalOverlay onClick={() => setShowGuiaTalles(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              <ModalTitle>Guía de Talles</ModalTitle>
+              <CloseButton onClick={() => setShowGuiaTalles(false)}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              {attributes?.GuiaTalles ? (
+                <GuiaTallesText>{attributes.GuiaTalles}</GuiaTallesText>
+              ) : (
+                <NoGuiaMessage>No hay información de guía de talles disponible para este producto.</NoGuiaMessage>
+              )}
+            </ModalBody>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </>
   );
 };
@@ -526,7 +582,37 @@ const ProductPrice = styled.div`
   margin: 0 0 2rem 0;
 `;
 
+// === Mensajes de Estado ===
+const LoadingMessage = styled.div`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.95rem;
+  color: #666;
+  padding: 1.5rem;
+  text-align: center;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+`;
 
+const NoVariantesMessage = styled.div`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.95rem;
+  color: #dc2626;
+  padding: 1.5rem;
+  text-align: center;
+  background: #fef2f2;
+  border: 1.5px solid #fecaca;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+`;
+
+const EmptyMessage = styled.div`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.85rem;
+  color: #999;
+  font-style: italic;
+  padding: 0.5rem 0;
+`;
 
 // === Selectores de Talle y Color ===
 const SelectorsRow = styled.div`
@@ -823,4 +909,111 @@ const FeatureText = styled.span`
   font-size: 0.95rem;
   color: #262626;
   font-weight: 500;
+`;
+
+// === Modal de Guía de Talles ===
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #E5E7EB;
+`;
+
+const ModalTitle = styled.h3`
+  font-family: 'Onest', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #262626;
+  margin: 0;
+`;
+
+const CloseButton = styled.button`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #666;
+  
+  &:hover {
+    background: #E5E7EB;
+    color: #262626;
+    transform: rotate(90deg);
+  }
+`;
+
+const ModalBody = styled.div`
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: calc(80vh - 80px);
+`;
+
+const GuiaTallesText = styled.div`
+  font-family: 'Onest', sans-serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #262626;
+  white-space: pre-wrap;
+  
+  /* Estilo para listas si el texto las contiene */
+  ul, ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  li {
+    margin: 0.5rem 0;
+  }
+`;
+
+const NoGuiaMessage = styled.div`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.95rem;
+  color: #999;
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
 `;

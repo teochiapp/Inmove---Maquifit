@@ -65,6 +65,7 @@ export const useProductos = () => {
         } : null,
         Talle: producto.Talle,
         Color: producto.Color,
+        GuiaTalles: producto.GuiaTalles,
         Categoria: producto.CategoriaProducto ? {
           data: {
             id: producto.CategoriaProducto.id || producto.CategoriaProducto.documentId,

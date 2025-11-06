@@ -23,83 +23,52 @@ export const useVariantesPorProducto = (productoId) => {
         setLoading(true);
         setError(null);
         
-        // Consultar variantes filtrando por producto
-        // Intentamos diferentes sintaxis para compatibilidad con Strapi v4/v5
-        let response;
-        let data;
-        
-        // Intento 1: Con filtro por Producto (mayúscula)
-        try {
-          response = await fetch(
-            `${STRAPI_URL}/api/variantes?filters[Producto][id][$eq]=${productoId}&populate=Imagen`,
-            { headers: { 'Content-Type': 'application/json' } }
-          );
-          if (response.ok) {
-            data = await response.json();
-          }
-        } catch (e) {
-          // Ignorar y probar siguiente método
-        }
-        
-        // Intento 2: Con filtro por producto (minúscula)
-        if (!data || !response?.ok) {
-          try {
-            response = await fetch(
-              `${STRAPI_URL}/api/variantes?filters[producto][id][$eq]=${productoId}&populate=Imagen`,
-              { headers: { 'Content-Type': 'application/json' } }
-            );
-            if (response.ok) {
-              data = await response.json();
-            }
-          } catch (e) {
-            // Ignorar y probar siguiente método
-          }
-        }
-        
-        // Intento 3: Traer todas y filtrar del lado del cliente (última opción)
-        if (!data || !response?.ok) {
-          try {
-            response = await fetch(
-              `${STRAPI_URL}/api/variantes?populate=Imagen&populate=producto`,
-              { headers: { 'Content-Type': 'application/json' } }
-            );
-            if (response.ok) {
-              data = await response.json();
-              // Filtrar del lado del cliente
-              if (data.data) {
-                data.data = data.data.filter(v => {
-                  const prodId = v.producto?.id || v.attributes?.producto?.data?.id;
-                  return prodId === productoId;
-                });
-              }
-            }
-          } catch (e) {
-            // Si ninguno funciona, no hay variantes configuradas
-          }
-        }
+        // Consultar variantes filtrando por producto con populate de imagen
+        const response = await fetch(
+          `${STRAPI_URL}/api/variantes?filters[producto][documentId][$eq]=${productoId}&populate=Imagen`,
+          { headers: { 'Content-Type': 'application/json' } }
+        );
 
-        // Si ningún método funcionó, simplemente no hay variantes
-        if (!data || !response?.ok) {
+        if (!response.ok) {
+          console.warn('No se pudieron obtener variantes para el producto:', productoId);
           setVariantes([]);
           setLoading(false);
           return;
         }
-        
-        // Normalizar variantes
-        const variantesNormalizadas = (data.data || []).map(variante => ({
-          id: variante.id || variante.documentId,
-          documentId: variante.documentId,
-          color: variante.Color || variante.attributes?.Color,
-          talla: variante.Talla || variante.attributes?.Talla,
-          stock: variante.Stock || variante.attributes?.Stock || 0,
-          imagen: variante.Imagen?.url || variante.attributes?.Imagen?.data?.attributes?.url
-            ? `${STRAPI_URL}${variante.Imagen?.url || variante.attributes?.Imagen?.data?.attributes?.url}`
-            : null,
-        }));
 
+        const data = await response.json();
+        
+        // Debug: Ver qué datos llegan
+        console.log('🔍 DEBUG - Datos de variantes desde Strapi:', {
+          productoId,
+          totalVariantes: data.data?.length || 0,
+          primeraVariante: data.data?.[0]
+        });
+        
+        // Normalizar variantes (compatibilidad con Strapi v4/v5)
+        const variantesNormalizadas = (data.data || []).map(variante => {
+          // Extraer atributos (puede venir directo o en attributes)
+          const attrs = variante.attributes || variante;
+          const imagenData = attrs.Imagen?.data || attrs.Imagen;
+          const imagenUrl = imagenData?.attributes?.url || imagenData?.url;
+          
+          const normalizada = {
+            id: variante.id || variante.documentId,
+            documentId: variante.documentId,
+            color: attrs.Color,
+            talla: attrs.Talla,
+            stock: attrs.Stock || 0,
+            imagen: imagenUrl ? `${STRAPI_URL}${imagenUrl}` : null,
+          };
+          
+          console.log('🔍 DEBUG - Variante normalizada:', normalizada);
+          return normalizada;
+        });
+
+        console.log('✅ Total variantes normalizadas:', variantesNormalizadas.length);
         setVariantes(variantesNormalizadas);
       } catch (err) {
-        // Error silencioso - no mostrar en consola para no confundir al usuario
+        console.error('Error al obtener variantes:', err);
         setError(err.message);
         setVariantes([]);
       } finally {
