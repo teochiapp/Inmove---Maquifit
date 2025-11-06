@@ -1,11 +1,11 @@
 const fetch = require('node-fetch');
 
-// ⚠️ CAMBIAR ESTA URL POR TU URL DE PRODUCCIÓN
-// const STRAPI_URL = 'http://127.0.0.1:1337'; // Para local
-const STRAPI_URL = 'https://admin.inmove.com.ar'; // Para producción
+// 🚀 CONFIGURACIÓN PARA PRODUCCIÓN
+const STRAPI_URL = 'https://admin.inmove.com.ar';
 
-async function migrarVariantes() {
+async function migrarVariantesProduccion() {
   try {
+    console.log('🚀 MIGRACIÓN DE VARIANTES - PRODUCCIÓN');
     console.log('🔄 Obteniendo variantes desde:', STRAPI_URL);
     console.log('============================================================\n');
     
@@ -71,7 +71,7 @@ async function migrarVariantes() {
     }
     
     console.log('\n============================================================');
-    console.log('🎉 Proceso completado!');
+    console.log('🎉 MIGRACIÓN COMPLETADA!');
     console.log('============================================================');
     console.log(`✅ Actualizadas: ${actualizadas}`);
     console.log(`⏭️  Ya tenían nombre: ${yaConNombre}`);
@@ -79,20 +79,22 @@ async function migrarVariantes() {
     console.log(`📊 Total: ${variantes.length}`);
     console.log('============================================================\n');
     
-    if (actualizadas > 0) {
-      console.log('🔍 Verifica en:');
-      console.log(`   ${STRAPI_URL}/api/variantes`);
-      console.log(`   ${STRAPI_URL}/admin\n`);
-    }
+    console.log('🔍 Verifica en producción:');
+    console.log(`   ${STRAPI_URL}/api/variantes`);
+    console.log(`   ${STRAPI_URL}/admin`);
+    console.log('\n🎯 Las variantes ahora deberían mostrar:');
+    console.log('   • negra/S');
+    console.log('   • chocolate/M');
+    console.log('   • etc.\n');
     
   } catch (error) {
     console.error('❌ Error:', error.message);
     console.error('\n⚠️  Verifica que:');
-    console.error('   1. Strapi esté corriendo');
-    console.error('   2. La URL sea correcta');
-    console.error('   3. Los permisos estén configurados\n');
+    console.error('   1. Strapi esté corriendo en producción');
+    console.error('   2. Los permisos estén configurados (Settings → Roles → Public)');
+    console.error('   3. Tengas conexión a internet\n');
   }
 }
 
-console.log('🚀 Iniciando migración de variantes...\n');
-migrarVariantes();
+console.log('🚀 Iniciando migración de variantes en producción...\n');
+migrarVariantesProduccion();

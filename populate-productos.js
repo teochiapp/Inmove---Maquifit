@@ -178,8 +178,11 @@ async function actualizarOCrearProductos() {
   console.log('📥 Obteniendo productos y variantes existentes...\n');
   
   try {
+    // URL de la API de Strapi
+    const STRAPI_URL = 'https://admin.inmove.com.ar'; // Para producción
+    
     // Obtener todos los productos existentes
-    const response = await makeRequest('http://127.0.0.1:1337/api/productos?populate=*');
+    const response = await makeRequest(`${STRAPI_URL}/api/productos?populate=*`);
     const data = await response.json();
     const productosExistentes = data.data || [];
     
