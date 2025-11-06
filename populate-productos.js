@@ -9,6 +9,7 @@
  * URL de producción: https://admin.inmove.com.ar
  */
 
+const https = require('https');
 const http = require('http');
 
 // Función helper para hacer peticiones HTTP
@@ -26,7 +27,8 @@ function makeRequest(url, options = {}) {
       }
     };
 
-    const req = http.request(reqOptions, (res) => {
+    const protocol = url.startsWith('https') ? https : http;
+    const req = protocol.request(reqOptions, (res) => {
       let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', () => {
