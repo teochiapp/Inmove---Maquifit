@@ -1,10 +1,12 @@
 /**
- * Script para actualizar/crear productos en Strapi
+ * Script para actualizar/crear productos en Strapi - PRODUCCIÓN
  * Ejecutar con: node populate-productos.js
  * 
  * IMPORTANTE: Crea productos con sus campos (Nombre, Descripcion, Precio, GuiaTalles)
- * y sus variantes (Color, Talla, Stock)
+ * y sus variantes (Color, Talla, Stock, Nombre)
  * Las imágenes y categorías deben asignarse manualmente en el admin de Strapi
+ * 
+ * URL de producción: https://admin.inmove.com.ar
  */
 
 const http = require('http');
@@ -179,7 +181,7 @@ async function actualizarOCrearProductos() {
   
   try {
     // URL de la API de Strapi
-    const STRAPI_URL = 'https://admin.inmove.com.ar'; // Para producción
+    const STRAPI_URL = 'https://admin.inmove.com.ar'; // Producción
     
     // Obtener todos los productos existentes
     const response = await makeRequest(`${STRAPI_URL}/api/productos?populate=*`);
@@ -207,7 +209,7 @@ async function actualizarOCrearProductos() {
         
         if (productoExistente) {
           // ACTUALIZAR producto existente
-          const updateResponse = await makeRequest(`http://127.0.0.1:1337/api/productos/${productoExistente.documentId}`, {
+          const updateResponse = await makeRequest(`${STRAPI_URL}/api/productos/${productoExistente.documentId}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -227,7 +229,7 @@ async function actualizarOCrearProductos() {
           }
         } else {
           // CREAR nuevo producto
-          const createResponse = await makeRequest('http://127.0.0.1:1337/api/productos', {
+          const createResponse = await makeRequest(`${STRAPI_URL}/api/productos`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -281,7 +283,7 @@ async function actualizarOCrearProductos() {
                 // Generar nombre descriptivo: Color/Talla
                 const nombreVariante = `${color}/${talla}`;
                 
-                const varianteResponse = await makeRequest('http://127.0.0.1:1337/api/variantes', {
+                const varianteResponse = await makeRequest(`${STRAPI_URL}/api/variantes`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -333,10 +335,10 @@ async function actualizarOCrearProductos() {
     console.log('  • Tops (ID: 5) - 2 productos');
     console.log('  • Remeras (ID: 3) - 2 productos');
     console.log('  • Shorts (ID: 31) - 2 productos');
-    console.log('\n🔗 Verifica los productos en:');
-    console.log('   http://localhost:1337/api/productos?populate=*');
+    console.log('\n🔗 Verifica los productos en producción:');
+    console.log('   https://admin.inmove.com.ar/api/productos?populate=*');
     console.log('\n⚠️  IMPORTANTE - Pasos siguientes:');
-    console.log('   1. Ve a http://localhost:1337/admin');
+    console.log('   1. Ve a https://admin.inmove.com.ar/admin');
     console.log('   2. Asigna las categorías manualmente a cada producto');
     console.log('   3. Vincula las variantes a sus productos correspondientes');
     console.log('   4. Sube las imágenes de portada y galería');
@@ -344,7 +346,7 @@ async function actualizarOCrearProductos() {
     
   } catch (error) {
     console.error('\n❌ Error fatal al obtener productos existentes:', error.message);
-    console.error('   Asegúrate de que Strapi esté corriendo en http://localhost:1337\n');
+    console.error('   Asegúrate de que Strapi esté corriendo en https://admin.inmove.com.ar\n');
   }
 }
 
