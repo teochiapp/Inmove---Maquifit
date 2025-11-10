@@ -314,6 +314,8 @@ async function actualizarOCrearProductos() {
             // Crear una variante por cada talle
             for (const talla of tallesArray) {
               try {
+                const nombreConTalle = `${variante.Nombre} - Talle ${talla}`;
+
                 const varianteResponse = await makeRequest(`${STRAPI_URL}/api/variantes`, {
                   method: 'POST',
                   headers: {
@@ -321,7 +323,7 @@ async function actualizarOCrearProductos() {
                   },
                   body: JSON.stringify({ 
                     data: {
-                      Nombre: variante.Nombre,
+                      Nombre: nombreConTalle,
                       Color: variante.Color,
                       Talla: talla,
                       Stock: 10, // Stock por defecto
@@ -332,7 +334,7 @@ async function actualizarOCrearProductos() {
                 
                 if (varianteResponse.ok) {
                   variantesCreadas++;
-                  console.log(`      ✓ Variante creada: ${variante.Nombre} - Talla ${talla}`);
+                  console.log(`      ✓ Variante creada: ${nombreConTalle}`);
                 } else {
                   const error = await varianteResponse.json();
                   console.error(`      ✗ Error creando variante ${variante.Nombre}:`, error.error?.message || 'Error desconocido');

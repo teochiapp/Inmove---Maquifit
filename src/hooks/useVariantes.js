@@ -55,6 +55,7 @@ export const useVariantesPorProducto = (productoId) => {
           const normalizada = {
             id: variante.id || variante.documentId,
             documentId: variante.documentId,
+            nombre: attrs.Nombre || attrs.nombre || null,
             color: attrs.Color,
             talla: attrs.Talla,
             stock: attrs.Stock || 0,
