@@ -3,10 +3,16 @@
  * Ejecutar con: node populate-productos.js
  * 
  * IMPORTANTE: Crea productos con sus campos (Nombre, Descripcion, Precio, GuiaTalles)
- * y sus variantes (Color, Talla, Stock, Nombre)
+ * y sus variantes (Nombre, Color, Talla, Stock)
  * Las imágenes y categorías deben asignarse manualmente en el admin de Strapi
  * 
  * URL de producción: https://admin.inmove.com.ar
+ * 
+ * Productos actualizados:
+ * - 4 Calzas largas (Power lycra, Morley, Glossy Forest, Pampa cruzada)
+ * - 2 Tops (Morley, Ross)
+ * - 1 Remera (Gigi)
+ * - 6 Shorts (Lycra, Batik, doble frunce, frunce rayas, frunce prelavado, negro sin frunce)
  */
 
 const https = require('https');
@@ -57,124 +63,137 @@ function makeRequest(url, options = {}) {
 // Productos reales con variantes
 // Nota: Los productos con el mismo nombre pero diferente color se manejan con variantes
 const productos = [
-  // Calzas largas (ID: 28)
-  {
-    Nombre: "Calza Power lycra",
-    Precio: 27000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "calza larga con bolsillo" }] }],
-    GuiaTalles: "S: corresponde a 36-38 de jeans",
-    CategoriaProducto: 28,
-    variantes: [
-      { Color: "negra", Talles: "1S" },
-      { Color: "bordó", Talles: "3S" }
-    ]
-  },
-  {
-    Nombre: "Calza Morley chocolate",
-    Precio: 26000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Calza de tela morley" }] }],
-    GuiaTalles: "S: corresponde a 36-38 de jeans / M: 40-42 / L: 44-46",
-    CategoriaProducto: 28,
-    variantes: [
-      { Color: "chocolate", Talles: "2S-1M" }
-    ]
-  },
-  {
-    Nombre: "Calza Glossy",
-    Precio: 38000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "calza lycra premiun con brillo" }] }],
-    GuiaTalles: "S: corresponde a 36-38 de jeans / M: 40-42 / L: 44-46",
-    CategoriaProducto: 28,
-    variantes: [
-      { Color: "verde", Talles: "2S-2M" },
-      { Color: "negra", Talles: "1S" }
-    ]
-  },
-  {
-    Nombre: "Calza Pampa cruzada",
-    Precio: 25000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Tela morley calce al cuerpo" }] }],
-    GuiaTalles: "S: corresponde a 36-38 / M: 40-42",
-    CategoriaProducto: 28,
-    variantes: [
-      { Color: "negra", Talles: "1S-1M" },
-      { Color: "petroleo", Talles: "1M" }
-    ]
-  },
+    // --- CALZAS LARGAS ---
+    {
+        Nombre: "Calza Power lycra",
+        Precio: 27000,
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Calza larga con bolsillo." }] }],
+        GuiaTalles: "S: corresponde a 36-38 de jeans",
+        variantes: [
+            { Nombre: "Calza Power lycra - negra", Color: "negra", Talles: "1S" }, 
+            { Nombre: "Calza Power lycra - bordó", Color: "bordó", Talles: "3S" }
+        ]
+    },
+    {
+        Nombre: "Calza Morley",
+        Precio: 26000,
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Calza de tela morley." }] }],
+        GuiaTalles: "S: corresponde a 36-38 de jeans / M: 40-42 / L: 44-46",
+        variantes: [
+            { Nombre: "Calza Morley - chocolate", Color: "chocolate", Talles: "2S-1M" }
+        ]
+    },
+    {
+        Nombre: "Calza Glossy Forest",
+        Precio: 38000,
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Calza lycra premium con brillo." }] }],
+        GuiaTalles: "M: 38-40 / L: 40-42",
+        variantes: [
+            { Nombre: "Calza Glossy Forest - verde", Color: "verde", Talles: "1M-1L" }
+        ]
+    },
+    {
+        Nombre: "Calza Pampa cruzada", 
+        Precio: 25000,
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Tela morley calce al cuerpo." }] }],
+        GuiaTalles: "S: corresponde a 36-38 / M: 40-42",
+        variantes: [
+            { Nombre: "Calza Pampa cruzada - negra", Color: "negra", Talles: "1S-1M" }, 
+            { Nombre: "Calza Pampa cruzada - petroleo", Color: "petroleo", Talles: "1M" } 
+        ]
+    },
 
-  // Tops (ID: 5)
-  {
-    Nombre: "Top Morley chocolate",
-    Precio: 17000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Top deportivo de tela morley" }] }],
-    GuiaTalles: "",
-    CategoriaProducto: 5,
-    variantes: [
-      { Color: "chocolate", Talles: "1S-2M" }
-    ]
-  },
-  {
-    Nombre: "Top One hombro",
-    Precio: 18000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "lycra reforzada" }] }],
-    GuiaTalles: "S: 36-38 / M: 40-42",
-    CategoriaProducto: 5,
-    variantes: [
-      { Color: "Negro", Talles: "2S-1M" },
-      { Color: "Chocolate", Talles: "1S-1M" }
-    ]
-  },
 
-  // Remeras (ID: 3)
-  {
-    Nombre: "Remera Gigi",
-    Precio: 25000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "cuello en v , corte holgado" }] }],
-    GuiaTalles: "S: corresponde a 36-38 / M: 40-42",
-    CategoriaProducto: 3,
-    variantes: [
-      { Color: "Greige", Talles: "1S-1M" },
-      { Color: "Chocolate", Talles: "1S-1M" }
-    ]
-  },
-  {
-    Nombre: "Remera Cropped Mora",
-    Precio: 22000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "manga corta algodón" }] }],
-    GuiaTalles: "S: 36-38 / M: 40-42",
-    CategoriaProducto: 3,
-    variantes: [
-      { Color: "Negra", Talles: "1S-1M" },
-      { Color: "Chocolate", Talles: "1S" }
-    ]
-  },
+    // --- TOPS ---
+    {
+        Nombre: "Top Morley",
+        Precio: 17000,
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Top deportivo de tela morley." }] }],
+        GuiaTalles: "",
+        variantes: [
+            { Nombre: "Top Morley - chocolate", Color: "chocolate", Talles: "1S-2M" }
+        ]
+    },
+    {
+        Nombre: "Top Ross",
+        Precio: 18000, 
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Tela lycra pesada negra, super elastizado, se adapta bien a tu cuerpo, frente doble tela apertura para tasas desmontables, tiras regulables." }] }],
+        GuiaTalles: "",
+        variantes: [
+            { Nombre: "Top Ross - negro", Color: "negro", Talles: "0S" } 
+        ]
+    },
 
-  // Shorts (ID: 31)
-  {
-    Nombre: "Short Urban",
-    Precio: 23000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "tiro alto viscosa elastizada" }] }],
-    GuiaTalles: "M: corresponde a 40-42",
-    CategoriaProducto: 31,
-    variantes: [
-      { Color: "Negro", Talles: "1M" },
-      { Color: "Chocolate", Talles: "1M" },
-      { Color: "Greige", Talles: "1M" }
-    ]
-  },
-  {
-    Nombre: "Short Lycra",
-    Precio: 21000,
-    Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "cintura alta con diferentes cortes" }] }],
-    GuiaTalles: "S: 36-38 / M: 40-42",
-    CategoriaProducto: 31,
-    variantes: [
-      { Color: "Negro", Talles: "2S-1M" },
-      { Color: "Bordó", Talles: "1S-1M" },
-      { Color: "Petroleo", Talles: "1M" },
-      { Color: "Negro corte cintura 2", Talles: "M" }
-    ]
-  }
+
+    // --- REMERAS ---
+    {
+        Nombre: "Remera Gigi",
+        Precio: 25000,
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Cuello en V, corte holgado." }] }],
+        GuiaTalles: "",
+        variantes: [
+            { Nombre: "Remera Gigi - Greige", Color: "Greige", Talles: "2M" },
+            { Nombre: "Remera Gigi - Chocolate", Color: "Chocolate", Talles: "2M" }
+        ]
+    },
+    
+    // --- SHORTS ---
+    {
+        Nombre: "Short Lycra",
+        Precio: 21000,
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Cintura alta con diferentes cortes. Largo entrepierna 13 cm." }] }],
+        GuiaTalles: "S: 36-38 / M: 40-42", 
+        variantes: [
+            { Nombre: "Short Lycra - Vison", Color: "Vison", Talles: "2S-3M-4L-3XL-3XXL" }, 
+            { Nombre: "Short Lycra - Azul noche", Color: "Azul noche", Talles: "0S-3XL" }, 
+            { Nombre: "Short Lycra - Bordó", Color: "Bordó", Talles: "2S-2M-2L-2XL-2XXL" }
+        ]
+    },
+    {
+        Nombre: "Short Batik",
+        Precio: 23000, 
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Short con estampado Batik." }] }],
+        GuiaTalles: "",
+        variantes: [
+            { Nombre: "Short Batik - Único", Color: "Único", Talles: "3S/M-3L/XL" }
+        ]
+    },
+    {
+        Nombre: "Short con doble frunce",
+        Precio: 23000, 
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Short con detalle de doble frunce." }] }],
+        GuiaTalles: "",
+        variantes: [
+            { Nombre: "Short con doble frunce - Único", Color: "Único", Talles: "4S/M-6L/XL" }
+        ]
+    },
+    {
+        Nombre: "Short frunce rayas",
+        Precio: 23000, 
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Short con frunce y patrón de rayas." }] }],
+        GuiaTalles: "",
+        variantes: [
+            { Nombre: "Short frunce rayas - Único", Color: "Único", Talles: "3S/M-5L/XL" }
+        ]
+    },
+    {
+        Nombre: "Short frunce prelavado",
+        Precio: 23000, 
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Short con frunce y acabado prelavado." }] }],
+        GuiaTalles: "",
+        variantes: [
+            { Nombre: "Short frunce prelavado - Único", Color: "Único", Talles: "3S/M-1L/XL" }
+        ]
+    },
+    {
+        Nombre: "Short negro sin frunce",
+        Precio: 23000, 
+        Descripcion: [{ type: "paragraph", children: [{ type: "text", text: "Short negro básico, tiro alto, sin frunce." }] }],
+        GuiaTalles: "",
+        variantes: [
+            { Nombre: "Short negro sin frunce - negro", Color: "negro", Talles: "2S-0M-1L-1XL" }
+        ]
+    }
 ];
 
 async function actualizarOCrearProductos() {
@@ -204,8 +223,7 @@ async function actualizarOCrearProductos() {
         const productoExistente = productosExistentes.find(p => p.Nombre === producto.Nombre);
         
         // Separar variantes del resto de datos
-        const { CategoriaProducto, variantes, ...productoData } = producto;
-        const categoriaId = CategoriaProducto;
+        const { variantes, ...productoData } = producto;
         
         let productoId = null;
         
@@ -279,12 +297,23 @@ async function actualizarOCrearProductos() {
           const talles = Array.from(tallasSet);
           
           // Crear una variante por cada combinación de color y talle
-          for (const color of colores) {
-            for (const talla of talles) {
+          for (const variante of variantes) {
+            // Parsear talles de la variante
+            const tallesMatch = variante.Talles.match(/(\d+)?([A-Z]+)/g);
+            let tallesArray = [];
+            
+            if (tallesMatch) {
+              tallesMatch.forEach(t => {
+                const talle = t.replace(/\d+/, ''); // Remover números
+                tallesArray.push(talle);
+              });
+            } else {
+              tallesArray = [variante.Talles];
+            }
+            
+            // Crear una variante por cada talle
+            for (const talla of tallesArray) {
               try {
-                // Generar nombre descriptivo: Color/Talla
-                const nombreVariante = `${color}/${talla}`;
-                
                 const varianteResponse = await makeRequest(`${STRAPI_URL}/api/variantes`, {
                   method: 'POST',
                   headers: {
@@ -292,8 +321,8 @@ async function actualizarOCrearProductos() {
                   },
                   body: JSON.stringify({ 
                     data: {
-                      Nombre: nombreVariante,
-                      Color: color,
+                      Nombre: variante.Nombre,
+                      Color: variante.Color,
                       Talla: talla,
                       Stock: 10, // Stock por defecto
                       producto: productoId // Vincular con el producto
@@ -303,20 +332,17 @@ async function actualizarOCrearProductos() {
                 
                 if (varianteResponse.ok) {
                   variantesCreadas++;
-                  console.log(`      ✓ Variante creada: ${nombreVariante}`);
+                  console.log(`      ✓ Variante creada: ${variante.Nombre} - Talla ${talla}`);
                 } else {
                   const error = await varianteResponse.json();
-                  console.error(`      ✗ Error creando variante ${nombreVariante}:`, error.error?.message || 'Error desconocido');
+                  console.error(`      ✗ Error creando variante ${variante.Nombre}:`, error.error?.message || 'Error desconocido');
                 }
               } catch (error) {
-                console.error(`      ✗ Error creando variante ${nombreVariante}:`, error.message);
+                console.error(`      ✗ Error creando variante ${variante.Nombre}:`, error.message);
               }
             }
           }
         }
-        
-        // Nota sobre asignación de categoría
-        console.log(`   ⚠️  Asignar manualmente Categoría ID: ${categoriaId}\n`);
         
       } catch (error) {
         fallidos++;
@@ -333,16 +359,16 @@ async function actualizarOCrearProductos() {
     console.log(`🎨 Variantes creadas: ${variantesCreadas}`);
     console.log(`📊 Total procesados: ${actualizados + creados} de ${productos.length}`);
     console.log('\n📋 Distribución por categoría:');
-    console.log('  • Calzas largas (ID: 28) - 4 productos');
-    console.log('  • Tops (ID: 5) - 2 productos');
-    console.log('  • Remeras (ID: 3) - 2 productos');
-    console.log('  • Shorts (ID: 31) - 2 productos');
+    console.log('  • Calzas largas - 4 productos');
+    console.log('  • Tops - 2 productos');
+    console.log('  • Remeras - 1 producto');
+    console.log('  • Shorts - 6 productos');
     console.log('\n🔗 Verifica los productos en producción:');
     console.log('   https://admin.inmove.com.ar/api/productos?populate=*');
     console.log('\n⚠️  IMPORTANTE - Pasos siguientes:');
     console.log('   1. Ve a https://admin.inmove.com.ar/admin');
     console.log('   2. Asigna las categorías manualmente a cada producto');
-    console.log('   3. Vincula las variantes a sus productos correspondientes');
+    console.log('   3. Verifica que las variantes estén vinculadas correctamente');
     console.log('   4. Sube las imágenes de portada y galería');
     console.log('   5. Publica los productos\n');
     

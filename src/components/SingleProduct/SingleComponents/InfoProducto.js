@@ -683,8 +683,76 @@ const ColorCircle = styled.button`
     if (props.color.startsWith('#') || props.color.startsWith('rgb')) {
       return props.color;
     }
-    // Sino, es un nombre de color, usarlo como tal
-    return props.color.toLowerCase();
+    
+    // Mapeo de colores en español a valores hexadecimales
+    const colorMap = {
+      // Básicos
+      'negro': '#000000',
+      'negra': '#000000',
+      'blanco': '#FFFFFF',
+      'blanca': '#FFFFFF',
+      
+      // Rojos y rosados
+      'rojo': '#DC2626',
+      'bordó': '#8B1538',
+      'bordo': '#8B1538',
+      'rosa': '#EC4899',
+      'fucsia': '#D946EF',
+      
+      // Azules
+      'azul': '#3B82F6',
+      'azul noche': '#1E3A8A',
+      'celeste': '#7DD3FC',
+      'petroleo': '#0E7490',
+      'petróleo': '#0E7490',
+      'navy': '#1E3A8A',
+      
+      // Verdes
+      'verde': '#22C55E',
+      'verde militar': '#4D7C0F',
+      'verde oliva': '#65A30D',
+      'menta': '#6EE7B7',
+      
+      // Marrones y neutros
+      'marrón': '#92400E',
+      'marron': '#92400E',
+      'chocolate': '#78350F',
+      'café': '#92400E',
+      'beige': '#E7D4B5',
+      'arena': '#D4C5A9',
+      'camel': '#C19A6B',
+      'greige': '#C9B8A8',
+      'vison': '#B8A89A',
+      'visón': '#B8A89A',
+      
+      // Grises
+      'gris': '#6B7280',
+      'gris claro': '#D1D5DB',
+      'gris oscuro': '#374151',
+      'plomo': '#52525B',
+      
+      // Amarillos y naranjas
+      'amarillo': '#FACC15',
+      'mostaza': '#CA8A04',
+      'naranja': '#F97316',
+      'durazno': '#FDBA74',
+      
+      // Violetas
+      'violeta': '#8B5CF6',
+      'lila': '#C084FC',
+      'morado': '#7C3AED',
+      'púrpura': '#A855F7',
+      'purpura': '#A855F7',
+      
+      // Otros
+      'único': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      'unico': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      'multicolor': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    };
+    
+    // Buscar el color en el mapa (case-insensitive)
+    const colorKey = props.color.toLowerCase().trim();
+    return colorMap[colorKey] || props.color.toLowerCase();
   }};
   cursor: pointer;
   border: 3px solid ${props => props.$active ? '#262626' : 'white'};
