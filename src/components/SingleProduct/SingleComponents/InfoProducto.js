@@ -92,6 +92,32 @@ const InfoProducto = ({
   // NO inicializar selección automática - dejar que el usuario elija
   // Esto evita que se pre-seleccione una combinación específica que limite las opciones visibles
   
+  // Handlers para selección/deselección
+  const handleTallaClick = (talla) => {
+    if (selectedSize === talla) {
+      // Si ya está seleccionada, deseleccionar
+      setSelectedSize('');
+    } else {
+      // Seleccionar nueva talla
+      setSelectedSize(talla);
+    }
+  };
+  
+  const handleColorClick = (color) => {
+    if (selectedColor === color) {
+      // Si ya está seleccionado, deseleccionar
+      setSelectedColor('');
+    } else {
+      // Seleccionar nuevo color
+      setSelectedColor(color);
+    }
+  };
+  
+  const handleLimpiarSeleccion = () => {
+    setSelectedSize('');
+    setSelectedColor('');
+  };
+  
   // Usar todas las opciones para mostrar, pero filtradas para habilitar
   const tallasDisponibles = opcionesVariantes.tallas;
   const coloresDisponibles = opcionesVariantes.colores;
@@ -244,13 +270,20 @@ const InfoProducto = ({
                   <SizeOptions>
                     {tallasDisponibles.map((talla) => {
                       const disponible = isTallaDisponible(talla);
+                      const isSelected = selectedSize === talla;
                       return (
                         <SizeButton 
                           key={talla}
-                          $active={selectedSize === talla} 
+                          $active={isSelected} 
                           $disabled={!disponible}
-                          onClick={() => disponible && setSelectedSize(talla)}
-                          title={!disponible ? 'No disponible para la combinación seleccionada' : ''}
+                          onClick={() => disponible && handleTallaClick(talla)}
+                          title={
+                            !disponible 
+                              ? 'No disponible para la combinación seleccionada' 
+                              : isSelected 
+                                ? 'Click para deseleccionar' 
+                                : 'Click para seleccionar'
+                          }
                         >
                           {talla}
                         </SizeButton>
@@ -269,14 +302,21 @@ const InfoProducto = ({
                   <ColorOptions>
                     {coloresDisponibles.map((color) => {
                       const disponible = isColorDisponible(color);
+                      const isSelected = selectedColor === color;
                       return (
                         <ColorCircle 
                           key={color}
                           color={color} 
-                          $active={selectedColor === color}
+                          $active={isSelected}
                           $disabled={!disponible}
-                          onClick={() => disponible && setSelectedColor(color)}
-                          title={!disponible ? 'No disponible para la combinación seleccionada' : ''}
+                          onClick={() => disponible && handleColorClick(color)}
+                          title={
+                            !disponible 
+                              ? 'No disponible para la combinación seleccionada' 
+                              : isSelected 
+                                ? 'Click para deseleccionar' 
+                                : 'Click para seleccionar'
+                          }
                         />
                       );
                     })}
@@ -286,6 +326,18 @@ const InfoProducto = ({
                 )}
               </SelectorColumn>
             </SelectorsRow>
+          )}
+          
+          {/* Botón para limpiar selección */}
+          {(selectedSize || selectedColor) && (
+            <ClearSelectionButton onClick={handleLimpiarSeleccion}>
+              <ClearIcon>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </ClearIcon>
+              Limpiar selección
+            </ClearSelectionButton>
           )}
           
           {/* Stock disponible o mensaje de selección */}
@@ -711,9 +763,18 @@ const SizeButton = styled.button`
   
   &:hover:not([disabled]) {
     border-color: var(--inmove-color);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(218, 95, 139, 0.3);
     ${props => !props.$active && !props.$disabled && `
       background: #FFF5F9;
     `}
+    ${props => props.$active && `
+      background: #c74d7f;
+    `}
+  }
+  
+  &:active:not([disabled]) {
+    transform: translateY(0);
   }
 `;
 
@@ -848,6 +909,43 @@ const ColorCircle = styled.button`
     &::after {
       opacity: ${props => (!props.color.startsWith('#') && !props.color.startsWith('rgb')) ? '1' : '0'};
     }
+  }
+`;
+
+const ClearSelectionButton = styled.button`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #dc2626;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: #991b1b;
+    transform: translateX(2px);
+  }
+  
+  &:active {
+    transform: translateX(0);
+  }
+`;
+
+const ClearIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  
+  svg {
+    display: block;
   }
 `;
 
