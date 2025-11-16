@@ -120,6 +120,72 @@ export const useOpcionesVariantes = (variantes) => {
 };
 
 /**
+ * Hook para obtener opciones filtradas dinámicamente según la selección actual
+ * @param {Array} variantes - Array de variantes
+ * @param {string} selectedSize - Talla seleccionada
+ * @param {string} selectedColor - Color seleccionado
+ */
+export const useOpcionesFiltradas = (variantes, selectedSize, selectedColor) => {
+  const [opcionesFiltradas, setOpcionesFiltradas] = useState({
+    tallas: [],
+    colores: []
+  });
+
+  useEffect(() => {
+    if (!variantes || variantes.length === 0) {
+      setOpcionesFiltradas({ tallas: [], colores: [] });
+      return;
+    }
+
+    // Filtrar variantes con stock > 0
+    const variantesConStock = variantes.filter(v => v.stock > 0);
+
+    // Si hay un color seleccionado, filtrar tallas disponibles para ese color
+    let tallasDisponibles;
+    if (selectedColor) {
+      tallasDisponibles = [...new Set(
+        variantesConStock
+          .filter(v => v.color === selectedColor)
+          .map(v => v.talla)
+          .filter(Boolean)
+      )];
+    } else {
+      // Si no hay color seleccionado, mostrar todas las tallas con stock
+      tallasDisponibles = [...new Set(
+        variantesConStock
+          .map(v => v.talla)
+          .filter(Boolean)
+      )];
+    }
+
+    // Si hay una talla seleccionada, filtrar colores disponibles para esa talla
+    let coloresDisponibles;
+    if (selectedSize) {
+      coloresDisponibles = [...new Set(
+        variantesConStock
+          .filter(v => v.talla === selectedSize)
+          .map(v => v.color)
+          .filter(Boolean)
+      )];
+    } else {
+      // Si no hay talla seleccionada, mostrar todos los colores con stock
+      coloresDisponibles = [...new Set(
+        variantesConStock
+          .map(v => v.color)
+          .filter(Boolean)
+      )];
+    }
+
+    setOpcionesFiltradas({
+      tallas: tallasDisponibles,
+      colores: coloresDisponibles
+    });
+  }, [variantes, selectedSize, selectedColor]);
+
+  return opcionesFiltradas;
+};
+
+/**
  * Hook para encontrar una variante específica por talla y color
  * @param {Array} variantes - Array de variantes
  * @param {string} talla - Talla seleccionada

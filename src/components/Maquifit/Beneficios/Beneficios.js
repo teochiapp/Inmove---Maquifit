@@ -14,7 +14,7 @@ function Beneficios() {
         as={motion.h2}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0 }}
       >
         Sumate al team <Color>Maquifit</Color>, y obtené estos beneficios
@@ -23,7 +23,7 @@ function Beneficios() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
       >
         <Plan/>
@@ -32,7 +32,7 @@ function Beneficios() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
       >
         <Videos/>
@@ -41,7 +41,7 @@ function Beneficios() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
       >
         <Orientacion/>
@@ -50,7 +50,7 @@ function Beneficios() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
       >
         <Habitos/>
@@ -59,7 +59,7 @@ function Beneficios() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
       >
         <Recetas/>
@@ -68,7 +68,7 @@ function Beneficios() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
       >
         <Acompañamiento/>
@@ -79,7 +79,7 @@ function Beneficios() {
         as={motion.div}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.7 }}
       >
         <DownloadTitle>Descargá la App</DownloadTitle>

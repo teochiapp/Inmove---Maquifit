@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useCarrito } from '../../../context/CarritoContext';
 import CarritoModal from '../../Common/CarritoModal/CarritoModal';
-import { useVariantesPorProducto, useOpcionesVariantes, useVarianteSeleccionada } from '../../../hooks/useVariantes';
+import { useVariantesPorProducto, useOpcionesVariantes, useOpcionesFiltradas, useVarianteSeleccionada } from '../../../hooks/useVariantes';
 
 const InfoProducto = ({
   imageUrl,
@@ -68,19 +68,34 @@ const InfoProducto = ({
   // Obtener variante seleccionada
   const varianteSeleccionada = useVarianteSeleccionada(variantes, selectedSize, selectedColor);
   
+  // Obtener opciones filtradas dinámicamente
+  const opcionesFiltradas = useOpcionesFiltradas(variantes, selectedSize, selectedColor);
+  
   // Inicializar selección por defecto cuando se cargan las variantes
   useEffect(() => {
     if (tieneVariantes && opcionesVariantes.tallas.length > 0 && !selectedSize) {
-      setSelectedSize(opcionesVariantes.tallas[0]);
+      // Seleccionar la primera talla con stock disponible
+      const primeraConStock = variantes.find(v => v.stock > 0);
+      if (primeraConStock) {
+        setSelectedSize(primeraConStock.talla);
+      }
     }
     if (tieneVariantes && opcionesVariantes.colores.length > 0 && !selectedColor) {
-      setSelectedColor(opcionesVariantes.colores[0]);
+      // Seleccionar el primer color con stock disponible
+      const primeraConStock = variantes.find(v => v.stock > 0);
+      if (primeraConStock) {
+        setSelectedColor(primeraConStock.color);
+      }
     }
-  }, [tieneVariantes, opcionesVariantes, selectedSize, selectedColor]);
+  }, [tieneVariantes, opcionesVariantes, selectedSize, selectedColor, variantes]);
   
-  // Usar solo datos de Strapi (sin fallback hardcodeado)
+  // Usar todas las opciones para mostrar, pero filtradas para habilitar
   const tallasDisponibles = opcionesVariantes.tallas;
   const coloresDisponibles = opcionesVariantes.colores;
+  
+  // Verificar si una opción está disponible según el filtro
+  const isTallaDisponible = (talla) => opcionesFiltradas.tallas.includes(talla);
+  const isColorDisponible = (color) => opcionesFiltradas.colores.includes(color);
   
   // Imagen a mostrar (prioritiza la imagen de la variante seleccionada, sino usa la imagen de la galería seleccionada)
   const imagenActual = useMemo(() => {
@@ -215,15 +230,20 @@ const InfoProducto = ({
                 <SectionLabel>Selecciona tu talle</SectionLabel>
                 {tallasDisponibles.length > 0 ? (
                   <SizeOptions>
-                    {tallasDisponibles.map((talla) => (
-                      <SizeButton 
-                        key={talla}
-                        $active={selectedSize === talla} 
-                        onClick={() => setSelectedSize(talla)}
-                      >
-                        {talla}
-                      </SizeButton>
-                    ))}
+                    {tallasDisponibles.map((talla) => {
+                      const disponible = isTallaDisponible(talla);
+                      return (
+                        <SizeButton 
+                          key={talla}
+                          $active={selectedSize === talla} 
+                          $disabled={!disponible}
+                          onClick={() => disponible && setSelectedSize(talla)}
+                          title={!disponible ? 'No disponible para la combinación seleccionada' : ''}
+                        >
+                          {talla}
+                        </SizeButton>
+                      );
+                    })}
                   </SizeOptions>
                 ) : (
                   <EmptyMessage>No hay talles disponibles</EmptyMessage>
@@ -235,14 +255,19 @@ const InfoProducto = ({
                 <SectionLabel>Colores Disponibles</SectionLabel>
                 {coloresDisponibles.length > 0 ? (
                   <ColorOptions>
-                    {coloresDisponibles.map((color) => (
-                      <ColorCircle 
-                        key={color}
-                        color={color} 
-                        $active={selectedColor === color}
-                        onClick={() => setSelectedColor(color)}
-                      />
-                    ))}
+                    {coloresDisponibles.map((color) => {
+                      const disponible = isColorDisponible(color);
+                      return (
+                        <ColorCircle 
+                          key={color}
+                          color={color} 
+                          $active={selectedColor === color}
+                          $disabled={!disponible}
+                          onClick={() => disponible && setSelectedColor(color)}
+                          title={!disponible ? 'No disponible para la combinación seleccionada' : ''}
+                        />
+                      );
+                    })}
                   </ColorOptions>
                 ) : (
                   <EmptyMessage>No hay colores disponibles</EmptyMessage>
@@ -657,12 +682,19 @@ const SizeButton = styled.button`
   font-family: 'Onest', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
-  cursor: pointer;
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.3s ease;
+  opacity: ${props => props.$disabled ? '0.4' : '1'};
+  position: relative;
   
-  &:hover {
+  ${props => props.$disabled && `
+    text-decoration: line-through;
+    pointer-events: none;
+  `}
+  
+  &:hover:not([disabled]) {
     border-color: var(--inmove-color);
-    ${props => !props.$active && `
+    ${props => !props.$active && !props.$disabled && `
       background: #FFF5F9;
     `}
   }
@@ -754,12 +786,28 @@ const ColorCircle = styled.button`
     const colorKey = props.color.toLowerCase().trim();
     return colorMap[colorKey] || props.color.toLowerCase();
   }};
-  cursor: pointer;
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   border: 3px solid ${props => props.$active ? '#262626' : 'white'};
   box-shadow: 0 0 0 1.5px #D1D5DB;
   transition: all 0.3s ease;
   padding: 0;
   position: relative;
+  opacity: ${props => props.$disabled ? '0.3' : '1'};
+  
+  ${props => props.$disabled && `
+    pointer-events: none;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      width: 2px;
+      height: 120%;
+      background: #dc2626;
+      z-index: 1;
+    }
+  `}
   
   /* Si es un color con nombre, mostrar el nombre como tooltip */
   &::after {
@@ -776,7 +824,7 @@ const ColorCircle = styled.button`
     pointer-events: none;
   }
   
-  &:hover {
+  &:hover:not([disabled]) {
     transform: scale(1.1);
     box-shadow: 0 0 0 2px var(--inmove-color);
     
