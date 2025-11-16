@@ -140,35 +140,73 @@ export const useOpcionesFiltradas = (variantes, selectedSize, selectedColor) => 
     // Filtrar variantes con stock > 0
     const variantesConStock = variantes.filter(v => v.stock > 0);
 
-    // Si hay un color seleccionado, filtrar tallas disponibles para ese color
+    // NUEVA LÓGICA: Mostrar todas las opciones con stock disponible
+    // Solo filtrar si AMBOS (color Y talla) están seleccionados
+    
     let tallasDisponibles;
-    if (selectedColor) {
+    let coloresDisponibles;
+    
+    // Si ambos están seleccionados, verificar que la combinación existe
+    if (selectedColor && selectedSize) {
+      // Verificar si existe la combinación exacta
+      const existeCombinacion = variantesConStock.some(
+        v => v.color === selectedColor && v.talla === selectedSize
+      );
+      
+      if (existeCombinacion) {
+        // La combinación existe, mantener ambas selecciones
+        tallasDisponibles = [selectedSize];
+        coloresDisponibles = [selectedColor];
+      } else {
+        // La combinación no existe, mostrar opciones compatibles
+        tallasDisponibles = [...new Set(
+          variantesConStock
+            .filter(v => v.color === selectedColor)
+            .map(v => v.talla)
+            .filter(Boolean)
+        )];
+        coloresDisponibles = [...new Set(
+          variantesConStock
+            .filter(v => v.talla === selectedSize)
+            .map(v => v.color)
+            .filter(Boolean)
+        )];
+      }
+    } else if (selectedColor) {
+      // Solo color seleccionado: mostrar tallas disponibles para ese color
       tallasDisponibles = [...new Set(
         variantesConStock
           .filter(v => v.color === selectedColor)
           .map(v => v.talla)
           .filter(Boolean)
       )];
-    } else {
-      // Si no hay color seleccionado, mostrar todas las tallas con stock
-      tallasDisponibles = [...new Set(
+      // Mostrar todos los colores con stock
+      coloresDisponibles = [...new Set(
         variantesConStock
-          .map(v => v.talla)
+          .map(v => v.color)
           .filter(Boolean)
       )];
-    }
-
-    // Si hay una talla seleccionada, filtrar colores disponibles para esa talla
-    let coloresDisponibles;
-    if (selectedSize) {
+    } else if (selectedSize) {
+      // Solo talla seleccionada: mostrar colores disponibles para esa talla
       coloresDisponibles = [...new Set(
         variantesConStock
           .filter(v => v.talla === selectedSize)
           .map(v => v.color)
           .filter(Boolean)
       )];
+      // Mostrar todas las tallas con stock
+      tallasDisponibles = [...new Set(
+        variantesConStock
+          .map(v => v.talla)
+          .filter(Boolean)
+      )];
     } else {
-      // Si no hay talla seleccionada, mostrar todos los colores con stock
+      // Ninguno seleccionado: mostrar TODAS las opciones con stock
+      tallasDisponibles = [...new Set(
+        variantesConStock
+          .map(v => v.talla)
+          .filter(Boolean)
+      )];
       coloresDisponibles = [...new Set(
         variantesConStock
           .map(v => v.color)

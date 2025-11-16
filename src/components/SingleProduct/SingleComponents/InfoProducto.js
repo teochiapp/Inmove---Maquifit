@@ -89,23 +89,8 @@ const InfoProducto = ({
     }
   }, [varianteSeleccionada]);
   
-  // Inicializar selección por defecto cuando se cargan las variantes
-  useEffect(() => {
-    if (tieneVariantes && opcionesVariantes.tallas.length > 0 && !selectedSize) {
-      // Seleccionar la primera talla con stock disponible
-      const primeraConStock = variantes.find(v => v.stock > 0);
-      if (primeraConStock) {
-        setSelectedSize(primeraConStock.talla);
-      }
-    }
-    if (tieneVariantes && opcionesVariantes.colores.length > 0 && !selectedColor) {
-      // Seleccionar el primer color con stock disponible
-      const primeraConStock = variantes.find(v => v.stock > 0);
-      if (primeraConStock) {
-        setSelectedColor(primeraConStock.color);
-      }
-    }
-  }, [tieneVariantes, opcionesVariantes, selectedSize, selectedColor, variantes]);
+  // NO inicializar selección automática - dejar que el usuario elija
+  // Esto evita que se pre-seleccione una combinación específica que limite las opciones visibles
   
   // Usar todas las opciones para mostrar, pero filtradas para habilitar
   const tallasDisponibles = opcionesVariantes.tallas;
@@ -128,6 +113,18 @@ const InfoProducto = ({
   const stockDisponible = varianteSeleccionada?.stock ?? null;
 
   const handleAddToCart = () => {
+    // Validar que se hayan seleccionado talla y color
+    if (!selectedSize || !selectedColor) {
+      alert('Por favor selecciona un talle y un color');
+      return;
+    }
+    
+    // Validar que existe una variante para la combinación seleccionada
+    if (!varianteSeleccionada) {
+      alert('La combinación seleccionada no está disponible');
+      return;
+    }
+    
     // Validar stock
     if (stockDisponible !== null && stockDisponible <= 0) {
       alert('Producto sin stock disponible');
@@ -291,9 +288,14 @@ const InfoProducto = ({
             </SelectorsRow>
           )}
           
-          {/* Stock disponible */}
-          {stockDisponible !== null && (
-            <StockInfo>
+          {/* Stock disponible o mensaje de selección */}
+          {!selectedSize || !selectedColor ? (
+            <SelectionInfo>
+              <InfoIcon>ℹ️</InfoIcon>
+              <InfoText>Selecciona un talle y un color para ver el stock disponible</InfoText>
+            </SelectionInfo>
+          ) : stockDisponible !== null && (
+            <StockInfo $disponible={stockDisponible > 0}>
               <StockLabel>Stock disponible:</StockLabel>
               <StockValue $disponible={stockDisponible > 0}>
                 {stockDisponible > 0 ? `${stockDisponible} unidades` : 'Sin stock'}
@@ -329,14 +331,14 @@ const InfoProducto = ({
       
       <AddToCartButton 
         onClick={handleAddToCart}
-        disabled={stockDisponible !== null && stockDisponible <= 0}
+        disabled={!selectedSize || !selectedColor || !varianteSeleccionada || (stockDisponible !== null && stockDisponible <= 0)}
       >
               <CartIcon width="16" height="17" viewBox="0 0 16 17" fill="none">
                 <path d="M5.33366 15.1666C5.70185 15.1666 6.00033 14.8682 6.00033 14.5C6.00033 14.1318 5.70185 13.8333 5.33366 13.8333C4.96547 13.8333 4.66699 14.1318 4.66699 14.5C4.66699 14.8682 4.96547 15.1666 5.33366 15.1666Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M12.6667 15.1666C13.0349 15.1666 13.3333 14.8682 13.3333 14.5C13.3333 14.1318 13.0349 13.8333 12.6667 13.8333C12.2985 13.8333 12 14.1318 12 14.5C12 14.8682 12.2985 15.1666 12.6667 15.1666Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M1.36621 1.86664L2.69954 1.86664L4.47288 10.1466C4.53793 10.4499 4.70666 10.721 4.95002 10.9132C5.19338 11.1055 5.49615 11.2069 5.80621 11.2L12.3262 11.2C12.6297 11.1995 12.9239 11.0955 13.1602 10.9052C13.3966 10.7149 13.561 10.4497 13.6262 10.1533L14.7262 5.19997L3.41288 5.19997" stroke="white" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
               </CartIcon>
-        {stockDisponible !== null && stockDisponible <= 0 ? 'Sin stock' : 'Añadir al carrito'}
+        {!selectedSize || !selectedColor ? 'Selecciona talle y color' : (stockDisponible !== null && stockDisponible <= 0 ? 'Sin stock' : 'Añadir al carrito')}
       </AddToCartButton>
     </QuantityAndCartRow>
 
@@ -849,9 +851,32 @@ const ColorCircle = styled.button`
   }
 `;
 
+const SelectionInfo = styled.div`
+  background: #eff6ff;
+  border: 1.5px solid #93c5fd;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+const InfoIcon = styled.span`
+  font-size: 1.25rem;
+  flex-shrink: 0;
+`;
+
+const InfoText = styled.span`
+  font-family: 'Onest', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e40af;
+`;
+
 const StockInfo = styled.div`
-  background: #f0fdf4;
-  border: 1.5px solid #86efac;
+  background: ${props => props.$disponible ? '#f0fdf4' : '#fef2f2'};
+  border: 1.5px solid ${props => props.$disponible ? '#86efac' : '#fecaca'};
   border-radius: 8px;
   padding: 0.75rem 1rem;
   margin-bottom: 1.5rem;
