@@ -35,20 +35,33 @@ const InfoProducto = ({
   const [quantity, setQuantity] = useState(1);
   const [activeThumb, setActiveThumb] = useState(0);
   
-  // Construir array de imágenes: Portada + Galería
+  // Obtener variante seleccionada (debe estar antes de imagenesGaleria)
+  const varianteSeleccionada = useVarianteSeleccionada(variantes, selectedSize, selectedColor);
+  
+  // Construir array de imágenes: Imagen de Variante (si existe) + Portada + Galería
   const imagenesGaleria = useMemo(() => {
     const imagenes = [];
     const strapiUrl = process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337';
     
-    // Agregar Portada como primera imagen
-    if (imageUrl) {
+    // 1. Agregar imagen de la variante seleccionada (prioridad máxima)
+    if (varianteSeleccionada?.imagen) {
       imagenes.push({
-        url: imageUrl,
-        alt: imageAlt || productoNombre
+        url: varianteSeleccionada.imagen,
+        alt: `${productoNombre} - ${varianteSeleccionada.color || ''} ${varianteSeleccionada.talla || ''}`.trim(),
+        isVariante: true
       });
     }
     
-    // Agregar imágenes de la galería
+    // 2. Agregar Portada como segunda imagen (o primera si no hay variante)
+    if (imageUrl) {
+      imagenes.push({
+        url: imageUrl,
+        alt: imageAlt || productoNombre,
+        isPortada: true
+      });
+    }
+    
+    // 3. Agregar imágenes de la galería
     const galeriaData = attributes?.Galeria?.data;
     if (galeriaData && Array.isArray(galeriaData)) {
       galeriaData.forEach((imagen, index) => {
@@ -63,13 +76,18 @@ const InfoProducto = ({
     }
     
     return imagenes.length > 0 ? imagenes : [{ url: imageUrl || '/catalogo/elementos.webp', alt: imageAlt || productoNombre }];
-  }, [imageUrl, imageAlt, productoNombre, attributes]);
-  
-  // Obtener variante seleccionada
-  const varianteSeleccionada = useVarianteSeleccionada(variantes, selectedSize, selectedColor);
+  }, [imageUrl, imageAlt, productoNombre, attributes, varianteSeleccionada]);
   
   // Obtener opciones filtradas dinámicamente
   const opcionesFiltradas = useOpcionesFiltradas(variantes, selectedSize, selectedColor);
+  
+  // Cuando cambia la variante seleccionada, actualizar el thumbnail activo a la imagen de la variante
+  useEffect(() => {
+    if (varianteSeleccionada?.imagen) {
+      // La imagen de la variante siempre está en el índice 0 cuando existe
+      setActiveThumb(0);
+    }
+  }, [varianteSeleccionada]);
   
   // Inicializar selección por defecto cuando se cargan las variantes
   useEffect(() => {
@@ -97,17 +115,14 @@ const InfoProducto = ({
   const isTallaDisponible = (talla) => opcionesFiltradas.tallas.includes(talla);
   const isColorDisponible = (color) => opcionesFiltradas.colores.includes(color);
   
-  // Imagen a mostrar (prioritiza la imagen de la variante seleccionada, sino usa la imagen de la galería seleccionada)
+  // Imagen a mostrar (usa la imagen del thumbnail activo)
   const imagenActual = useMemo(() => {
-    if (varianteSeleccionada?.imagen) {
-      return varianteSeleccionada.imagen;
-    }
-    // Usar la imagen seleccionada de la galería
+    // Usar la imagen seleccionada de la galería (que ya incluye la imagen de la variante si existe)
     if (imagenesGaleria && imagenesGaleria[activeThumb]) {
       return imagenesGaleria[activeThumb].url;
     }
     return imageUrl;
-  }, [varianteSeleccionada, imagenesGaleria, activeThumb, imageUrl]);
+  }, [imagenesGaleria, activeThumb, imageUrl]);
   
   // Stock disponible
   const stockDisponible = varianteSeleccionada?.stock ?? null;
