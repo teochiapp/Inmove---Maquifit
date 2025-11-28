@@ -4,9 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 const TiendaCTA = () => {
   const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
-    <CTAButton onClick={() => navigate('/')}>
+    <CTAButton onClick={handleClick}>
       <ButtonText>Ir a la tienda</ButtonText>
       <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
     </CTAButton>
