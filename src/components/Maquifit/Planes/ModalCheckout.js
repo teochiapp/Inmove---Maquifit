@@ -306,6 +306,8 @@ const ModalContent = styled.div`
   overflow-y: auto;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
   
   /* Fix para Safari iOS - scroll suave */
   -webkit-overflow-scrolling: touch;

@@ -14,6 +14,20 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const handleContactClick = () => {
+    const primerPasoSection = document.getElementById('primer-paso');
+    if (primerPasoSection) {
+      const headerOffset = 100; // Offset para compensar el header fijo
+      const elementPosition = primerPasoSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   // Bloquear scroll cuando el menú está abierto
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -80,7 +94,7 @@ const Header = () => {
         </Navigation>
         
         <ContactSection>
-          <ContactButton>
+          <ContactButton onClick={handleContactClick}>
             <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
             Contacto
           </ContactButton>
@@ -116,7 +130,7 @@ const Header = () => {
           <MobileNavLink href="#descargar-app" className={activeSection === 'descargar-app' ? 'active' : ''} onClick={closeMobileMenu}>
             App Team Maquifit
           </MobileNavLink>
-          <MobileContactButton onClick={closeMobileMenu}>
+          <MobileContactButton onClick={() => { handleContactClick(); closeMobileMenu(); }}>
             <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
             Contacto
           </MobileContactButton>
