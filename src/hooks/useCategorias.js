@@ -8,11 +8,6 @@ import useAPI from './useAPI';
 export const useCategorias = () => {
   const { data, loading, error } = useAPI('/categorias?populate=*');
   
-  // Debug logs
-  console.log('🔍 API Response:', data);
-  console.log('🔍 Loading:', loading);
-  console.log('🔍 Error:', error);
-  
   // Procesar datos de Strapi
   const categorias = data?.data || [];
   const meta = data?.meta || {};
@@ -25,30 +20,21 @@ export const useCategorias = () => {
   
   // Normalizar categorías para que tengan la estructura esperada (memoizado)
   const categoriasNormalizadas = useMemo(() => {
-    console.log('🔍 Categorias raw data:', categorias); // Debug log
-    
     // Ordenar por campo Orden ascendente
     const categoriasOrdenadas = [...categorias].sort((a, b) => {
       const ordenA = a.Orden || a.orden || 999; // Fallback a 999 si no tiene orden
       const ordenB = b.Orden || b.orden || 999;
       return ordenA - ordenB;
     });
-    console.log('🔍 Categorias ordenadas por Orden:', categoriasOrdenadas); // Debug log
     
     return categoriasOrdenadas.map(categoria => {
-      console.log('🔍 Categoria individual:', categoria); // Debug log
-      
       // Para Strapi v5, los campos están directamente en el objeto, no en attributes
       const nombre = categoria.Nombre || categoria.nombre || `Categoría ${categoria.id}`;
       const slug = categoria.Slug || categoria.slug || nombre.toLowerCase().replace(/\s+/g, '-');
       
-      console.log('🔍 Nombre extraído:', nombre); // Debug log
-      console.log('🔍 Slug extraído:', slug); // Debug log
-      
       // Función helper para obtener URL de media en Strapi v5
       const getMediaUrl = (mediaField) => {
         const media = categoria[mediaField];
-        console.log(`🔍 Media ${mediaField}:`, media); // Debug log
         
         // En Strapi v5, los media fields pueden tener diferentes estructuras
         if (media) {
@@ -71,7 +57,6 @@ export const useCategorias = () => {
           if (mediaUrl) {
             // Si la URL ya es completa, devolverla tal como está
             if (mediaUrl.startsWith('http')) {
-              console.log(`🔗 URL completa encontrada:`, mediaUrl);
               return mediaUrl;
             }
             // Si es una URL relativa, agregar el dominio de Strapi
@@ -93,7 +78,6 @@ export const useCategorias = () => {
             
             const strapiBaseUrl = getStrapiBaseUrl();
             const fullUrl = `${strapiBaseUrl}${mediaUrl}`;
-            console.log(`🔗 URL construida:`, fullUrl);
             return fullUrl;
           }
         }
@@ -102,13 +86,10 @@ export const useCategorias = () => {
       
       // Extraer campo Orden
       const orden = categoria.Orden || categoria.orden || 999;
-      console.log('🔍 Orden extraído:', orden); // Debug log
       
-      // Extraer icono y portada con logs detallados
+      // Extraer icono y portada
       const iconoUrl = getMediaUrl('Icono') || null;
       const portadaUrl = getMediaUrl('Portada') || null;
-      console.log(`🖼️ Icono final para ${nombre}:`, iconoUrl);
-      console.log(`🖼️ Portada final para ${nombre}:`, portadaUrl);
       
       return {
         id: categoria.id,

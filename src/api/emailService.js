@@ -6,23 +6,6 @@ const EMAIL_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID || 'service_ma
 const EMAIL_TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || 'template_payment_success';
 const EMAIL_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || 'your_public_key_here';
 
-console.log('🔧 EmailJS Config COMPLETA:', {
-  serviceId: EMAIL_SERVICE_ID,
-  templateId: EMAIL_TEMPLATE_ID,
-  publicKey: EMAIL_PUBLIC_KEY,
-  publicKeyLength: EMAIL_PUBLIC_KEY?.length
-});
-
-// Hacer las variables globales para poder verificarlas en la consola (solo para debug)
-window.DEBUG_EMAILJS_CONFIG = {
-  serviceId: EMAIL_SERVICE_ID,
-  templateId: EMAIL_TEMPLATE_ID,
-  publicKey: EMAIL_PUBLIC_KEY,
-  hasEnvFile: EMAIL_PUBLIC_KEY !== 'your_public_key_here'
-};
-
-console.log('💡 Para ver la config en consola, escribe: window.DEBUG_EMAILJS_CONFIG');
-
 // Inicializar EmailJS
 if (!EMAIL_PUBLIC_KEY || EMAIL_PUBLIC_KEY === 'your_public_key_here') {
   console.error('❌ PUBLIC KEY NO CONFIGURADA o es el valor por defecto!');
@@ -30,7 +13,6 @@ if (!EMAIL_PUBLIC_KEY || EMAIL_PUBLIC_KEY === 'your_public_key_here') {
   console.error('❌ La Public Key actual es:', EMAIL_PUBLIC_KEY);
 } else {
   emailjs.init(EMAIL_PUBLIC_KEY);
-  console.log('✅ EmailJS inicializado correctamente');
 }
 
 /**
@@ -354,9 +336,3 @@ export const testEmailFunction = async () => {
   
   return result;
 };
-
-// Exponer la función de testing globalmente para poder usarla desde la consola
-if (typeof window !== 'undefined') {
-  window.testEmail = testEmailFunction;
-  console.log('🧪 Función de testing disponible! Usa: window.testEmail()');
-}

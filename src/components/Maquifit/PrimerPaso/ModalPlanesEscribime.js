@@ -11,8 +11,6 @@ const ModalPlanesEscribime = ({ isOpen, onClose }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
-  console.log('Modal isOpen:', isOpen, 'Planes cargados:', planes.length);
-
   // Colores predefinidos para los planes
   const planColors = ["#C58ADA", "#9DC6DA", "#9FC329"];
 

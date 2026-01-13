@@ -92,16 +92,11 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
         const reference = `plan_${plan.id}_${Date.now()}`;
         setExternalReference(reference);
         
-        console.log('💾 Guardando datos del cliente en Strapi...');
-        console.log('📋 External reference:', reference);
-        console.log('📋 Datos del cliente:', formData);
-        console.log('📋 Datos del plan:', plan);
-        
         const result = await guardarDatosEnStrapi(reference, formData, plan);
         
         if (result.success) {
-          console.log('✅ Datos guardados correctamente en Strapi!');
-          console.log('✅ Ahora redirigiendo al checkout de MercadoPago...');
+          // Datos guardados correctamente en Strapi!
+          // Ahora redirigiendo al checkout de MercadoPago...
         } else {
           console.warn('⚠️ No se pudieron guardar en Strapi:', result.message);
           console.warn('⚠️ Continuando con el checkout de todas formas...');
@@ -109,13 +104,10 @@ const ModalCheckout = ({ isOpen, onClose, plan }) => {
         
       } catch (error) {
         console.error('❌ Error guardando datos:', error);
-        console.warn('⚠️ Continuando con el checkout de todas formas...');
       } finally {
         setSaving(false);
       }
       
-      // Continuar al checkout
-      console.log('ℹ️ El email se enviará automáticamente después de completar el pago');
       setShowCheckout(true);
     }
   };
@@ -386,6 +378,13 @@ const ModalHeader = styled.div`
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e5e7eb;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+  }
 `;
 
 const ModalTitle = styled.h2`
@@ -405,6 +404,16 @@ const PlanInfo = styled.div`
   border-radius: 12px;
   padding: 1rem;
   border-left: 4px solid #C58ADA;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 `;
 
 const PlanName = styled.h3`

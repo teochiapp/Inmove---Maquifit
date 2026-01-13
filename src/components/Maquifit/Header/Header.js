@@ -16,8 +16,9 @@ const Header = () => {
 
   const handleContactClick = () => {
     const primerPasoSection = document.getElementById('primer-paso');
+    
     if (primerPasoSection) {
-      const headerOffset = 100; // Offset para compensar el header fijo
+      const headerOffset = 100;
       const elementPosition = primerPasoSection.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - headerOffset;
       
@@ -130,7 +131,10 @@ const Header = () => {
           <MobileNavLink href="#descargar-app" className={activeSection === 'descargar-app' ? 'active' : ''} onClick={closeMobileMenu}>
             App Team Maquifit
           </MobileNavLink>
-          <MobileContactButton onClick={() => { handleContactClick(); closeMobileMenu(); }}>
+          <MobileContactButton onClick={() => { 
+            closeMobileMenu(); // Cerrar menú primero para desbloquear el scroll
+            setTimeout(() => handleContactClick(), 100); // Hacer scroll después
+          }}>
             <ArrowIcon src="/icons/arrow-top.png" alt="Arrow" />
             Contacto
           </MobileContactButton>

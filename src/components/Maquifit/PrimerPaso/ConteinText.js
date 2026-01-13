@@ -6,8 +6,7 @@ import ModalPlanesEscribime from "./ModalPlanesEscribime";
 const Text = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleOpenModal = () => {
-    console.log('Abriendo modal de planes...');
+  const handleButtonClick = () => {
     setIsModalOpen(true);
   };
 
@@ -38,7 +37,7 @@ const Text = () => {
         </Subtitle>
 
         <ButtonContainer>
-          <CTAButton onClick={handleOpenModal}>
+          <CTAButton onClick={handleButtonClick}>
             <ButtonText>Escribime!</ButtonText>
             <DialogIcon src="/icons/dialog.png" alt="Dialog" />
           </CTAButton>

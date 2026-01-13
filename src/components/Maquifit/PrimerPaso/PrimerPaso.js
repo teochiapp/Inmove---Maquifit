@@ -4,7 +4,7 @@ import ChatsBubble from "./Chatss"
 const PrimerPaso = () => {
   return (
    
-     <FirstStepContainer>
+     <FirstStepContainer id="primer-paso">
       
       <div>
       <Text />

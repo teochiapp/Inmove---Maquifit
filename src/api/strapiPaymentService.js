@@ -2,10 +2,6 @@
 
 const STRAPI_URL = process.env.REACT_APP_STRAPI_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:1337';
 
-console.log('🔧 Strapi Payment Service Config:', {
-  strapiUrl: STRAPI_URL
-});
-
 /**
  * Guarda los datos del cliente y plan en Strapi ANTES de ir a MercadoPago
  * @param {string} externalReference - Referencia única del pago
@@ -156,15 +152,4 @@ export const actualizarEstadoPagoEnStrapi = async (externalReference, paymentDat
     };
   }
 };
-
-// Hacer las funciones disponibles globalmente para debugging
-if (typeof window !== 'undefined') {
-  window.DEBUG_STRAPI_PAYMENT = {
-    guardarDatos: guardarDatosEnStrapi,
-    recuperarDatos: recuperarDatosDeStrapi,
-    actualizarEstado: actualizarEstadoPagoEnStrapi,
-    strapiUrl: STRAPI_URL
-  };
-  console.log('🧪 Funciones de Strapi disponibles en: window.DEBUG_STRAPI_PAYMENT');
-}
 
