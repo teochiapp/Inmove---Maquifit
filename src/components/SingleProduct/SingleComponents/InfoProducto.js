@@ -34,8 +34,8 @@ const InfoProducto = ({
   const { data: rawDataDescuento } = useAPI('/texto-para-descuento');
   
   const dataCuotas = rawDataCuotas?.data?.attributes || rawDataCuotas?.data || {};
-  const cuotas = dataCuotas.Cuotas ?? dataCuotas.cuotas ?? 0;
-  const textoExtraCuotas = dataCuotas.TextoExtra ?? dataCuotas.textoExtra ?? dataCuotas.texto_extra ?? '';
+  const cuotas = dataCuotas.CantidadCuotas ?? dataCuotas.cantidadCuotas ?? dataCuotas.Cuotas ?? dataCuotas.cuotas ?? 0;
+  const textoExtraCuotas = dataCuotas.TextoAdicional ?? dataCuotas.textoAdicional ?? dataCuotas.TextoExtra ?? dataCuotas.textoExtra ?? '';
 
   const dataDescuento = rawDataDescuento?.data?.attributes || rawDataDescuento?.data || {};
   const porcentajeDescuento = dataDescuento.PorcentajeDescuento ?? dataDescuento.porcentajeDescuento ?? dataDescuento.porcentaje_descuento ?? 0;
