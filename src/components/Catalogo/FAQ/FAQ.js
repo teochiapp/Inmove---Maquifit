@@ -23,7 +23,7 @@ const FAQ = () => {
     {
       question: "¿Qué pasa si algo no me queda bien?",
       answer:
-        "Podés cambiarlo sin costo dentro de los 30 días, siempre con etiquetas originales.",
+        "Podés cambiarlo dentro de los 15 días, en perfectas condiciones y con etiquetas.",
     },
   ];
 
