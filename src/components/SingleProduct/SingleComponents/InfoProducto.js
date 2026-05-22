@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useCarrito } from '../../../context/CarritoContext';
 import CarritoModal from '../../Common/CarritoModal/CarritoModal';
 import { useVariantesPorProducto, useOpcionesVariantes, useOpcionesFiltradas, useVarianteSeleccionada } from '../../../hooks/useVariantes';
+import useAPI from '../../../hooks/useAPI';
 
 const InfoProducto = ({
   imageUrl,
@@ -27,6 +28,21 @@ const InfoProducto = ({
   // Obtener variantes del producto
   const { variantes, loading, tieneVariantes } = useVariantesPorProducto(productoId);
   const opcionesVariantes = useOpcionesVariantes(variantes);
+  
+  // Obtener textos dinámicos desde Strapi
+  const { data: rawDataCuotas } = useAPI('/texto-para-cuota');
+  const { data: rawDataDescuento } = useAPI('/texto-para-descuento');
+  
+  const dataCuotas = rawDataCuotas?.data?.attributes || rawDataCuotas?.data || {};
+  const cuotas = dataCuotas.Cuotas ?? dataCuotas.cuotas ?? 0;
+  const textoExtraCuotas = dataCuotas.TextoExtra ?? dataCuotas.textoExtra ?? dataCuotas.texto_extra ?? '';
+
+  const dataDescuento = rawDataDescuento?.data?.attributes || rawDataDescuento?.data || {};
+  const porcentajeDescuento = dataDescuento.PorcentajeDescuento ?? dataDescuento.porcentajeDescuento ?? dataDescuento.porcentaje_descuento ?? 0;
+  const textoAdicionalDescuento = dataDescuento.TextoAdicional ?? dataDescuento.textoAdicional ?? dataDescuento.texto_adicional ?? '';
+
+  const precioNumber = Number(productoView?.precio || attributes.Precio || 0);
+  const precioCuota = cuotas > 0 ? (precioNumber / cuotas) : 0;
   
   const [showModal, setShowModal] = useState(false);
   const [showGuiaTalles, setShowGuiaTalles] = useState(false);
@@ -251,9 +267,41 @@ const InfoProducto = ({
           
     <ProductPrice>
       {productoView?.precio || attributes.Precio
-              ? `$${Math.round(Number(productoView?.precio || attributes.Precio))}`
+              ? `$${Math.round(precioNumber)}`
               : '$123'}
     </ProductPrice>
+
+    {(cuotas > 0 || porcentajeDescuento > 0) && (
+      <DynamicInfoContainer>
+        {cuotas > 0 && (
+          <InstallmentsInfo>
+            <IconWrapper>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+            </IconWrapper>
+            <InfoTextDynamic>
+              <strong>{cuotas}</strong> cuotas de <strong>${Math.round(precioCuota)}</strong> {textoExtraCuotas}
+            </InfoTextDynamic>
+          </InstallmentsInfo>
+        )}
+        
+        {porcentajeDescuento > 0 && (
+          <DiscountInfo>
+            <IconWrapper>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </IconWrapper>
+            <InfoTextDynamic>
+              <strong>{porcentajeDescuento}%</strong> {textoAdicionalDescuento}
+            </InfoTextDynamic>
+          </DiscountInfo>
+        )}
+      </DynamicInfoContainer>
+    )}
 
     {/* Talles y Colores */}
           {loading ? (
@@ -673,7 +721,58 @@ const ProductPrice = styled.div`
   font-size: clamp(1.75rem, 3vw, 2rem);
   font-weight: 700;
   color: #262626;
-  margin: 0 0 2rem 0;
+  margin: 0 0 1rem 0;
+`;
+
+const DynamicInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+`;
+
+const InfoRowBase = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+const InstallmentsInfo = styled(InfoRowBase)`
+  color: #262626;
+`;
+
+const DiscountInfo = styled(InfoRowBase)`
+  color: #262626;
+  
+  strong {
+    color: var(--inmove-color);
+  }
+  
+  svg {
+    color: var(--inmove-color);
+  }
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+`;
+
+const InfoTextDynamic = styled.span`
+  font-family: 'Onest', sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  
+  strong {
+    font-weight: 700;
+  }
 `;
 
 // === Mensajes de Estado ===
