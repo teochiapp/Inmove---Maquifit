@@ -296,7 +296,7 @@ const InfoProducto = ({
               </svg>
             </IconWrapper>
             <InfoTextDynamic>
-              <strong>{porcentajeDescuento}%</strong> {textoAdicionalDescuento}
+              <strong>${Math.round(precioNumber * (1 - porcentajeDescuento / 100))}</strong> {textoAdicionalDescuento}
             </InfoTextDynamic>
           </DiscountInfo>
         )}
